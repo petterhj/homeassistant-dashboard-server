@@ -11,12 +11,11 @@
 Inkplate display(INKPLATE_3BIT);
 
 #define uS_TO_S_FACTOR  1000000 // Conversion factor for micro seconds to seconds
-// #define TIME_TO_SLEEP  1200      // How long ESP32 will be in deep sleep (in seconds)
-#define TIME_TO_SLEEP   120
+#define TIME_TO_SLEEP  1200      // How long ESP32 will be in deep sleep (in seconds)
 
-const char *imageUrl = "http://localhost:8081/dashboard.png";
-const char *ssid = "";
-const char *password = "";
+const char *imageUrl = "http://host:port/dashboard.png";
+const char *ssid = ""; // Your WiFi SSID
+const char *password = ""; // Your WiFi password
 // const char *mqtt_server = "192.168.0.34";
 
 WiFiClient espClient;
