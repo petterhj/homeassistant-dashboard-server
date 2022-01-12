@@ -1,3 +1,4 @@
+import os
 import asyncio
 import json
 import logging
@@ -60,6 +61,11 @@ async def take_screenshot(context: BrowserContext):
         await asyncio.sleep(config.SCREENSHOT_DELAY)
     
     logger.info(f"Taking screenshot, target={config.SCREENSHOT_OUTPUT_PATH}")
+
+    dirname = os.path.dirname(config.SCREENSHOT_OUTPUT_PATH)
+
+    if dirname and not os.path.exists(dirname):
+        os.makedirs(dirname, exist_ok=True)
 
     await page.screenshot(
         path=config.SCREENSHOT_OUTPUT_PATH,

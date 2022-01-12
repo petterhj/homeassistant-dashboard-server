@@ -32,3 +32,15 @@ playwright install # Download new browsers
 
 DEBUG=true python app.py
 ```
+
+## Build and run
+
+```sh
+docker build -t hashot .
+docker run \
+    --env-file .env \
+    -p 8081:80 \
+    --name hasshot \
+    --detach \
+    hashot
+```
