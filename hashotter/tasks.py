@@ -1,7 +1,7 @@
-import os
 import asyncio
 import json
 import logging
+import os
 
 from playwright.async_api import (
     async_playwright,
