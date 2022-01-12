@@ -2,7 +2,7 @@
 
 ## Config
 
-To configure, update the necessary environment variables specified below in a `.env` file (automatically loaded through `config.py`).
+To configure, update the necessary environment variables specified below in a `.env` file (or see `hashotter/config.py`).
 
 | Variable | Default |
 | --- | --- |
@@ -10,7 +10,9 @@ To configure, update the necessary environment variables specified below in a `.
 | HA_BASE_URL | `http://homeassistant.local:8123` |
 | HA_DASHBOARD_URL | `/lovelace/default_view` |
 | HA_ACCESS_TOKEN | `xxxx` |
+| SERVER_HOST | `0.0.0.0` |
 | SERVER_PORT | `80` |
+| SERVER_OUTPUT_PATH | `/dashboard.png` |
 | SCREENSHOT_HEIGHT | `825` |
 | SCREENSHOT_WIDTH | `1200` |
 | SCREENSHOT_SCALING | `1` |
@@ -28,5 +30,5 @@ pip install -r requirements.txt
 
 playwright install # Download new browsers
 
-DEBUG=true python shotter.py
+DEBUG=true python app.py
 ```

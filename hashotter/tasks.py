@@ -1,19 +1,16 @@
 import asyncio
-import io
 import json
 import logging
 
-from aiohttp import web
 from playwright.async_api import (
     async_playwright,
     BrowserContext,
     TimeoutError,
 )
 
-import config
+from . import config
 
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 hass_tokens = {
@@ -117,38 +114,3 @@ async def screenshot_task():
             logger.debug(f"Sleeping {config.SCREENSHOT_INTERVAL} seconds")
             await asyncio.sleep(config.SCREENSHOT_INTERVAL)
             await take_screenshot(context)
-
-
-class HttpServer(web.Application):
-    def start(self, loop):
-        self.add_routes([
-            web.get(config.SERVER_OUTPUT_PATH, self.dashboard),
-        ])
-
-        handler = self.make_handler()
-        server = loop.create_server(
-            handler,
-            host=config.SERVER_HOST,
-            port=config.SERVER_PORT
-        )
-
-        logger.info("Hosting at http://{}:{}{}".format(
-            config.SERVER_HOST, config.SERVER_PORT, config.SERVER_OUTPUT_PATH
-        ))
-
-        return server
-
-    async def dashboard(self, request):
-        return web.FileResponse(config.SCREENSHOT_OUTPUT_PATH)
-
-
-def main():
-    loop = asyncio.get_event_loop()
-    http_server = HttpServer()
-    asyncio.ensure_future(http_server.start(loop), loop=loop)
-    loop.create_task(screenshot_task())
-    loop.run_forever()
-
-
-if __name__ == '__main__':
-    main()
