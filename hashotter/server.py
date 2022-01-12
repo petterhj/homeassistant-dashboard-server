@@ -1,4 +1,5 @@
 import logging
+import os
 
 from aiohttp import web
 
@@ -28,4 +29,6 @@ class HttpServer(web.Application):
         return server
 
     async def dashboard(self, request):
+        if not os.path.exists(config.SCREENSHOT_OUTPUT_PATH):
+            raise web.HTTPNotFound()
         return web.FileResponse(config.SCREENSHOT_OUTPUT_PATH)
