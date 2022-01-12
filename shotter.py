@@ -1,6 +1,7 @@
 import asyncio
 import io
 import json
+import logging
 
 from aiohttp import web
 from playwright.async_api import (
@@ -11,6 +12,9 @@ from playwright.async_api import (
 
 import config
 
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 hass_tokens = {
     "hassUrl": config.HA_BASE_URL,
@@ -30,7 +34,7 @@ dashboard_style = (
 
 
 async def take_screenshot(context: BrowserContext):
-    print(f"Opening page, url={dashboard_url}")
+    logger.debug(f"Opening page, url={dashboard_url}")
     page = await context.new_page()
     
     await page.emulate_media(color_scheme="light")
@@ -47,17 +51,19 @@ async def take_screenshot(context: BrowserContext):
         )
         title = await page.title()
     except TimeoutError:
-        print("Page visit timed out!")
+        logger.warning("Page visit timed out!")
         return
 
-    print(f"Visited page, title={title}")
+    logger.info(f"Visited dashboard, title=\"{title}\"")
 
     await page.add_style_tag(content=dashboard_style)
 
     if config.SCREENSHOT_DELAY > 0:
-        print(f"Sleeping {config.SCREENSHOT_DELAY} seconds")
+        logger.debug(f"Sleeping {config.SCREENSHOT_DELAY} seconds")
         await asyncio.sleep(config.SCREENSHOT_DELAY)
     
+    logger.info(f"Taking screenshot, target={config.SCREENSHOT_OUTPUT_PATH}")
+
     await page.screenshot(
         path=config.SCREENSHOT_OUTPUT_PATH,
         clip={
@@ -70,23 +76,26 @@ async def take_screenshot(context: BrowserContext):
     )
     
     await page.close()
+    logger.debug("Page closed")
 
 
 async def screenshot_task():
     async with async_playwright() as p:
-        print("Launching browser...")
-        browser = await p.firefox.launch(
+        logger.info("Launching browser...")
+        browser = await p.chromium.launch(
             headless=not config.DEBUG,
-            # slow_mo=1000 if config.DEBUG else 0,
+            slow_mo=1000 if config.DEBUG else 0,
         )
         context = await browser.new_context()
 
-        print("Adding authentication entry to browser's local storage...");
+        logger.info("Adding authentication entry to browser's local storage...");
         page = await context.new_page();
         
         try:
             await page.goto(config.HA_BASE_URL, timeout=config.SCREENSHOT_TIMEOUT)
         except TimeoutError:
+            logger.error("Timed out while authenticating")
+            await page.close()
             return
 
         r = await page.evaluate(
@@ -98,24 +107,16 @@ async def screenshot_task():
             ),
             arg=json.dumps(hass_tokens),
         )
-        print(f"Stored access token, type={json.loads(r)['token_type']}")
+        logger.debug(f"Stored access token, type={json.loads(r)['token_type']}")
 
         await page.close()
 
         await take_screenshot(context)
 
-        if config.DEBUG:
-            return
-
         while True:
+            logger.debug(f"Sleeping {config.SCREENSHOT_INTERVAL} seconds")
             await asyncio.sleep(config.SCREENSHOT_INTERVAL)
             await take_screenshot(context)
-
-
-async def handle(request):
-    name = request.match_info.get('name', "Anonymous")
-    text = "Hello, " + name
-    return web.Response(text=text)
 
 
 class HttpServer(web.Application):
@@ -131,7 +132,9 @@ class HttpServer(web.Application):
             port=config.SERVER_PORT
         )
 
-        print(f"Hosting at {config.SERVER_HOST}:{config.SERVER_PORT}")
+        logger.info("Hosting at http://{}:{}{}".format(
+            config.SERVER_HOST, config.SERVER_PORT, config.SERVER_OUTPUT_PATH
+        ))
 
         return server
 
