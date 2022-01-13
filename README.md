@@ -1,5 +1,7 @@
 # homeassistant-inkplate-dashboard
 
+Simple app for capturing and hosting screenshots of a specified Home Assistant dashboard. Based on [itobey/hass-lovelace-screenshotter](https://github.com/itobey/hass-lovelace-screenshotter) (fork of [sibbl/hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver)), rewritten using Python and [Playwright](https://playwright.dev/).
+
 ## Config
 
 To configure, update the necessary environment variables specified below in a `.env` file (or see `hashotter/config.py`).
