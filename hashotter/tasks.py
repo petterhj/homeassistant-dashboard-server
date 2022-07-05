@@ -49,7 +49,7 @@ async def take_screenshot(context: BrowserContext):
         )
         title = await page.title()
     except TimeoutError:
-        logger.warning("Page visit timed out!")
+        logger.warning(f"Page visit timed out! ({config.SCREENSHOT_TIMEOUT}ms)")
         return
 
     logger.info(f"Visited dashboard, title=\"{title}\"")
@@ -67,17 +67,20 @@ async def take_screenshot(context: BrowserContext):
     if dirname and not os.path.exists(dirname):
         os.makedirs(dirname, exist_ok=True)
 
-    await page.screenshot(
-        path=config.SCREENSHOT_OUTPUT_PATH,
-        clip={
-            "x": 0,
-            "y": 0,
-            "width": config.SCREENSHOT_WIDTH,
-            "height": config.SCREENSHOT_HEIGHT,
-        },
-        timeout=config.SCREENSHOT_TIMEOUT,
-    )
-    
+    try:
+        await page.screenshot(
+            path=config.SCREENSHOT_OUTPUT_PATH,
+            clip={
+                "x": 0,
+                "y": 0,
+                "width": config.SCREENSHOT_WIDTH,
+                "height": config.SCREENSHOT_HEIGHT,
+            },
+            timeout=config.SCREENSHOT_TIMEOUT,
+        )
+    except TimeoutError:
+        logger.warning(f"Page screenshot timed out! ({config.SCREENSHOT_TIMEOUT}ms)")
+
     await page.close()
     logger.debug("Page closed")
 
