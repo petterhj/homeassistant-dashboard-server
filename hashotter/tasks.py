@@ -94,28 +94,38 @@ async def screenshot_task():
         )
         context = await browser.new_context()
 
-        logger.info("Adding authentication entry to browser's local storage...");
-        page = await context.new_page();
-        
-        try:
-            await page.goto(config.HA_BASE_URL, timeout=config.SCREENSHOT_TIMEOUT)
-        except TimeoutError:
-            logger.error("Timed out while authenticating")
+        has_token = False
+
+        while not has_token:
+            await asyncio.sleep(10)
+
+            logger.info("Authenticating...");
+            page = await context.new_page();
+
+            try:
+                await page.goto(config.HA_BASE_URL, timeout=config.SCREENSHOT_TIMEOUT)
+            except TimeoutError:
+                logger.error("Timed out while authenticating")
+                await page.close()
+                continue
+            except Exception as e:
+                logger.error(f"Error while authenticating: {e}")
+                continue
+
+            r = await page.evaluate(
+                expression=(
+                    "(tokens) => {"
+                    "  localStorage.setItem('hassTokens', tokens);"
+                    "  return localStorage.getItem('hassTokens');"
+                    "}"
+                ),
+                arg=json.dumps(hass_tokens),
+            )
+            response = json.loads(r)
+            logger.debug(f"Stored access token, type={response['token_type']}")
+            has_token = response.get("access_token") is not None
+
             await page.close()
-            return
-
-        r = await page.evaluate(
-            expression=(
-                "(tokens) => {"
-                "  localStorage.setItem('hassTokens', tokens);"
-                "  return localStorage.getItem('hassTokens');"
-                "}"
-            ),
-            arg=json.dumps(hass_tokens),
-        )
-        logger.debug(f"Stored access token, type={json.loads(r)['token_type']}")
-
-        await page.close()
 
         await take_screenshot(context)
 
