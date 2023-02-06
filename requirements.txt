@@ -2,7 +2,7 @@ aiohttp==3.8.1
 environs==9.3.5
 greenlet==1.1.2
 marshmallow==3.14.1
-Pillow==8.4.0
+Pillow==9.3.0
 playwright==1.17.2
 pyee==8.2.2
 python-dotenv==0.19.2
