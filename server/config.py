@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     port: int = 8089
     static_path: Path = "frontend/dist"
     static_fallback_path: Path = "data/fallback"
+    homeassistant_host: HttpUrl
+    homeassistant_token: SecretStr
     screenshot_path: Path = "data/temp.png"
     screenshot_timeout: int = 1000
     screenshot_width: int = 1200

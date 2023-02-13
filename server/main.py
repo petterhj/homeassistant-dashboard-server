@@ -17,12 +17,14 @@ from playwright.async_api import (
 )
 
 from .config import get_settings, Settings
+from .proxy import router as proxy
 
 
 logger = getLogger(__name__)
 settings = get_settings()
 
 app = FastAPI()
+app.include_router(proxy)
 app.mount(
     "/dashboard",
     StaticFiles(
