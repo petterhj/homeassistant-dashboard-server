@@ -1,0 +1,4 @@
+fastapi==0.91.0
+Pillow==8.4.0
+playwright==1.17.2
+pydantic==1.10.4

@@ -1,0 +1,81 @@
+from logging import getLogger
+from pathlib import Path
+
+from fastapi import (
+    BackgroundTasks,
+    Depends,
+    FastAPI,
+    HTTPException,
+    Request,
+    status,
+)
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from playwright.async_api import (
+    async_playwright,
+    TimeoutError,
+)
+
+from .config import get_settings, Settings
+
+
+logger = getLogger(__name__)
+
+app = FastAPI()
+app.mount("/dashboard", StaticFiles(
+    directory="dashboard/dist",
+    html=True,
+), name="frontend")
+
+def cleanup(path: str) -> None:
+    logger.info(f"Deleting dashboard image {path}")
+    path.unlink()
+
+@app.get(
+    "/dashboard.png",
+    response_class=FileResponse
+)
+async def dashboard(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    settings: Settings = Depends(get_settings),
+):
+    output_path = Path(settings.screenshot_path)
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        context = await browser.new_context()
+
+        try:
+            page = await context.new_page()
+            await page.goto(
+                url=str(request.url).replace(".png", ""),
+                timeout=settings.screenshot_timeout,
+            )
+            await page.screenshot(
+                path=output_path,
+                clip={
+                    "x": 0,
+                    "y": 0,
+                    "width": settings.screenshot_width,
+                    "height": settings.screenshot_height
+                },
+                timeout=settings.screenshot_timeout,
+            )
+        except TimeoutError as e:
+            logger.error(f"Could not generate screenshot: {e}")
+        finally:
+            await page.close()
+
+    if output_path.exists():
+        background_tasks.add_task(cleanup, output_path)
+    else:
+        fallback_image = settings.screenshot_fallback_path
+        if fallback_image.exists():
+            output_path = fallback_image
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Dashboard screenshot nor fallback image found",
+            )
+    return FileResponse(output_path)
