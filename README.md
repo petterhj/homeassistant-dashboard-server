@@ -4,6 +4,8 @@
 
 ## Development
 
+### Server
+
 ```sh
 $ python -m venv .venv
 $ source .venv/bin/activate
@@ -14,14 +16,18 @@ $ playwright install # Download new browsers
 $ python -m server # Start uvicorn server
 ```
 
-## Build and run
+### Frontend
+
+```
+$ cd frontend/
+$ npm install
+$ npm run dev
+```
+
+#### Home Assistant test instance
 
 ```sh
-docker build -t hashot .
-docker run \
-    --env-file .env \
-    -p 8081:80 \
-    --name hasshot \
-    --detach \
-    hashot
+$ docker-compose -f dev/homeassistant/docker-compose.yml up
 ```
+
+Username/password: `foobar`/`foobar`

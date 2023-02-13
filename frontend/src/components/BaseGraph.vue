@@ -1,0 +1,48 @@
+<script setup>
+import { ref } from 'vue';
+import VueApexCharts from 'vue3-apexcharts';
+
+const props = defineProps({
+  series: {
+    type: Array,
+    required: true,
+  },
+  options: {
+    type: Object,
+    required: false,
+    default: null,
+  },
+  type: {
+    type: String,
+    required: false,
+    default: 'area',
+  },
+});
+
+const options = ref({
+  ...{
+    chart: { toolbar: { show: false }, height: '100%' },
+    legend: { show: false },
+    grid: { show: false },
+    stroke: { curve: 'smooth' },
+    colors: ['#333333'],
+    fill: {
+      type: 'solid',
+      colors: ['#D9D9D9'],
+    },
+  },
+  tooltip: { x: { format: 'dd/MM/yy - HH:mm:ss' } },
+  ...props.options,
+});
+</script>
+
+<template>
+  <component
+    class="-mx-4"
+    :is="VueApexCharts"
+    :options="options"
+    :series="series"
+    :type="type"
+    :height="'100%'"
+  />
+</template>

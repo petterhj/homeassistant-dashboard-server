@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html, body, #app, main {
+  @apply h-full;
+}
+
+main {
+  @apply
+    grid grid-cols-3 grid-rows-4
+    gap-4
+    p-4
+  ;
+}
+
+:root {
+  --weather-icon-cloud-front-color: rgb(225, 225, 225);
+  --weather-icon-cloud-back-color: rgb(195, 195, 195);
+  --weather-icon-sun-color: rgb(150, 150, 150);
+  --weather-icon-rain-color: rgb(0, 0, 0);
+  --weather-icon-moon-color: rgb(50, 50, 50);
+}
+
+.rain {
+  fill: var(--weather-icon-rain-color, #30b3ff);
+}
+.sun {
+  fill: var(--weather-icon-sun-color, #fdd93c);
+}
+.moon {
+  fill: var(--weather-icon-moon-color, #fcf497);
+}
+.cloud-back {
+  fill: var(--weather-icon-cloud-back-color, #d4d4d4);
+}
+.cloud-front {
+  fill: var(--weather-icon-cloud-front-color, #f9f9f9);
+}
+.snow {
+  fill: var(--weather-icon-snow-color, #f9f9f9);
+  stroke: var(--weather-icon-snow-stroke-color, #d4d4d4);
+  stroke-width: 1;
+  paint-order: stroke;
+}
