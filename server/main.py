@@ -20,21 +20,27 @@ from .config import get_settings, Settings
 
 
 logger = getLogger(__name__)
+settings = get_settings()
 
 app = FastAPI()
-app.mount("/dashboard", StaticFiles(
-    directory="dashboard/dist",
-    html=True,
-), name="frontend")
+app.mount(
+    "/dashboard",
+    StaticFiles(
+        directory=settings.static_path
+        if settings.static_path.exists()
+        else settings.static_fallback_path,
+        html=True,
+    ),
+    name="frontend",
+)
+
 
 def cleanup(path: str) -> None:
     logger.info(f"Deleting dashboard image {path}")
     path.unlink()
 
-@app.get(
-    "/dashboard.png",
-    response_class=FileResponse
-)
+
+@app.get("/dashboard.png", response_class=FileResponse)
 async def dashboard(
     request: Request,
     background_tasks: BackgroundTasks,
@@ -58,7 +64,7 @@ async def dashboard(
                     "x": 0,
                     "y": 0,
                     "width": settings.screenshot_width,
-                    "height": settings.screenshot_height
+                    "height": settings.screenshot_height,
                 },
                 timeout=settings.screenshot_timeout,
             )
@@ -70,7 +76,7 @@ async def dashboard(
     if output_path.exists():
         background_tasks.add_task(cleanup, output_path)
     else:
-        fallback_image = settings.screenshot_fallback_path
+        fallback_image = settings.static_fallback_path / "fallback.jpg"
         if fallback_image.exists():
             output_path = fallback_image
         else:

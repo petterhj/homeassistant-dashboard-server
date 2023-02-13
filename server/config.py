@@ -1,15 +1,16 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import BaseSettings
+from pydantic import BaseSettings, HttpUrl, SecretStr
 
 
 class Settings(BaseSettings):
     debug: bool = True
     host: str = "127.0.0.1"
     port: int = 8089
+    static_path: Path = "frontend/dist"
+    static_fallback_path: Path = "data/fallback"
     screenshot_path: Path = "data/temp.png"
-    screenshot_fallback_path: Path = "data/fallback.jpg"
     screenshot_timeout: int = 1000
     screenshot_width: int = 1200
     screenshot_height: int = 825
