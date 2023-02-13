@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./config/homeassistant.yml:/config/configuration.yaml
+      - ./config/onboarding.json:/config/.storage/onboarding
+      - ./config/auth_provider.json:/config/.storage/auth_provider.homeassistant
+      - ./config/core_config.json:/config/.storage/core.config
+      - ./config/config_entries.json:/config/.storage/core.config_entries
+      - ./config/device_registry.json:/config/.storage/core.device_registry
+      - ./config/entity_registry.json:/config/.storage/core.entity_registry
+    ports:
+      - 8123:8123
+    restart: unless-stopped

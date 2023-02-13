@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.config_entries",
+  "data": {
+    "entries": [
+      {
+        "entry_id": "4273d3c2fc9d99e4ee40feea2224c414",
+        "version": 1,
+        "domain": "sun",
+        "title": "Sun",
+        "data": {},
+        "options": {},
+        "pref_disable_new_entities": false,
+        "pref_disable_polling": false,
+        "source": "import",
+        "unique_id": null,
+        "disabled_by": null
+      },
+      {
+        "entry_id": "671cf999c558028c0edc73266381d08a",
+        "version": 1,
+        "domain": "met",
+        "title": "Oslo",
+        "data": {
+          "name": "Oslo",
+          "latitude": 59.9239573,
+          "longitude": 10.7466634,
+          "elevation": 100
+        },
+        "options": {},
+        "pref_disable_new_entities": false,
+        "pref_disable_polling": false,
+        "source": "user",
+        "unique_id": null,
+        "disabled_by": null
+      }
+    ]
+  }
+}
