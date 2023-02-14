@@ -52,22 +52,23 @@ async def dashboard(
 
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        context = await browser.new_context()
+        context = await browser.new_context(
+            device_scale_factor=settings.screenshot_scaling,
+            viewport={
+                "width": settings.screenshot_width,
+                "height": settings.screenshot_height,
+            },
+        )
 
         try:
             page = await context.new_page()
             await page.goto(
                 url=str(request.url).replace(".png", ""),
+                wait_until="networkidle",
                 timeout=settings.screenshot_timeout,
             )
             await page.screenshot(
                 path=output_path,
-                clip={
-                    "x": 0,
-                    "y": 0,
-                    "width": settings.screenshot_width,
-                    "height": settings.screenshot_height,
-                },
                 timeout=settings.screenshot_timeout,
             )
         except TimeoutError as e:

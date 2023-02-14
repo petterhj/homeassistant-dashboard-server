@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     screenshot_timeout: int = 1000
     screenshot_width: int = 1200
     screenshot_height: int = 825
+    screenshot_scaling: int = 1
     tz: str = "Europe/Oslo"
     log_level: str = "INFO"
 
