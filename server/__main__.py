@@ -24,5 +24,6 @@ if __name__ == "__main__":
         host=settings.host,
         port=settings.port,
         reload=settings.debug,
+        reload_dirs=["./server/"],
         log_level=logging_level,
     )

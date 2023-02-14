@@ -13,11 +13,17 @@ export function useEntity(entity_id, config) {
 
   console.log(`Fetching state data for ${entity_id}`);
 
-  fetch(`/api/states/${entity_id}`)
+  fetch(
+    `/ha/entity/${entity_id}?` +
+      new URLSearchParams({
+        history: config?.history || false,
+      })
+  )
     .then((res) => res.json())
     .then((json) => {
-      if (json.message) {
-        entity.error = json.message;
+      if (json.detail) {
+        console.error(json.detail);
+        entity.error = json.detail;
         return;
       }
       entity.state = json.state;
@@ -25,19 +31,19 @@ export function useEntity(entity_id, config) {
       entity.last_changed = json.last_changed;
       entity.last_updated = json.last_updated;
 
-      if (config?.history) {
-        console.log(`Fetching state history for ${entity_id}`);
+      // if (config?.history) {
+      //   console.log(`Fetching state history for ${entity_id}`);
 
-        fetch(`/api/history/period?filter_entity_id=${entity_id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            entity.history = json.length ? json[0] : [];
-          })
-          .catch((err) => {
-            console.error('Could not fetch history data', err);
-            entity.error = err;
-          });
-      }
+      //   fetch(`/ha/entity/history/period?filter_entity_id=${entity_id}`)
+      //     .then((res) => res.json())
+      //     .then((json) => {
+      //       entity.history = json.length ? json[0] : [];
+      //     })
+      //     .catch((err) => {
+      //       console.error('Could not fetch history data', err);
+      //       entity.error = err;
+      //     });
+      // }
     })
     .catch((err) => {
       console.error('Could not fetch state data', err);
