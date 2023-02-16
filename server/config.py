@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     homeassistant_host: HttpUrl
     homeassistant_token: SecretStr
     screenshot_path: Path = "data/temp.png"
-    screenshot_timeout: int = 1000
+    screenshot_timeout: int = 3000
+    screenshot_delay: int = 500
     screenshot_width: int = 1200
     screenshot_height: int = 825
     screenshot_scaling: int = 1

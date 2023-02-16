@@ -1,3 +1,4 @@
+from asyncio import sleep
 from logging import getLogger
 from pathlib import Path
 
@@ -25,17 +26,6 @@ settings = get_settings()
 
 app = FastAPI()
 app.include_router(proxy)
-app.mount(
-    "/dashboard",
-    StaticFiles(
-        directory=settings.static_path
-        if settings.static_path.exists()
-        else settings.static_fallback_path,
-        html=True,
-    ),
-    name="frontend",
-)
-
 
 def cleanup(path: str) -> None:
     logger.info(f"Deleting dashboard image {path}")
@@ -63,10 +53,16 @@ async def dashboard(
         try:
             page = await context.new_page()
             await page.goto(
-                url=str(request.url).replace(".png", ""),
+                url=str(request.base_url),
                 wait_until="networkidle",
                 timeout=settings.screenshot_timeout,
             )
+
+            if settings.screenshot_delay:
+                logger.info(f"Delaying screenshot by {settings.screenshot_delay} ms.")
+                await sleep(settings.screenshot_delay / 1000)
+
+            logger.info(f"Capturing screenshot (timeout={settings.screenshot_timeout} ms.)")
             await page.screenshot(
                 path=output_path,
                 timeout=settings.screenshot_timeout,
@@ -88,3 +84,14 @@ async def dashboard(
                 detail="Dashboard screenshot nor fallback image found",
             )
     return FileResponse(output_path)
+
+app.mount(
+    "/",
+    StaticFiles(
+        directory=settings.static_path
+        if settings.static_path.exists()
+        else settings.static_fallback_path,
+        html=True,
+    ),
+    name="frontend",
+)
