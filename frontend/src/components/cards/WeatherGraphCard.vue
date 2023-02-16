@@ -32,22 +32,22 @@ const options = computed(() => {
       show: false,
       padding: {
         top: -10,
-        bottom: -10,
+        bottom: 0,
         left: 25,
-        right: 25,
+        right: 23,
       },
     },
     xaxis: {
-      // type: 'datetime',
+      type: 'datetime',
       min: subHours(new Date(), 22).getTime(),
       max: addHours(new Date(), 22).getTime(),
       tickAmount: 16,
       tickPlacement: 'on',
       labels: {
-        formatter: (val, timestamp) => {
-          // console.log(timestamp);
-          if (timestamp && !isNaN(new Date(timestamp))) {
-            return format(new Date(timestamp), props.dateFormat);
+        formatter: (val) => {
+          const datetime = new Date(val);
+          if (val && !isNaN(datetime)) {
+            return format(datetime, 'HH');
           }
         },
       },
@@ -55,11 +55,7 @@ const options = computed(() => {
     yaxis: { show: false },
     dataLabels: {
       enabled: true,
-      // formatter: function (val, opt) {
-      //   return val;
-      // },
       style: {
-        // fontSize: '14px',
         fontFamily: 'Roboto',
         fontWeight: 'bold',
         colors: ['#666'],
@@ -67,7 +63,6 @@ const options = computed(() => {
       background: {
         foreColor: '#FFFFFF',
         borderWidth: 0,
-        // opacity: 0.25,
         padding: 1,
       },
     },
@@ -122,8 +117,8 @@ const timeSeriesData = computed(() => {
 </script>
 
 <template>
-  <BaseCard :entity="entity" :height="96">
-    <BaseGraph id="sun-graph" :series="timeSeriesData" :options="options" />
+  <BaseCard :entity="entity" class="h-48">
+    <BaseGraph id="sun-graph" :series="timeSeriesData" :options="options" class="h-48" />
   </BaseCard>
 </template>
 

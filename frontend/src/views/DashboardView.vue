@@ -3,6 +3,7 @@ import { useEntity } from '@/composables/entity.js';
 
 import WeatherForecastCard from '../components/cards/WeatherForecastCard.vue';
 import WeatherGraphCard from '../components/cards/WeatherGraphCard.vue';
+import CalendarCard from '../components/cards/CalendarCard.vue';
 import ListCard from '../components/cards/ListCard.vue';
 import SunCard from '../components/cards/SunCard.vue';
 
@@ -26,22 +27,31 @@ const currentTime = useEntity('sensor.date_time');
       />
       <SunCard entity-id="sun.sun" class="h-16" />
       <WeatherForecastCard entity-id="weather.oslo" :hide-state="true" />
+      <hr />
     </section>
-    <!-- <section>
-      <ListCard
-        entity-id="sensor.jumblesales"
-        title-attribute="title"
-        items-attribute="events"
-        icon="package-variant"
-      />
+
+    <section class="flex flex-col gap-4">
       <ListCard
         entity-id="sensor.handleliste"
         title-attribute="friendly_name"
         items-attribute="items"
         title-prop="content"
-        icon="leek"
+        icon="cart-outline"
+        icon-item="leek"
       />
-    </section> -->
+      <hr />
+    </section>
+
+    <section>
+      <CalendarCard
+        title="Kalender"
+        icon="calendar-blank"
+        class="h-full"
+        :icon-items="{
+          'calendar.loppemarkeder': 'package-variant',
+        }"
+      />
+    </section>
   </main>
 
   <div v-if="currentTime" class="fixed bottom-5 left-5 text-gray-400 text-sm">

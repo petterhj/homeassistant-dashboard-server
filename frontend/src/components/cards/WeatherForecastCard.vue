@@ -87,7 +87,7 @@ function formattedWeatherCondition(state) {
 </script>
 
 <template>
-  <BaseCard :entity="entity" :height="64">
+  <BaseCard :entity="entity">
     <!-- State -->
     <div v-if="entity.state && !hideState" class="flex items-center gap-4">
       <div

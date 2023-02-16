@@ -26,24 +26,12 @@ export function useEntity(entity_id, config) {
         entity.error = json.detail;
         return;
       }
+
       entity.state = json.state;
       entity.attributes = json.attributes;
       entity.last_changed = json.last_changed;
       entity.last_updated = json.last_updated;
-
-      // if (config?.history) {
-      //   console.log(`Fetching state history for ${entity_id}`);
-
-      //   fetch(`/ha/entity/history/period?filter_entity_id=${entity_id}`)
-      //     .then((res) => res.json())
-      //     .then((json) => {
-      //       entity.history = json.length ? json[0] : [];
-      //     })
-      //     .catch((err) => {
-      //       console.error('Could not fetch history data', err);
-      //       entity.error = err;
-      //     });
-      // }
+      entity.history = json.history;
     })
     .catch((err) => {
       console.error('Could not fetch state data', err);

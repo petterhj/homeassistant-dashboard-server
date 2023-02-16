@@ -52,32 +52,15 @@ const options = computed(() => {
       labels: {
         datetimeUTC: false,
         formatter: (val) => {
-          // console.log('ts', timestamp, val);
           const datetime = new Date(val);
           if (val && !isNaN(datetime)) {
             return format(datetime, 'HH');
           }
         },
       },
-      // axisBorder: { show: false },
-      // axisTicks: { show: false },
     },
     yaxis: { show: false },
-    dataLabels: {
-      // position: 'top',
-      enabled: false,
-      // textAnchor: 'start',
-      // style: {
-      //     // fontSize: '10pt',
-      //     colors: ['#000']
-      // },
-      // formatter: function(val, opt) {
-      //   // console.log(val, opt)
-      //   return opt.w.globals.seriesNames[opt.seriesIndex];
-      // },
-      // offsetX: 0,
-      // horizontal: true,
-    },
+    dataLabels: { enabled: false },
     annotations: {
       xaxis: [
         {
@@ -105,18 +88,22 @@ const seriesData = computed(() => {
       state: entry.state,
       startTime: new Date(entry.last_changed),
     }))
-    .concat([
-      {
-        state: 'below_horizon',
-        startTime: new Date(entity.attributes.next_setting),
-      },
-      {
-        state: 'above_horizon',
-        startTime: new Date(entity.attributes.next_rising),
-      },
-    ])
+    .concat(
+      entity.attributes
+        ? [
+            {
+              state: 'below_horizon',
+              startTime: new Date(entity.attributes.next_setting),
+            },
+            {
+              state: 'above_horizon',
+              startTime: new Date(entity.attributes.next_rising),
+            },
+          ]
+        : []
+    )
     .sort(function (a, b) {
-      return b.date - a.date
+      return b.date - a.date;
     })
     .map((entry, index, array) => {
       const next = array[index + 1];
@@ -143,7 +130,7 @@ const seriesData = computed(() => {
 </script>
 
 <template>
-  <BaseCard :entity="entity" :height="16">
+  <BaseCard :entity="entity">
     <BaseGraph :series="seriesData" :options="options" type="rangeBar" />
   </BaseCard>
 </template>
