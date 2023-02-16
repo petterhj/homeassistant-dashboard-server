@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 from homeassistant_api import Client
-from homeassistant_api.errors import UnauthorizedError
+from homeassistant_api.errors import EndpointNotFoundError, UnauthorizedError
 from requests.exceptions import ConnectionError
 
 from .config import get_settings, Settings
@@ -39,14 +39,24 @@ async def check_ha_api(
 @router.get("/ha/entity/{entity_id}")
 async def entity(
     client: Client = Depends(get_client),
-    entity_id: str = Path(regex=r"^[0-9A-Za-z\_]+\.[0-9A-Za-z\_]+$")
+    entity_id: str = Path(regex=r"^[0-9A-Za-z\_]+\.[0-9A-Za-z\_]+$"),
+    history: bool = False,
 ):
     try:
         entity = client.get_entity(entity_id=entity_id)
+        history = entity.get_history().states if history else []
+    except EndpointNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Entity `{entity_id}` not found",
+        )
     except ConnectionError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Could not connect to Home Assistant",
         )
 
-    return entity.dict()
+    return {
+        **entity.state.dict(),
+        "history": history,
+    }
