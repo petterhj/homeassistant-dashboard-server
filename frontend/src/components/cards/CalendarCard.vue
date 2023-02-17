@@ -60,7 +60,7 @@ function eventIcon(event) {
           v-if="iconItems || iconItem || icon"
           :class="['mdi', `mdi-${eventIcon(event)}`, 'text-gray-400']"
         />
-        <div class="flex flex-col gap-0.25">
+        <div class="flex flex-col gap-0.25 w-full">
           <div class="flex justify-between font-medium">
             <span class="text-sm">{{ event.summary }}</span>
             <span class="text-xs text-gray-500">

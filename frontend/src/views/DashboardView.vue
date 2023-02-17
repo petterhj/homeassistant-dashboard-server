@@ -30,7 +30,9 @@ const currentTime = useEntity('sensor.date_time');
       <hr />
     </section>
 
-    <section class="flex flex-col gap-4">
+    <section class="flex flex-col gap-2">
+      <div class="h-64 bg-gray-100"></div>
+      <hr />
       <ListCard
         entity-id="sensor.handleliste"
         title-attribute="friendly_name"
@@ -39,7 +41,6 @@ const currentTime = useEntity('sensor.date_time');
         icon="cart-outline"
         icon-item="leek"
       />
-      <hr />
     </section>
 
     <section>

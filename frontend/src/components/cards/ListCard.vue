@@ -70,13 +70,13 @@ const items = computed(() => {
 <template>
   <BaseCard :entity="entity" :title="title" :icon="icon">
     <ul>
-      <li v-for="(item, index) in items" :key="index" class="flex gap-2 ml-2 mb-2">
+      <li v-for="(item, index) in items" :key="index" class="flex gap-2 ml-2 mb-1">
         <span
           v-if="iconItem || icon"
           :class="['mdi', `mdi-${iconItem || icon}`, 'text-gray-400']"
         />
         <div class="flex flex-col">
-          <span class="text-md font-medium">{{ item.title }}</span>
+          <span class="text-sm font-medium">{{ item.title }}</span>
           <p v-if="item.description" class="text-sm text-gray-600">
             {{ item.description }}
           </p>
