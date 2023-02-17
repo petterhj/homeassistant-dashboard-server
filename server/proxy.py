@@ -1,3 +1,6 @@
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 from homeassistant_api import Client
 from homeassistant_api.errors import EndpointNotFoundError, UnauthorizedError
@@ -67,14 +70,15 @@ async def entity(
 async def calendar(
     client: Client = Depends(get_client),
 ):
+    now = datetime.now()
     calendar_events = []
 
     try:
         for calendar in client.request("calendars"):
             entity_id = calendar['entity_id']
             for event in client.request(f"calendars/{entity_id}", params={
-                "start": "2023-01-01T07:00:00.000Z",
-                "end": "2023-05-01T07:00:00.000Z",
+                "start": now.isoformat(),
+                "end": (now + relativedelta(months=3)).isoformat(),
             }):
                 event["entity_id"] = entity_id
                 event["calendar_name"] = calendar["name"]
