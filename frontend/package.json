@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@mdi/font": "^7.1.96",
     "apexcharts": "^3.37.0",
     "daisyui": "2.50.1",
     "date-fns": "^2.29.3",
