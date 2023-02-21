@@ -23,15 +23,26 @@ const options = ref({
   ...{
     chart: { toolbar: { show: false }, height: '100%' },
     legend: { show: false },
-    grid: { show: false },
+    grid: { show: true },
     stroke: { curve: 'smooth' },
     colors: ['#333333'],
     fill: {
       type: 'solid',
       colors: ['#D9D9D9'],
     },
+    tooltip: {
+      enabled: true,
+      marker: { show: true },
+      // intersect: true,
+      // shared: false,
+      fixed: {
+        enabled: false,
+        position: 'topRight',
+        offsetX: 0,
+        offsetY: 0,
+      },
+    },
   },
-  tooltip: { x: { format: 'dd/MM/yy - HH:mm:ss' } },
   ...props.options,
 });
 </script>

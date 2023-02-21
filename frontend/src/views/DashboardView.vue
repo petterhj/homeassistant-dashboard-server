@@ -1,18 +1,26 @@
 <script setup>
-import { useEntity } from '@/composables/entity.js';
+import { useDashboard } from '@/stores/dashboard';
+import { useHomeAssistant } from '@/stores/homeassistant';
 
-import WeatherForecastCard from '../components/cards/WeatherForecastCard.vue';
-import WeatherGraphCard from '../components/cards/WeatherGraphCard.vue';
-import CalendarCard from '../components/cards/CalendarCard.vue';
-import ListCard from '../components/cards/ListCard.vue';
-import SunCard from '../components/cards/SunCard.vue';
+import ComponentLoader from '../components/ComponentLoader.vue';
 
-const currentTime = useEntity('sensor.date_time');
+const { dashboard } = useDashboard();
+const { config, getEntityState } = useHomeAssistant();
+
+// const sun = await getEntityState('sun.sun');
 </script>
 
 <template>
-  <main>
-    <section class="flex flex-col gap-2">
+  <main v-if="dashboard">
+    <ComponentLoader
+      v-for="(component, index) in dashboard.components"
+      :key="index"
+      :type="component.type"
+      :config="component"
+    />
+    <!-- {{ sun }} -->
+    <!-- {{ entities }} -->
+    <!-- <section class="flex flex-col gap-2">
       <WeatherForecastCard entity-id="weather.oslo" :hide-forecast="true" />
       <WeatherForecastCard
         entity-id="weather.oslo_hourly"
@@ -52,12 +60,12 @@ const currentTime = useEntity('sensor.date_time');
           'calendar.loppemarkeder': 'package-variant',
         }"
       />
-    </section>
+    </section> -->
   </main>
 
-  <div v-if="currentTime" class="fixed bottom-5 left-5 text-gray-400 text-sm">
+  <div v-if="config" class="fixed bottom-5 left-5 text-gray-400 text-sm">
     <span class="mdi mdi-refresh text-gray-300 mr-2" />
-    <span v-if="currentTime.state">{{ currentTime.state }}</span>
+    <span v-if="config.version">{{ config.version }}</span>
     <span v-else>Unknown</span>
   </div>
 </template>

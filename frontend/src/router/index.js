@@ -19,7 +19,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   try {
-    const response = await fetch('/ha');
+    const response = await fetch('/ha/');
 
     if (!response?.ok) {
       response.json().then((json) => {

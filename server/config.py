@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     static_fallback_path: Path = "data/fallback"
     homeassistant_host: HttpUrl
     homeassistant_token: SecretStr
+    dashboard_config: Path = "config.yml"
     screenshot_path: Path = "data/temp.png"
     screenshot_timeout: int = 3000
     screenshot_delay: int = 500

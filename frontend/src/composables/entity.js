@@ -14,7 +14,7 @@ export function useEntity(entity_id, config) {
   console.log(`Fetching state data for ${entity_id}`);
 
   fetch(
-    `/ha/entity/${entity_id}?` +
+    `/proxy/ha/entity/${entity_id}?` +
       new URLSearchParams({
         history: config?.history || false,
       })
@@ -24,7 +24,7 @@ export function useEntity(entity_id, config) {
       if (json.detail) {
         console.error(json.detail);
         entity.error = json.detail;
-        return;
+        // throw new Error('Parameter is not a number!');
       }
 
       entity.state = json.state;
@@ -35,7 +35,8 @@ export function useEntity(entity_id, config) {
     })
     .catch((err) => {
       console.error('Could not fetch state data', err);
-      entity.error = err;
+      // entity.error = err;
+      // throw err;
     });
 
   return entity;

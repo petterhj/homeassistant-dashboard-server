@@ -7,10 +7,11 @@ from homeassistant_api.errors import EndpointNotFoundError, UnauthorizedError
 from requests.exceptions import ConnectionError
 
 from .config import get_settings, Settings
-from .models import CalendarEvent
+from .models import HomeAssistantConfig, CalendarEvent
 
 
-router = APIRouter()
+router = APIRouter(prefix="/ha")
+
 
 async def get_client(
     settings: Settings = Depends(get_settings),
@@ -20,7 +21,8 @@ async def get_client(
         settings.homeassistant_token.get_secret_value(),
     )
 
-@router.get("/ha")
+
+@router.get("/")
 async def check_ha_api(
     client: Client = Depends(get_client),
 ):
@@ -40,7 +42,27 @@ async def check_ha_api(
     return {"running": api_running}
 
 
-@router.get("/ha/entity/{entity_id}")
+@router.get("/config")
+async def config(
+    client: Client = Depends(get_client),
+) -> HomeAssistantConfig:
+    try:
+        config = client.get_config()
+    except UnauthorizedError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+        )
+    except ConnectionError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not connect to Home Assistant",
+        )
+    print(type(config))
+    return config
+
+
+@router.get("/entity/{entity_id}")
 async def entity(
     client: Client = Depends(get_client),
     entity_id: str = Path(regex=r"^[0-9A-Za-z\_]+\.[0-9A-Za-z\_]+$"),
@@ -66,7 +88,7 @@ async def entity(
     }
 
 
-@router.get("/ha/calendar")
+@router.get("/calendar")
 async def calendar(
     client: Client = Depends(get_client),
 ):

@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import nb from 'date-fns/locale/nb';
 import setDefaultOptions from 'date-fns/setDefaultOptions';
@@ -22,7 +21,6 @@ setDefaultOptions({
   locale: import.meta.env.VITE_LOCALE === 'nb' ? nb : null,
 });
 
-app.use(createPinia());
 app.use(router);
 app.use(i18n);
 

@@ -18,6 +18,7 @@ from playwright.async_api import (
 )
 
 from .config import get_settings, Settings
+from .dashboard import router as dashboard
 from .proxy import router as proxy
 
 
@@ -26,6 +27,7 @@ settings = get_settings()
 
 app = FastAPI()
 app.include_router(proxy)
+app.include_router(dashboard)
 
 def cleanup(path: str) -> None:
     logger.info(f"Deleting dashboard image {path}")

@@ -4,7 +4,7 @@ import { format, endOfDay, startOfDay, addHours, subHours } from 'date-fns';
 import { useEntity } from '@/composables/entity.js';
 
 import BaseCard from './BaseCard.vue';
-import BaseGraph from '../BaseGraph.vue';
+import BaseGraph from '../base/GraphBase.vue';
 
 const props = defineProps({
   entityId: {

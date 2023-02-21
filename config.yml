@@ -1,0 +1,21 @@
+dashboard:
+  components:
+    - type: vertical-stack
+      style: gap-2
+      components:
+        # - type: weather-forecast
+        #   entity: weather.oslo
+        #   style: h-auto
+        #   show:
+        #     state: true
+        #     forecast: true
+        #   dateFormat: HH:mm
+        - type: weather-graph
+          entity: weather.oslo_hourly
+          attribute: temperature
+          dateFormat: HH
+        # - type: weather-forecast
+        #   entity: weather.oslo
+        #   show:
+        #     state: false
+        #   # style: bg-amber-100

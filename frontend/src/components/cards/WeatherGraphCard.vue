@@ -1,14 +1,16 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { format, parseISO, endOfDay, startOfDay, subHours, addHours } from 'date-fns';
 import { useI18n } from 'vue-i18n';
-import { useEntity } from '@/composables/entity.js';
+import { useHomeAssistant } from '@/stores/homeassistant';
 
-import BaseCard from './BaseCard.vue';
-import BaseGraph from '../BaseGraph.vue';
+import BaseGraph from '../base/GraphBase.vue';
+
+const { t } = useI18n();
+const { getEntityState } = useHomeAssistant();
 
 const props = defineProps({
-  entityId: {
+  entity: {
     type: String,
     required: true,
   },
@@ -23,25 +25,25 @@ const props = defineProps({
   },
 });
 
-const { t } = useI18n();
-const entity = useEntity(props.entityId, { history: true });
+const entity = await getEntityState(props.entity, { history: true });
 
 const options = computed(() => {
   return {
     grid: {
-      show: false,
-      padding: {
-        top: -10,
-        bottom: 0,
-        left: 25,
-        right: 23,
-      },
+      show: true,
+      // padding: {
+      //   top: -10,
+      //   bottom: 0,
+      //   left: 25,
+      //   right: 23,
+      // },
     },
     xaxis: {
       type: 'datetime',
       min: subHours(new Date(), 22).getTime(),
       max: addHours(new Date(), 22).getTime(),
-      tickAmount: 16,
+      // tickAmount: 16,
+      tickAmount: 'dataPoints',
       tickPlacement: 'on',
       labels: {
         formatter: (val) => {
@@ -50,6 +52,15 @@ const options = computed(() => {
             return format(datetime, 'HH');
           }
         },
+      },
+      tooltip: {
+        enabled: true,
+        // formatter: undefined,
+        offsetY: -100,
+        // style: {
+        //   fontSize: 0,
+        //   fontFamily: 0,
+        // },
       },
     },
     yaxis: { show: false },
@@ -97,6 +108,10 @@ const options = computed(() => {
 });
 
 const timeSeriesData = computed(() => {
+  if (!entity) {
+    return [];
+  }
+
   const history = entity.history.map((measurement) => ({
     x: parseISO(measurement.last_changed).getTime(),
     y: measurement.attributes[props.attribute],
@@ -117,9 +132,7 @@ const timeSeriesData = computed(() => {
 </script>
 
 <template>
-  <BaseCard :entity="entity" class="h-48">
-    <BaseGraph id="sun-graph" :series="timeSeriesData" :options="options" class="h-48" />
-  </BaseCard>
+  <BaseGraph id="sun-graph" :series="timeSeriesData" :options="options" class="h-64" />
 </template>
 
 <style>

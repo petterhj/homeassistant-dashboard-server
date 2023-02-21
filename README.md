@@ -4,12 +4,47 @@
 
 ## Development
 
+### Configuration
+
+Configured using `./.env`. See `./server/config.py` for options.
+
+```sh
+# .env
+HOMEASSISTANT_HOST=http://homeassistant:8123/api
+HOMEASSISTANT_TOKEN=
+VITE_PROXY_HOST=http://localhost:8089
+VITE_LOCALE=nb
+```
+
+```yml
+# config.yml
+dashboard:
+  components:
+    - type: vertical-stack
+      style:
+        gap: 2
+      components:
+        - type: weather-forecast
+          entity: weather.forecast_oslo
+          style:
+            height: auto
+          show:
+            state: true
+            forecast: true
+          dateFormat: HH:mm
+
+        - type: weather-forecast
+          entity: weather.forecast_oslo
+          show:
+            state: false
+```
+
 ### Server
 
 ```sh
 $ python -m venv .venv
 $ source .venv/bin/activate
-$ pip install -r requirements.txt -r requirements.dev.txt
+$ pip install -r server/requirements.txt
 
 $ playwright install # Download new browsers
 
@@ -21,7 +56,10 @@ $ python -m server # Start uvicorn server
 ```
 $ cd frontend/
 $ npm install
+
 $ npm run dev
+
+$ npm run build
 ```
 
 #### Home Assistant test instance
