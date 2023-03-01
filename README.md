@@ -39,6 +39,11 @@ dashboard:
             state: false
 ```
 
+```sh
+make run      # Run server and frontend app
+make run-ha   # Home Assistant test instance
+```
+
 ### Server
 
 ```sh
