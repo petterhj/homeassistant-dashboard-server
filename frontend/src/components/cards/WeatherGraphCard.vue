@@ -1,12 +1,10 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue';
-import { format, parseISO, endOfDay, startOfDay, subHours, addHours } from 'date-fns';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { add, sub, parseISO, endOfDay, startOfDay, eachHourOfInterval } from 'date-fns';
+import { Line } from 'vue-chartjs';
+import { useChart } from '@/composables/chart';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
-import BaseGraph from '../base/GraphBase.vue';
-
-const { t } = useI18n();
 const { getEntityState } = useHomeAssistant();
 
 const props = defineProps({
@@ -18,6 +16,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  show: {
+    type: Object,
+    required: false,
+  },
   dateFormat: {
     type: String,
     required: false,
@@ -25,118 +27,106 @@ const props = defineProps({
   },
 });
 
-const entity = await getEntityState(props.entity, { history: true });
+const now = new Date();
 
-const options = computed(() => {
-  return {
-    grid: {
-      show: true,
-      // padding: {
-      //   top: -10,
-      //   bottom: 0,
-      //   left: 25,
-      //   right: 23,
-      // },
-    },
-    xaxis: {
-      type: 'datetime',
-      min: subHours(new Date(), 22).getTime(),
-      max: addHours(new Date(), 22).getTime(),
-      // tickAmount: 16,
-      tickAmount: 'dataPoints',
-      tickPlacement: 'on',
-      labels: {
-        formatter: (val) => {
-          const datetime = new Date(val);
-          if (val && !isNaN(datetime)) {
-            return format(datetime, 'HH');
-          }
-        },
-      },
-      tooltip: {
-        enabled: true,
-        // formatter: undefined,
-        offsetY: -100,
-        // style: {
-        //   fontSize: 0,
-        //   fontFamily: 0,
-        // },
-      },
-    },
-    yaxis: { show: false },
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontFamily: 'Roboto',
-        fontWeight: 'bold',
-        colors: ['#666'],
-      },
-      background: {
-        foreColor: '#FFFFFF',
-        borderWidth: 0,
-        padding: 1,
-      },
-    },
-    annotations: {
-      xaxis: [
-        {
-          x: new Date().getTime(),
-          borderColor: '#333',
-          borderWidth: 2,
-          strokeDashArray: 4,
-          label: {
-            text: t('datetime.now'),
-            orientation: 'horizontal',
-            borderColor: 'transparent',
-            style: {
-              color: '#000',
-              background: '#EFEFEF',
-            },
-          },
-        },
-        {
-          x: startOfDay(new Date()).getTime(),
-          borderColor: '#333',
-        },
-        {
-          x: endOfDay(new Date()).getTime(),
-          borderColor: '#333',
-        },
-      ],
-    },
-  };
+const annotationBorder = {
+  drawTime: 'beforeDatasetsDraw',
+  type: 'line',
+  borderWidth: 3,
+  borderDash: [3, 6],
+  borderColor: '#999999',
+};
+
+const labels = eachHourOfInterval({
+  start: sub(now, { hours: 12 }),
+  end: add(now, { hours: 24 }),
 });
 
-const timeSeriesData = computed(() => {
-  if (!entity) {
-    return [];
-  }
-
-  const history = entity.history.map((measurement) => ({
-    x: parseISO(measurement.last_changed).getTime(),
-    y: measurement.attributes[props.attribute],
-  }));
-  const forecast = entity.attributes?.forecast
-    ? entity.attributes.forecast.map((measurement) => ({
-        x: parseISO(measurement.datetime).getTime(),
-        y: measurement[props.attribute],
-      }))
-    : [];
-  return [
-    {
-      name: entity.id,
-      data: history.concat(forecast),
+const chart = useChart({
+  plugins: {
+    datalabels: {
+      display: !!props.show?.labels,
     },
-  ];
+    annotation: {
+      annotations: {
+        startOfDay: {
+          ...annotationBorder,
+          xMin: startOfDay(now),
+          xMax: startOfDay(now),
+        },
+        now: {
+          ...annotationBorder,
+          xMin: new Date(),
+          xMax: new Date(),
+          borderColor: '#000000',
+          borderDash: [0, 0],
+        },
+        endOfDay: {
+          ...annotationBorder,
+          xMin: endOfDay(now),
+          xMax: endOfDay(now),
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      min: labels[0],
+      max: labels[labels.length - 1],
+      ticks: {
+        maxRotation: 0,
+      },
+    },
+  },
+});
+
+const entity = await getEntityState(props.entity, { history: true });
+
+const chartData = computed(() => {
+  const { attributes, history } = entity;
+
+  const temperatureData = history
+    .map((f) => ({
+      x: parseISO(f.last_updated),
+      y: f.attributes.temperature,
+    }))
+    .concat(
+      attributes.forecast.map((f) => ({
+        x: parseISO(f.datetime),
+        y: f.temperature,
+      }))
+    );
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        yAxisID: 'y',
+        xAxisID: 'x',
+        data: temperatureData,
+        // data: [],
+        borderWidth: 5,
+        fill: true,
+        pointRadius: 0,
+        // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
+        borderColor: '#333',
+        backgroundColor: '#DFDFDF',
+        tension: 0.3,
+        datalabels: {
+          display: 'auto',
+          formatter: (value) => {
+            return value.y + '°';
+          },
+        },
+      },
+      // { data: windSpeedData },
+    ],
+  };
+
+  return data;
 });
 </script>
 
 <template>
-  <BaseGraph id="sun-graph" :series="timeSeriesData" :options="options" class="h-64" />
+  <Line v-if="chartData" :options="chart.options" :data="chartData" />
 </template>
-
-<style>
-#sun-graph .apexcharts-data-labels:nth-child(1) {
-  display: none;
-}
-</style>

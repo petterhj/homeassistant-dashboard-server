@@ -14,6 +14,10 @@ dashboard:
           entity: weather.oslo_hourly
           attribute: temperature
           dateFormat: HH
+        - type: ng-weather-graph
+          entity: weather.oslo_hourly
+          attribute: temperature
+          dateFormat: HH
         # - type: weather-forecast
         #   entity: weather.oslo
         #   show:
