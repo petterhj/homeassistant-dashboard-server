@@ -75,7 +75,7 @@ const cardProps = computed(() => {
     </component>
   </template>
   <template v-else>
-    <BaseCard :card-style="cardStyle" :error="error">
+    <BaseCard :type="config.type" :card-style="cardStyle" :error="error">
       <Suspense v-if="!error">
         <template #default>
           <component :is="component" v-bind="cardProps" />

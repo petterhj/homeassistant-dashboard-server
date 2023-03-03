@@ -1,5 +1,13 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps({
+  type: {
+    type: String,
+    required: true,
+  },
   cardStyle: {
     type: String,
     required: false,
@@ -40,9 +48,9 @@ defineProps({
       v-if="error"
       class="h-full px-2 py-4 flex flex-col gap-2 justify-center text-center"
     >
-      <span class="mdi mdi-account text-gray-400 text-4xl" />
-      <!-- <span class="text-lg font-semibold">{{ error }}</span> -->
-      <span class="font-medium text-gray-500">No data</span>
+      <span class="mdi mdi-alert-decagram text-gray-400 text-4xl" />
+      <span class="text-lg font-semibold">{{ t('general.noData') }}</span>
+      <span class="text-sm font-medium text-gray-500">{{ t('general.type') }}: {{ type }}</span>
       <span class="text-xs text-gray-400 italic mx-6">{{ error.message }}</span>
     </div>
   </section>

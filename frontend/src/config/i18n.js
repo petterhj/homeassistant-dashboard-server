@@ -3,6 +3,8 @@ export default {
   en: {
     general: {
       loading: 'Loading',
+      noData: 'No data',
+      type: 'Type',
     },
     datetime: {
       now: 'Now',
@@ -36,6 +38,8 @@ export default {
   nb: {
     general: {
       loading: 'Laster inn',
+      noData: 'Ingen data',
+      type: 'Type',
     },
     datetime: {
       now: 'Nå',
