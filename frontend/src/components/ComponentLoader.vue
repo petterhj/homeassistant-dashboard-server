@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import { computed, defineAsyncComponent, onErrorCaptured } from 'vue';
+import { computed, ref, defineAsyncComponent, onErrorCaptured } from 'vue';
+import { useI18n } from 'vue-i18n';
 import BaseCard from './cards/BaseCard.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   type: {
@@ -79,7 +81,7 @@ const cardProps = computed(() => {
           <component :is="component" v-bind="cardProps" />
         </template>
         <template #fallback>
-          <div>Loading</div>
+          <div>{{ t('general.loading') }}...</div>
         </template>
       </Suspense>
     </BaseCard>

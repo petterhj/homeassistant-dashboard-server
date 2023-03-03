@@ -1,6 +1,9 @@
 /* eslint-disable prettier/prettier */
 export default {
   en: {
+    general: {
+      loading: 'Loading',
+    },
     datetime: {
       now: 'Now',
     },
@@ -31,6 +34,9 @@ export default {
     },
   },
   nb: {
+    general: {
+      loading: 'Laster inn',
+    },
     datetime: {
       now: 'Nå',
     },

@@ -2,9 +2,7 @@
 
 ...
 
-## Development
-
-### Configuration
+## Configuration
 
 Configured using `./.env`. See `./server/config.py` for options.
 
@@ -13,12 +11,14 @@ Configured using `./.env`. See `./server/config.py` for options.
 HOMEASSISTANT_HOST=http://homeassistant:8123/api
 HOMEASSISTANT_TOKEN=
 VITE_PROXY_HOST=http://localhost:8089
-VITE_LOCALE=nb
 ```
 
 ```yml
 # config.yml
 dashboard:
+  locale:
+    default: nb
+    fallback: en
   components:
     - type: vertical-stack
       style:
@@ -38,6 +38,17 @@ dashboard:
           show:
             state: false
 ```
+
+### Cards
+
+#### Sun
+
+```yaml
+- type: sun
+  entity: sun.sun
+```
+
+## Development
 
 ```sh
 make run      # Run server and frontend app

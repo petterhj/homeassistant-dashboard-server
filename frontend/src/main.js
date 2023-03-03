@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 import nb from 'date-fns/locale/nb';
 import setDefaultOptions from 'date-fns/setDefaultOptions';
+import { useDashboard } from '@/stores/dashboard';
 
 import App from './App.vue';
 import router from './router';
@@ -9,16 +10,18 @@ import messages from './config/i18n';
 
 import './assets/main.css';
 
+const { dashboard } = useDashboard();
+
 const app = createApp(App);
 const i18n = createI18n({
   legacy: false,
-  locale: import.meta.env.VITE_LOCALE,
-  fallbackLocale: 'en',
+  locale: dashboard.value?.locale?.default || 'en',
+  fallbackLocale: dashboard.value?.locale?.fallback || 'en',
   messages,
 });
 
 setDefaultOptions({
-  locale: import.meta.env.VITE_LOCALE === 'nb' ? nb : null,
+  locale: dashboard.value?.locale?.default === 'no' ? nb : null,
 });
 
 app.use(router);
