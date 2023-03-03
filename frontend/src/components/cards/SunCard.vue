@@ -110,7 +110,7 @@ const sunData = computed(() => {
 
 <template>
   <div class="flex flex-col gap-2 text-sm">
-    <div v-if="sunData" class="flex justify-between px-4">
+    <div v-if="sunData" class="flex justify-between px-10">
       <div class="text-center">
         <span class="block font-medium">Sunrise</span>
         {{ format(sunData.times.sunrise, 'HH:mm') }}
@@ -120,7 +120,7 @@ const sunData = computed(() => {
         {{ format(sunData.times.sunset, 'HH:mm') }}
       </div>
     </div>
-    <div>
+    <div class="-mt-12">
       <svg viewBox="0 0 550 150" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient :id="ids.sun" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -201,8 +201,8 @@ const sunData = computed(() => {
           shape-rendering="geometricPrecision"
         />
         <line x1="5" y1="108" x2="545" y2="108" stroke="#333333" />
-        <line x1="101" y1="25" x2="101" y2="100" stroke="#333333" />
-        <line x1="449" y1="25" x2="449" y2="100" stroke="#333333" />
+        <!-- <line x1="101" y1="25" x2="101" y2="100" stroke="#333333" /> -->
+        <!-- <line x1="449" y1="25" x2="449" y2="100" stroke="#333333" /> -->
         <circle
           :cx="`${sunData?.sunPosition.x ?? 0}`"
           :cy="`${sunData?.sunPosition.y ?? 0}`"

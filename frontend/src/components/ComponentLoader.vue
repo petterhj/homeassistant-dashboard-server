@@ -36,9 +36,9 @@ const component = computed(() => {
   const fileName = `${snakeToPascal(`${props.type}-${componentType.value}`)}.vue`;
   const path = componentType.value === 'group' ? 'groups' : 'cards';
   console.group(`Loading component ${fileName}`);
-  console.debug('> type', props.config.type);
-  console.debug('> style', cardStyle.value);
-  console.debug('> props', cardProps.value);
+  console.debug('> type:', props.config.type);
+  console.debug('> style:', cardStyle.value);
+  console.debug('> props:', cardProps.value);
   console.groupEnd();
   return defineAsyncComponent(() => import(`./${path}/${fileName}`));
 });
@@ -47,7 +47,6 @@ const cardStyle = computed(() => {
   const { style } = props.config;
   if (typeof style === 'object') {
     const b = Object.values(style).join(' ');
-    console.warn(b);
     return b;
   } else if (typeof style === 'string') {
     return style;
@@ -64,7 +63,7 @@ const cardProps = computed(() => {
 
 <template>
   <template v-if="componentType === 'group'">
-    <component :is="component">
+    <component :card-style="cardStyle" :is="component">
       <ComponentLoader
         v-for="(componentConfig, index) in config.components"
         :key="index"
@@ -74,7 +73,7 @@ const cardProps = computed(() => {
     </component>
   </template>
   <template v-else>
-    <BaseCard :style="cardStyle" :error="error">
+    <BaseCard :card-style="cardStyle" :error="error">
       <Suspense v-if="!error">
         <template #default>
           <component :is="component" v-bind="cardProps" />
