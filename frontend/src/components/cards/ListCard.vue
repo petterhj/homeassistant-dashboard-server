@@ -1,22 +1,23 @@
 <script setup>
 import { computed } from 'vue';
-import { useEntity } from '@/composables/entity.js';
+import { useHomeAssistant } from '@/stores/homeassistant';
 
-import BaseCard from './BaseCard.vue';
+const { getEntityState } = useHomeAssistant();
 
 const props = defineProps({
-  entityId: {
+  entity: {
     type: String,
     required: true,
   },
   titleAttribute: {
     type: String,
     required: false,
-    default: null,
+    default: 'friendly_name',
   },
   itemsAttribute: {
     type: String,
-    required: true,
+    required: false,
+    default: 'items',
   },
   titleProp: {
     type: String,
@@ -26,21 +27,21 @@ const props = defineProps({
   descriptionProp: {
     type: String,
     required: false,
-    default: null,
+    default: 'description',
   },
   icon: {
     type: String,
     required: false,
     default: null,
   },
-  iconItem: {
+  itemIcon: {
     type: String,
     required: false,
     default: null,
-  }
+  },
 });
 
-const entity = useEntity(props.entityId);
+const entity = await getEntityState(props.entity);
 
 const title = computed(() => {
   if (
@@ -68,20 +69,27 @@ const items = computed(() => {
 </script>
 
 <template>
-  <BaseCard :entity="entity" :title="title" :icon="icon">
-    <ul>
-      <li v-for="(item, index) in items" :key="index" class="flex gap-2 ml-2 mb-1">
-        <span
-          v-if="iconItem || icon"
-          :class="['mdi', `mdi-${iconItem || icon}`, 'text-gray-400']"
-        />
-        <div class="flex flex-col">
-          <span class="text-sm font-medium">{{ item.title }}</span>
-          <p v-if="item.description" class="text-sm text-gray-600">
-            {{ item.description }}
-          </p>
-        </div>
-      </li>
-    </ul>
-  </BaseCard>
+  <h1 v-if="title" class="mb-4 text-md text-gray-400 font-semibold uppercase">
+    <span v-if="icon" class="mdi text-gray-400 mr-1" :class="['mdi-' + icon]" />
+    {{ title }}
+  </h1>
+
+  <ul>
+    <li
+      v-for="(item, index) in items"
+      :key="index"
+      class="flex gap-2 ml-2 mb-1 items-center"
+    >
+      <span
+        v-if="itemIcon || icon"
+        :class="['mdi', `mdi-${itemIcon || icon}`, 'text-gray-400']"
+      />
+      <div class="flex flex-col">
+        <span class="text-sm font-medium">{{ item.title }}</span>
+        <p v-if="item.description" class="text-sm text-gray-600">
+          {{ item.description }}
+        </p>
+      </div>
+    </li>
+  </ul>
 </template>
