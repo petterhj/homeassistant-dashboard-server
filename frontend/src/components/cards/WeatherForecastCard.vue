@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { format, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
+import { computed } from 'vue';
+import { format, parseISO } from 'date-fns';
 import { useI18n } from 'vue-i18n';
 import { getWeatherStateIcon, getWindBearing } from '@/util/ha.weather';
 import { useHomeAssistant } from '@/stores/homeassistant';

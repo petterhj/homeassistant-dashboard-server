@@ -3,6 +3,7 @@
 //  https://github.com/AitorDB/home-assistant-sun-card/
 import { computed, ref } from 'vue';
 import { format, parseISO } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
 const EVENT_X_POSITIONS = {
@@ -14,6 +15,7 @@ const EVENT_X_POSITIONS = {
 const HORIZON_Y = 108;
 const SUN_RADIUS = 17;
 
+const { t } = useI18n();
 const { getEntityState } = useHomeAssistant();
 
 const props = defineProps({
@@ -110,13 +112,13 @@ const sunData = computed(() => {
 
 <template>
   <div class="flex flex-col gap-2 text-sm">
-    <div v-if="sunData" class="flex justify-between px-10">
+    <div v-if="sunData" class="flex justify-between px-6">
       <div class="text-center">
-        <span class="block font-medium">Sunrise</span>
+        <span class="block font-medium">{{ t('sun.sunrise') }}</span>
         {{ format(sunData.times.sunrise, 'HH:mm') }}
       </div>
       <div class="text-center">
-        <span class="block font-medium">Sunset</span>
+        <span class="block font-medium">{{ t('sun.sunset') }}</span>
         {{ format(sunData.times.sunset, 'HH:mm') }}
       </div>
     </div>
@@ -216,15 +218,15 @@ const sunData = computed(() => {
     </div>
     <div v-if="sunData" class="flex justify-between px-4">
       <div class="text-center">
-        <span class="block font-medium">Dawn</span>
+        <span class="block font-medium">{{ t('sun.dawn') }}</span>
         {{ format(sunData.times.dawn, 'HH:mm') }}
       </div>
       <div class="text-center">
-        <span class="block font-medium">Solar noon</span>
+        <span class="block font-medium">{{ t('sun.solarNoon') }}</span>
         {{ format(sunData.times.noon, 'HH:mm') }}
       </div>
       <div class="text-center">
-        <span class="block font-medium">Dusk</span>
+        <span class="block font-medium">{{ t('sun.dusk') }}</span>
         {{ format(sunData.times.dusk, 'HH:mm') }}
       </div>
     </div>

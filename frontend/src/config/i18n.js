@@ -22,6 +22,13 @@ export default {
         'windy': 'Windy',
       },
     },
+    sun: {
+      sunrise: 'Sunrise',
+      sunset: 'Sunset',
+      dawn: 'Dawn',
+      dusk: 'Dusk',
+      solarNoon: 'Solar noon',
+    },
   },
   nb: {
     datetime: {
@@ -44,6 +51,13 @@ export default {
         'windy-variant': 'Vind',
         'windy': 'Vind',
       },
+    },
+    sun: {
+      sunrise: 'Soloppgang',
+      sunset: 'Solnedgang',
+      dawn: 'Gryning',
+      dusk: 'Skumring',
+      solarNoon: 'Middag',
     },
   },
 };
