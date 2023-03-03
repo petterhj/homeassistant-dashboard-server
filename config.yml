@@ -3,23 +3,22 @@ dashboard:
     - type: vertical-stack
       style: gap-2
       components:
-        # - type: weather-forecast
-        #   entity: weather.oslo
-        #   style: h-auto
-        #   show:
-        #     state: true
-        #     forecast: true
-        #   dateFormat: HH:mm
+        - type: weather-forecast
+          entity: weather.oslo_hourly
+          style: h-auto
+          show:
+            state: true
+            forecast: true
+          dateFormat: HH:mm
         - type: weather-graph
           entity: weather.oslo_hourly
           attribute: temperature
+          show:
+            labels: true
           dateFormat: HH
-        - type: ng-weather-graph
-          entity: weather.oslo_hourly
-          attribute: temperature
-          dateFormat: HH
-        # - type: weather-forecast
-        #   entity: weather.oslo
-        #   show:
-        #     state: false
-        #   # style: bg-amber-100
+        - type: sun
+        - type: weather-forecast
+          entity: weather.oslo
+          show:
+            state: false
+          # style: bg-amber-100
