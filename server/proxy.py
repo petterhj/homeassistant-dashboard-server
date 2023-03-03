@@ -58,7 +58,7 @@ async def config(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Could not connect to Home Assistant",
         )
-    print(type(config))
+
     return config
 
 
