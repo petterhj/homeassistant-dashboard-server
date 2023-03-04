@@ -32,6 +32,7 @@ export function useChart(chartOptions) {
   const options = _merge(
     {
       responsive: true,
+      maintainAspectRatio: false,
       // layout: {
       //   padding: {
       //     left: -50,
