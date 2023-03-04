@@ -5,7 +5,7 @@ import { Line } from 'vue-chartjs';
 import { useChart } from '@/composables/chart';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
-const { getEntityState } = useHomeAssistant();
+const { getEntity } = useHomeAssistant();
 
 const props = defineProps({
   entity: {
@@ -80,7 +80,7 @@ const chart = useChart({
   },
 });
 
-const entity = await getEntityState(props.entity, { history: true });
+const entity = await getEntity(props.entity, { history: true });
 
 const chartData = computed(() => {
   const { attributes, history } = entity;

@@ -6,7 +6,7 @@ import { getWeatherStateIcon, getWindBearing } from '@/util/ha.weather';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
 const { t } = useI18n();
-const { getEntityState } = useHomeAssistant();
+const { getEntity } = useHomeAssistant();
 
 const props = defineProps({
   entity: {
@@ -24,12 +24,7 @@ const props = defineProps({
   },
 });
 
-const entity = await getEntityState(props.entity);
-// console.log('entity', entity);
-
-// onMounted(async () => {
-//   entity.value = await getEntityState(props.entity);
-// });
+const entity = await getEntity(props.entity);
 
 const windSpeedFormattedMs = computed(() => {
   const windSpeed = entity.attributes?.wind_speed;

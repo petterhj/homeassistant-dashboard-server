@@ -112,12 +112,15 @@ async def entity(
 
     try:
         entity = client.get_entity(entity_id=entity_id)
-        history = entity.get_history(
-            start_timestamp=period_start,
-            end_timestamp=period_end,
-            significant_changes_only=significant_changes_only,
-        )
-        history = history.states if history else []
+        if history:
+            history_records = entity.get_history(
+                start_timestamp=period_start,
+                end_timestamp=period_end,
+                significant_changes_only=significant_changes_only,
+            )
+            history_records = history_records.states if history_records else []
+        else:
+            history_records = []
     except EndpointNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -131,7 +134,7 @@ async def entity(
     
     output = {
         **entity.state.dict(),
-        "history": history,
+        "history": history_records,
         "history_start": period_start.isoformat(timespec="seconds"),
         "history_end": period_end.isoformat(timespec="seconds"),
     }

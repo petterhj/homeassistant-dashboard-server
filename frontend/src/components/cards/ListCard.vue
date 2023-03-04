@@ -1,8 +1,9 @@
 <script setup>
 import { computed } from 'vue';
 import { useHomeAssistant } from '@/stores/homeassistant';
+import CardTitle from './partials/CardTitle.vue';
 
-const { getEntityState } = useHomeAssistant();
+const { getEntity } = useHomeAssistant();
 
 const props = defineProps({
   entity: {
@@ -41,7 +42,7 @@ const props = defineProps({
   },
 });
 
-const entity = await getEntityState(props.entity);
+const entity = await getEntity(props.entity);
 
 const title = computed(() => {
   if (
@@ -69,10 +70,7 @@ const items = computed(() => {
 </script>
 
 <template>
-  <h1 v-if="title" class="mb-4 text-md text-gray-400 font-semibold uppercase">
-    <span v-if="icon" class="mdi text-gray-400 mr-1" :class="['mdi-' + icon]" />
-    {{ title }}
-  </h1>
+  <CardTitle :title="title" :icon="icon" />
 
   <ul>
     <li

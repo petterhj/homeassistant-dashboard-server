@@ -20,6 +20,7 @@ const error = ref(null);
 
 onErrorCaptured((err) => {
   console.error('Error while loading component:', err.message);
+  console.error(err);
   error.value = err;
   return false;
 });

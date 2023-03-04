@@ -5,9 +5,7 @@ import { useHomeAssistant } from '@/stores/homeassistant';
 import ComponentLoader from '../components/ComponentLoader.vue';
 
 const { dashboard } = useDashboard();
-const { config, getEntityState } = useHomeAssistant();
-
-// const sun = await getEntityState('sun.sun');
+const { config } = useHomeAssistant();
 </script>
 
 <template>
@@ -18,26 +16,7 @@ const { config, getEntityState } = useHomeAssistant();
       :type="component.type"
       :config="component"
     />
-    <!-- {{ sun }} -->
-    <!-- {{ entities }} -->
-    <!-- <section class="flex flex-col gap-2">
-      <WeatherForecastCard entity-id="weather.oslo" :hide-forecast="true" />
-      <WeatherForecastCard
-        entity-id="weather.oslo_hourly"
-        :hide-state="true"
-        date-format="HH:mm"
-      />
-      <WeatherGraphCard
-        entity-id="weather.oslo_hourly"
-        attribute="temperature"
-        date-format="HH"
-        class="h-48"
-      />
-      <SunCard entity-id="sun.sun" class="h-16" />
-      <WeatherForecastCard entity-id="weather.oslo" :hide-state="true" />
-      <hr />
-    </section>
-
+    <!--
     <section class="flex flex-col gap-2">
       <div class="h-64 bg-gray-100"></div>
       <hr />

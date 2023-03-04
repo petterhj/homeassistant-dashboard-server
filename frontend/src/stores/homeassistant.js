@@ -11,7 +11,7 @@ const data = await response.json();
 state.config = data;
 
 export function useHomeAssistant() {
-  const getEntityState = async (entityId, options) => {
+  const getEntity = async (entityId, options) => {
     if (Object.prototype.hasOwnProperty.call(state.entities, entityId)) {
       console.debug(`Returning cached entity state for ${entityId}`);
       return state.entities[entityId];
@@ -20,6 +20,7 @@ export function useHomeAssistant() {
     const fetchHistory = !!options?.history;
 
     console.warn(`Fetching entity state for ${entityId}, history=${fetchHistory}`);
+
     const response = await fetch(
       `/proxy/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
     );
@@ -41,5 +42,15 @@ export function useHomeAssistant() {
     return state.entities[entityId];
   };
 
-  return { ...toRefs(state), getEntityState };
+  const getEntities = async (entityIds, options) => {
+    const entities = {};
+
+    for (const entityId of entityIds) {
+      entities[entityId] = await getEntity(entityId, options);
+    }
+
+    return entities;
+  };
+
+  return { ...toRefs(state), getEntity, getEntities };
 }

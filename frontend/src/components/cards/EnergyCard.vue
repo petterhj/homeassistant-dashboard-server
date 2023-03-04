@@ -1,16 +1,16 @@
 <script setup>
-import { useEntity } from '@/composables/entity.js';
+import { useHomeAssistant } from '@/stores/homeassistant';
 
-import BaseCard from './BaseCard.vue';
+const { getEntity } = useHomeAssistant();
 
 const props = defineProps({
-  entityId: {
+  entity: {
     type: String,
     required: true,
   },
 });
 
-const entity = useEntity(props.entityId);
+const entity = await getEntity(props.entity);
 
 </script>
 

@@ -16,7 +16,7 @@ const HORIZON_Y = 108;
 const SUN_RADIUS = 17;
 
 const { t } = useI18n();
-const { getEntityState } = useHomeAssistant();
+const { getEntity } = useHomeAssistant();
 
 const props = defineProps({
   entity: {
@@ -35,7 +35,7 @@ const convertDateToMinutesSinceDayStarted = (date) => {
 };
 
 const sunLine = ref(null);
-const entity = await getEntityState(props.entity);
+const entity = await getEntity(props.entity);
 const ids = {
   sun: generateId(),
   dawn: generateId(),
