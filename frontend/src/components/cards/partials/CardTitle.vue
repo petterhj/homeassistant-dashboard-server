@@ -13,7 +13,7 @@ defineProps({
 </script>
 
 <template>
-  <h1 v-if="title" class="mb-3 text-md text-gray-400 font-semibold uppercase">
+  <h1 v-if="title" class="mb-3 text-md text-gray-600 font-bold uppercase">
     <span v-if="icon" class="mdi text-gray-400 mr-1" :class="['mdi-' + icon]" />
     {{ title }}
   </h1>

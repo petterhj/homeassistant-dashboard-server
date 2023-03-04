@@ -1,5 +1,5 @@
 <script setup>
-import { format, parseISO, differenceInHours } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useCalendar } from '@/composables/calendar.js';
 
 import BaseCard from './BaseCard.vue';
