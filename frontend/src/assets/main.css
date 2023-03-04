@@ -33,7 +33,7 @@ hr {
   ;
 }
 
-/* .card {
+.card {
   position: relative;
 }
 .card:before {
@@ -44,7 +44,7 @@ hr {
   left: 0;
   bottom: 0;
   background:linear-gradient(transparent 1rem, white);
-} */
+}
 
 :root {
   --weather-icon-cloud-front-color: rgb(225, 225, 225);

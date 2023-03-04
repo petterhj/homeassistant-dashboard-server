@@ -21,7 +21,7 @@ const i18n = createI18n({
 });
 
 setDefaultOptions({
-  locale: dashboard.value?.locale?.default === 'no' ? nb : null,
+  locale: dashboard.value?.locale?.default === 'nb' ? nb : null,
 });
 
 app.use(router);

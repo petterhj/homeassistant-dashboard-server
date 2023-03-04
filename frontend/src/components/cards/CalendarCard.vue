@@ -1,8 +1,9 @@
 <script setup>
-import { format, parseISO } from 'date-fns';
-import { useCalendar } from '@/composables/calendar.js';
+import { format, parseISO, isThisWeek } from 'date-fns';
+import { useHomeAssistant } from '@/stores/homeassistant';
+import CardTitle from './partials/CardTitle.vue';
 
-import BaseCard from './BaseCard.vue';
+const { getCalendar } = useHomeAssistant();
 
 const props = defineProps({
   title: {
@@ -15,70 +16,72 @@ const props = defineProps({
     required: false,
     default: null,
   },
-  iconItem: {
+  itemIcon: {
     type: String,
     required: false,
     default: null,
   },
-  iconItems: {
+  calendarIcons: {
     type: Object,
     required: false,
     default: null,
   },
 });
 
-const calendar = useCalendar();
+const events = await getCalendar();
 
-function eventTime(event) {
+const eventDate = (event) => {
+  const eventStart = parseISO(event.start);
+  if (isThisWeek(eventStart)) {
+    return format(eventStart, 'EEEE');
+  }
+  return format(eventStart, 'EEEEEE. d/M');
+};
+const eventTime = (event) => {
   const eventStart = parseISO(event.start);
   const eventEnd = event.end ? parseISO(event.end) : null;
   let formattedEnd = eventEnd ? format(eventEnd, '-HH:mm') : null;
   const formattedDate = format(eventStart, 'HH:mm');
   return formattedDate + formattedEnd;
-}
-
-function eventIcon(event) {
+};
+const eventIcon = (event) => {
   if (
-    props.iconItems &&
-    Object.prototype.hasOwnProperty.call(props.iconItems, event.entity_id)
+    props.calendarIcons &&
+    Object.prototype.hasOwnProperty.call(props.calendarIcons, event.entity_id)
   ) {
-    return props.iconItems[event.entity_id];
+    return props.calendarIcons[event.entity_id];
   }
-  return props.iconItem || props.icon;
-}
+  return props.itemIcon || props.icon;
+};
 </script>
 
 <template>
-  <BaseCard :error="calendar.error" :title="title" :icon="icon">
-    <ul>
-      <li
-        v-for="(event, index) in calendar.events"
-        :key="index"
-        class="flex gap-2 ml-2 mb-2"
-      >
-        <span
-          v-if="iconItems || iconItem || icon"
-          :class="['mdi', `mdi-${eventIcon(event)}`, 'text-gray-400']"
-        />
-        <div class="flex flex-col gap-0.25 w-full">
-          <div class="flex justify-between font-medium">
-            <span class="text-sm">{{ event.summary }}</span>
-            <span class="text-xs text-gray-500">
-              {{ format(parseISO(event.start), 'EEEEEE. d/M') }}
-            </span>
-          </div>
-          <div class="flex justify-between text-sm text-gray-500">
-            <span class="text-xs">{{ event.calendar_name }}</span>
-            <span class="text-xs">{{ eventTime(event) }}</span>
-          </div>
-          <p
-            v-if="event.description"
-            class="mt-1 text-xs text-gray-500 font-light line-clamp-2"
-          >
-            {{ event.description }}
-          </p>
+  <CardTitle :title="title" :icon="icon" />
+
+  <ul>
+    <li v-for="(event, index) in events" :key="index" class="flex gap-2 ml-2 mb-2">
+      <span
+        v-if="calendarIcons || itemIcons || icon"
+        :class="['mdi', `mdi-${eventIcon(event)}`, 'text-gray-400']"
+      />
+      <div class="flex flex-col gap-0.25 w-full">
+        <div class="flex justify-between font-medium">
+          <span class="text-sm">{{ event.summary }}</span>
+          <span class="text-xs text-gray-500 whitespace-nowrap">
+            {{ eventDate(event) }}
+          </span>
         </div>
-      </li>
-    </ul>
-  </BaseCard>
+        <div class="flex justify-between text-sm text-gray-500">
+          <span class="text-xs">{{ event.calendar_name }}</span>
+          <span class="text-xs">{{ eventTime(event) }}</span>
+        </div>
+        <p
+          v-if="event.description"
+          class="mt-1 text-xs text-gray-500 font-light line-clamp-2"
+        >
+          {{ event.description }}
+        </p>
+      </div>
+    </li>
+  </ul>
 </template>

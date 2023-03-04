@@ -16,30 +16,6 @@ const { config } = useHomeAssistant();
       :type="component.type"
       :config="component"
     />
-    <!--
-    <section class="flex flex-col gap-2">
-      <div class="h-64 bg-gray-100"></div>
-      <hr />
-      <ListCard
-        entity-id="sensor.handleliste"
-        title-attribute="friendly_name"
-        items-attribute="items"
-        title-prop="content"
-        icon="cart-outline"
-        icon-item="leek"
-      />
-    </section>
-
-    <section>
-      <CalendarCard
-        title="Kalender"
-        icon="calendar-blank"
-        class="h-full"
-        :icon-items="{
-          'calendar.loppemarkeder': 'package-variant',
-        }"
-      />
-    </section> -->
   </main>
 
   <div v-if="config" class="fixed bottom-5 left-5 text-gray-400 text-sm">

@@ -1,11 +1,13 @@
-import { reactive, toRefs, onMounted } from 'vue';
+import { reactive, toRefs } from 'vue';
 
 const state = reactive({
   config: {},
   entities: {},
+  events: [],
 });
 
 console.log('Fetching Home Assistant config...')
+
 const response = await fetch(`/proxy/ha/config`);
 const data = await response.json();
 state.config = data;
@@ -52,5 +54,16 @@ export function useHomeAssistant() {
     return entities;
   };
 
-  return { ...toRefs(state), getEntity, getEntities };
+  const getCalendar = async () => {
+    console.warn('Fetching calendar data');
+
+    const response = await fetch('/proxy/ha/calendar');
+    const data = await response.json();
+
+    state.events = data;
+
+    return state.events;
+  };
+
+  return { ...toRefs(state), getEntity, getEntities, getCalendar };
 }
