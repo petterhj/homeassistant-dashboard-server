@@ -1,0 +1,18 @@
+<details>
+  <summary>
+    <h4 class="state">{{ entity.state }}</h4>
+    <div>
+      <span class="label">Last changed</span>
+      <b>{{ entity.last_changed }}</b>
+    </div>
+    <div>
+      <span class="label">Last updated</span>
+      <b>{{ entity.last_updated }}</b>
+    </div>
+  </summary>    
+  {% if entity.attributes %}
+    {% with attributes=entity.attributes %}
+      {% include 'partials/attributes.html' %}
+    {% endwith %}
+  {% endif %}
+</details>

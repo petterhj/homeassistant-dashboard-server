@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from dateutil import parser
 from pydantic import BaseModel, validator
@@ -35,3 +36,8 @@ class CalendarEvent(BaseModel):
     @validator("start", "end", pre=True)
     def parse_datetime(cls, v):
         return parser.parse(v["dateTime"])
+
+
+class OutputFormat(str, Enum):
+    json = "json"
+    html = "html"
