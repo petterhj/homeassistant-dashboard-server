@@ -28,7 +28,8 @@ hr {
   @apply
     border-2
     border-gray-200
-    my-4
+    mt-2
+    mb-4
     -mx-2
   ;
 }

@@ -1,4 +1,5 @@
 <script setup>
+import { format } from 'date-fns';
 import { useDashboard } from '@/stores/dashboard';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
@@ -20,7 +21,8 @@ const { config } = useHomeAssistant();
 
   <div v-if="config" class="fixed bottom-5 left-5 text-gray-400 text-sm">
     <span class="mdi mdi-refresh text-gray-300 mr-2" />
-    <span v-if="config.version">{{ config.version }}</span>
+    {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
+    <span v-if="config.version">/ {{ config.version }}</span>
     <span v-else>Unknown</span>
   </div>
 </template>
