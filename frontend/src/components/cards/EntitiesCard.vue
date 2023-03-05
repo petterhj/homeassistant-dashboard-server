@@ -1,8 +1,10 @@
 <script setup>
 import { formatDistance, parseISO } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 import { useHomeAssistant } from '@/stores/homeassistant';
 import CardTitle from './partials/CardTitle.vue';
 
+const { t } = useI18n();
 const { getEntities } = useHomeAssistant();
 
 const props = defineProps({
@@ -66,9 +68,13 @@ const getSecondaryInfo = (entityConfig) => {
 
   switch (entityConfig.secondaryInfo) {
     case 'last-changed':
-      return `${formatDistance(new Date(), parseISO(stateData.lastChanged))} ago`;
+      return `${formatDistance(new Date(), parseISO(stateData.lastChanged))} ${t(
+        'datetime.ago'
+      )}`;
     case 'last-updated':
-      return `${formatDistance(new Date(), parseISO(stateData.lastUpdated))} ago`;
+      return `${formatDistance(new Date(), parseISO(stateData.lastUpdated))} ${t(
+        'datetime.ago'
+      )}`;
     default:
       return '';
   }

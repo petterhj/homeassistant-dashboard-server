@@ -19,10 +19,11 @@ const { config } = useHomeAssistant();
     />
   </main>
 
-  <div v-if="config" class="fixed bottom-5 left-5 text-gray-400 text-sm">
+  <div v-if="config" class="fixed bottom-5 left-5 text-sm">
     <span class="mdi mdi-refresh text-gray-300 mr-2" />
-    {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
-    <span v-if="config.version">/ {{ config.version }}</span>
-    <span v-else>Unknown</span>
+    <span class="text-gray-400 font-medium">
+      {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
+    </span>
+    <span class="text-gray-300" v-if="config.version"> ({{ config.version }})</span>
   </div>
 </template>

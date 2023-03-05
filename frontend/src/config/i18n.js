@@ -8,6 +8,7 @@ export default {
     },
     datetime: {
       now: 'Now',
+      ago: 'ago',
     },
     weather: {
       states: {
@@ -34,6 +35,12 @@ export default {
       dusk: 'Dusk',
       solarNoon: 'Solar noon',
     },
+    petcare: {
+      hub: 'Hub',
+      flap: 'Flap',
+      inside: 'Inside',
+      outside: 'Outside',
+    }
   },
   nb: {
     general: {
@@ -43,6 +50,7 @@ export default {
     },
     datetime: {
       now: 'Nå',
+      ago: 'siden',
     },
     weather: {
       states: {
@@ -69,5 +77,11 @@ export default {
       dusk: 'Skumring',
       solarNoon: 'Middag',
     },
+    petcare: {
+      hub: 'Hub',
+      flap: 'Flap',
+      inside: 'Inne',
+      outside: 'Ute',
+    }
   },
 };
