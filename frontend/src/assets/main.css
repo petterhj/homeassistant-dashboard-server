@@ -7,23 +7,6 @@ html, body, #app, main {
   @apply h-full;
 }
 
-main {
-  @apply
-    grid
-    grid-cols-3
-    gap-12
-    p-4
-    pb-14
-  ;
-}
-
-main > section {
-  @apply
-    flex flex-col gap-4
-    h-full overflow-hidden
-  ;
-}
-
 hr {
   @apply
     border-2

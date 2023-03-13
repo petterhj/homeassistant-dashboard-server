@@ -2,6 +2,7 @@
 import { computed, ref, defineAsyncComponent, onErrorCaptured } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BaseCard from './cards/BaseCard.vue';
+import ErrorState from './ErrorState.vue';
 
 const { t } = useI18n();
 
@@ -20,7 +21,7 @@ const error = ref(null);
 
 onErrorCaptured((err) => {
   console.error('Error while loading component:', err.message);
-  console.error(err);
+  console.debug(err);
   error.value = err;
   return false;
 });
@@ -36,14 +37,14 @@ const componentType = computed(() => {
 });
 
 const component = computed(() => {
-  const fileName = `${snakeToPascal(`${props.type}-${componentType.value}`)}.vue`;
+  const fileName = `${snakeToPascal(`${props.type}-${componentType.value}`)}`;
   const path = componentType.value === 'group' ? 'groups' : 'cards';
   console.group(`Loading component ${fileName}`);
   console.debug('> type:', props.config.type);
   console.debug('> style:', cardStyle.value);
   console.debug('> props:', cardProps.value);
   console.groupEnd();
-  return defineAsyncComponent(() => import(`./${path}/${fileName}`));
+  return defineAsyncComponent(() => import(`./${path}/${fileName}.vue`));
 });
 
 const cardStyle = computed(() => {
@@ -75,16 +76,24 @@ const cardProps = computed(() => {
       />
     </component>
   </template>
+
   <template v-else>
-    <BaseCard :type="config.type" :card-style="cardStyle" :error="error">
+    <BaseCard :type="config.type" :card-style="cardStyle">
       <Suspense v-if="!error">
         <template #default>
           <component :is="component" v-bind="cardProps" />
         </template>
+
         <template #fallback>
-          <div>{{ t('general.loading') }}...</div>
+          <ErrorState
+            :title="t('general.loading')"
+            :message="config.type"
+            icon="refresh"
+          />
         </template>
       </Suspense>
+
+      <ErrorState v-else :title="t('general.noData')" :message="error.message" />
     </BaseCard>
   </template>
 </template>

@@ -15,18 +15,18 @@ export default ({ mode }) => {
     plugins: [vue()],
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     server: {
       proxy: {
         // https://vitejs.dev/config/server-options.html#server-proxy
         // https://github.com/http-party/node-http-proxy#options
-        '/proxy': {
+        '/': {
           // eslint-disable-next-line no-undef
-          target: process.env.VITE_PROXY_HOST,
+          target: process.env.VITE_SERVER_URL,
           headers: { 'Content-Type': 'application/json' },
-          rewrite: (path) => path.replace(/\/proxy/, ''),
+          // rewrite: (path) => path.replace(/\/api/, ''),
         },
       },
     },

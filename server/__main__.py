@@ -1,29 +1,36 @@
-import logging
+import os
+import sys
+from argparse import ArgumentParser
+from pathlib import Path
 
-import uvicorn
+from loguru import logger
+from pydantic import ValidationError
 
-from .config import get_settings
-
-settings = get_settings()
-
-logging_level = logging.getLevelName(settings.log_level)
-logging.basicConfig(level=logging_level)
-logger = logging.getLogger(__name__)
+from .logger import configure_logger
+from .models.server import ServerConfig
+from .server import Server
 
 
 if __name__ == "__main__":
-    logger.info("-" * 25)
-    logger.info(f"Host: {settings.host}")
-    logger.info(f"Port: {settings.port}")
-    logger.info(f"Debug: {settings.debug}")
-    logger.info(f"Logging: {settings.log_level}")
-    logger.info("-" * 25)
+    parser = ArgumentParser()
+    parser.add_argument('--data-path', type=Path, required=False)
+    args = parser.parse_args()
 
-    uvicorn.run(
-        'server.main:app',
-        host=settings.host,
-        port=settings.port,
-        reload=settings.debug,
-        reload_dirs=["./server/"],
-        log_level=logging_level,
-    )
+    if args.data_path:
+        os.environ["DATA_PATH"] = str(args.data_path)
+    
+    try:
+        config = ServerConfig()
+    except ValidationError as e:
+        print("Configuration error:")
+        print(str(e))
+        sys.exit(1)
+
+    configure_logger(config)
+    
+    logger.info("Starting server...")
+    for name, value in config.dict().items():
+        logger.info(f"> {name}: {value}")
+
+    Server('app', config).run()
+    

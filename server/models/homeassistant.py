@@ -1,20 +1,11 @@
+from typing import Union
 from datetime import datetime
-from enum import Enum
 
 from dateutil import parser
 from pydantic import BaseModel, validator
 
 
-# class DashboardCard(BaseModel):
-#     type: str
-#     entity: str
-
-
-# class DashboardConfig(BaseModel):
-#     cards: list[DashboardCard] = None
-
-
-class HomeAssistantConfig(BaseModel):
+class Config(BaseModel):
     state: str
     version: str
     location_name: str = None
@@ -22,6 +13,17 @@ class HomeAssistantConfig(BaseModel):
     country: str = None
     time_zone: str = None
     unit_system: dict = None
+
+
+class Entity(BaseModel):
+    entity_id: str
+    state: Union[str, int, float]
+    attributes: dict
+    last_changed: datetime
+    last_updated: datetime
+    history: list = None
+    history_start: datetime = None
+    history_end: datetime = None
 
 
 class CalendarEvent(BaseModel):
@@ -36,8 +38,3 @@ class CalendarEvent(BaseModel):
     @validator("start", "end", pre=True)
     def parse_datetime(cls, v):
         return parser.parse(v["dateTime"])
-
-
-class OutputFormat(str, Enum):
-    json = "json"
-    html = "html"

@@ -4,44 +4,45 @@
 
 ## Configuration
 
-Configured using `./.env`. See `./server/config.py` for options.
+The server itself is configured using the environment variables specified below (see `server/models/server.py::ServerConfig` for defaults and more options).
 
 ```sh
 # .env
-HOMEASSISTANT_HOST=http://homeassistant:8123/api
-HOMEASSISTANT_TOKEN=
-VITE_PROXY_HOST=http://localhost:8089
+DATA_PATH=data
+HOST=127.0.0.1
+PORT=8089
+LOG_LEVEL=info
+LOG_FILE=current.log
+LOG_JSON=false
 ```
+
+Other runtime config, including the dashboard itself, is defined in a YAML file (by default) called `configuration.yaml` placed at the root of the application data path (`DATA_PATH`).
 
 ```yml
 # config.yml
-dashboard:
-  locale:
-    default: nb
-    fallback: en
-  components:
-    - type: vertical-stack
-      style:
-        gap: 2
-      components:
-        - type: weather-forecast
-          entity: weather.forecast_oslo
-          style:
-            height: auto
-          show:
-            state: true
-            forecast: true
-          dateFormat: HH:mm
+homeassistant:
+  host: !secret homeassistant_host
+  port: 8123
+  ssl: false
+  token: !secret homeassistant_token
 
-        - type: weather-forecast
-          entity: weather.forecast_oslo
-          show:
-            state: false
+timezone: Europe/Oslo
+
+locale:
+  default: nb
+  fallback: en
+
+dashboard:
+  components: !include components.yaml
 ```
 
-### Cards
+### Components
 
-#### Sun
+#### Groups
+
+#### Cards
+
+##### Sun
 
 ```yaml
 - type: sun
@@ -50,12 +51,15 @@ dashboard:
 
 ## Development
 
-```sh
-make run      # Run server and frontend app
-make run-ha   # Home Assistant test instance
-```
-
 ### Server
+
+```sh
+# .env
+# ...
+DEBUG=true
+STATIC_PATH=frontend/dist
+VITE_SERVER_URL=http://localhost:8089
+```
 
 ```sh
 $ python -m venv .venv
@@ -64,7 +68,7 @@ $ pip install -r server/requirements.txt
 
 $ playwright install # Download new browsers
 
-$ python -m server # Start uvicorn server
+$ python -m server [--config-file <file>] # Start uvicorn server
 ```
 
 ### Frontend

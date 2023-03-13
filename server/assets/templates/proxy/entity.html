@@ -1,17 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'proxy/proxy_base.html' %}
 
 {% block title %}
  {{ entity.entity_id }}
 {% endblock %}
 
-{% block content %}
+{% block main %}
 <h1>Entity: {{ entity.entity_id }}</h1>
 <h2 class="state">State: {{ entity.state }}</h2>
 <b>Last changed:</b> {{ entity.last_changed }}<br>
 <b>Last updated:</b> {{ entity.last_updated }}<br>
 
 {% with entity=entity %}
-  {% include 'partials/entity_summary.html' %}
+  {% include 'proxy/partials/entity_summary.html' %}
 {% endwith %}
 
 {% if entity.history %}
@@ -30,7 +30,7 @@
     
     {% for entry in entity.history %}
       {% with entity=entry %}
-        {% include 'partials/entity_summary.html' %}
+        {% include 'proxy/partials/entity_summary.html' %}
       {% endwith %}
     {% endfor %}
   </section>

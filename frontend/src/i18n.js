@@ -1,10 +1,13 @@
-/* eslint-disable prettier/prettier */
-export default {
+import { createI18n } from 'vue-i18n';
+
+const messages = {
   en: {
     general: {
       loading: 'Loading',
-      noData: 'No data',
       type: 'Type',
+      dashboardError: 'Could not load dashboard',
+      noConfiguration: 'No configuration',
+      noData: 'No data',
     },
     datetime: {
       now: 'Now',
@@ -45,8 +48,10 @@ export default {
   nb: {
     general: {
       loading: 'Laster inn',
-      noData: 'Ingen data',
       type: 'Type',
+      dashboardError: 'Kunne ikke laste inn dashbord',
+      noConfiguration: 'Mangler konfiguration',
+      noData: 'Mangler data',
     },
     datetime: {
       now: 'Nå',
@@ -85,3 +90,13 @@ export default {
     }
   },
 };
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  // locale: dashboard?.value?.locale?.default || 'en',
+  // fallbackLocale: dashboard?.value?.locale?.fallback || 'en',
+  messages,
+});
+
+export default i18n;

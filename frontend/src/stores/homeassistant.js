@@ -1,16 +1,9 @@
 import { reactive, toRefs } from 'vue';
 
 const state = reactive({
-  config: {},
   entities: {},
   events: [],
 });
-
-console.log('Fetching Home Assistant config...')
-
-const response = await fetch(`/proxy/ha/config`);
-const data = await response.json();
-state.config = data;
 
 export function useHomeAssistant() {
   const getEntity = async (entityId, options) => {
@@ -24,8 +17,32 @@ export function useHomeAssistant() {
     console.warn(`Fetching entity state for ${entityId}, history=${fetchHistory}`);
 
     const response = await fetch(
-      `/proxy/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
+      `/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
     );
+
+    console.debug('Request:', response.url);
+    console.debug('> Ok:', response.ok);
+    console.debug('> Status:', response.status);
+
+    if (!response?.ok) {
+      if (response.status === 404) {
+        throw new Error(`Entity ${entityId} not found`);
+      }
+      if (response.status === 422) {
+        const data = await response.json();
+        console.debug(
+          '> Response:',
+          data.detail.map((error) => `${error.location}: ${error.message}`)
+        );
+        throw new Error(
+          `Validation error: ${data.detail
+            .map((error) => `${error.location}: ${error.message}`)
+            .join('\n')}`
+        );
+      }
+      throw new Error('Could not get entity');
+    }
+
     const data = await response.json();
 
     if (data.detail) {
@@ -57,7 +74,7 @@ export function useHomeAssistant() {
   const getCalendar = async () => {
     console.warn('Fetching calendar data');
 
-    const response = await fetch('/proxy/ha/calendar');
+    const response = await fetch('/ha/calendar');
     const data = await response.json();
 
     state.events = data;
@@ -65,5 +82,10 @@ export function useHomeAssistant() {
     return state.events;
   };
 
-  return { ...toRefs(state), getEntity, getEntities, getCalendar };
+  return {
+    ...toRefs(state),
+    getEntity,
+    getEntities,
+    getCalendar,
+  };
 }

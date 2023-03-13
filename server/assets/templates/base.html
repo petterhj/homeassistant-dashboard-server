@@ -1,0 +1,16 @@
+<html>
+ <head>
+  <title>{% block title %}{% endblock %}</title>
+  <style>
+    body {
+      font-family: monospace;
+    }
+  </style>
+  {% block head %}{% endblock %}
+ </head>
+
+ <body>
+  {% block content %}{% endblock %}
+  {% block script %}{% endblock %}
+ </body>
+</html>

@@ -1,10 +1,14 @@
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 module.exports = {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  safelist: [
-    { pattern: /(h|bg|border)-./ }
+  content: [
+    './index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx}',
+    '../data/**/*.{yml,yaml}',
   ],
+  // safelist: [
+  //   { pattern: /(h|bg|border)-./ }
+  // ],
   theme: {
     extend: {
       colors: {
@@ -22,6 +26,6 @@ module.exports = {
   ],
   daisyui: {
     themes: false,
-    prefix: 'daisy',
+    prefix: 'd-',
   },
 };
