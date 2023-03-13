@@ -25,7 +25,7 @@ class ServerConfig(BaseSettings):
     host: IPv4Address= '127.0.0.1'
     port: int = 8089
     log_level: ServerLogLevel = ServerLogLevel.info
-    log_filename: Path = "current.log"
+    log_filename: Path = "dashboard.log"
     log_json: bool = False
     static_path: Path = "dist"
 
