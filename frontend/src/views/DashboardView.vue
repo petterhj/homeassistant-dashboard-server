@@ -1,21 +1,16 @@
 <script setup>
 import { format } from 'date-fns';
-import { useI18n } from 'vue-i18n';
 import { useServer } from '@/stores/server';
 
 import ComponentLoader from '../components/ComponentLoader.vue';
-import ErrorState from '../components/ErrorState.vue';
 
-const { t } = useI18n();
-const { error, getConfig } = useServer();
-
-const config = await getConfig();
+const { config } = useServer();
 </script>
 
 <template>
   <main class="h-full">
     <div
-      v-if="!error && config?.dashboard?.components?.length"
+      v-if="config?.dashboard?.components?.length"
       class="h-full grid grid-cols-3 gap-12 p-4 pb-14"
     >
       <ComponentLoader
@@ -25,8 +20,6 @@ const config = await getConfig();
         :config="component"
       />
     </div>
-
-    <ErrorState v-else :title="t('general.dashboardError')" :error="error" />
   </main>
 
   <div class="fixed bottom-5 left-5 text-sm">

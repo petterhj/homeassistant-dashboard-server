@@ -21,9 +21,9 @@ export function useHomeAssistant() {
       `/api/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
     );
 
-    console.debug('Request:', response.url);
-    console.debug('> Ok:', response.ok);
-    console.debug('> Status:', response.status);
+    console.debug(
+      `Request: ${response.url}, status=${response.status}, ok=${response.ok}`
+    );
 
     if (!response?.ok) {
       if (response.status === 401) {

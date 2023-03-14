@@ -23,7 +23,11 @@ const error = ref(null);
 onErrorCaptured((err) => {
   console.error('Error while loading component:', err.message);
   console.debug(err);
-  error.value = err;
+  if (err?.message.startsWith('Unknown variable dynamic import')) {
+    error.value = new Error(`Unknown card type ${props.type}`);
+  } else {
+    error.value = err;
+  }
   return false;
 });
 

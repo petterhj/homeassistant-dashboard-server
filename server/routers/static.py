@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import ValidationError
 
 from ..dependencies import get_config
 
@@ -14,7 +15,14 @@ templates = Jinja2Templates(directory=f"{assets_path.resolve()}/templates")
 
 
 def dashboard_static():
-    config = get_config()
+    try:
+        config = get_config()
+    except ValidationError as e:
+        return templates.TemplateResponse("dashboard/error.html", {
+            "request": {},
+            "message": f"Invalid configuration",
+        })
+
     static_path = config.server.static_path.resolve()
     
     if not static_path.exists():

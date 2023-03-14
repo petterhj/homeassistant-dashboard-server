@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
@@ -21,17 +19,7 @@ from .screenshot import take_screenshot
 
 configure_logger(ServerConfig())
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     # Load the ML model
-#     print("!" * 100)
-#     # foo
-#     yield
-#     # Clean up the ML models and release the resources
-#     print("?" * 100)
-    
-
-app = FastAPI()#lifespan=lifespan)
+app = FastAPI()
 app.include_router(proxy_router, prefix="/api/ha")
 app.include_router(static_router)
 

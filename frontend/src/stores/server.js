@@ -3,7 +3,6 @@ import { ValidationError } from '@/util/errors';
 
 const state = reactive({
   config: null,
-  error: null,
 });
 
 export function useServer() {
@@ -14,27 +13,25 @@ export function useServer() {
 
     console.warn('Fetching dashboard config...');
 
-    try {
-      const response = await fetch('/api/config');
+    const response = await fetch('/api/config');
 
-      if (!response?.ok) {
-        if (response.status === 422) {
-          const data = await response.json();
-          throw new ValidationError('Configuration error', data?.detail);
-        }
-        state.error = new Error(`Server connection error (${response.status})`);
-        return;
-      }
+    console.debug(
+      `Request: ${response.url}, status=${response.status}, ok=${response.ok}`
+    );
 
-      try {
+    if (!response?.ok) {
+      if (response.status === 422) {
         const data = await response.json();
-        state.config = data;
-      } catch (error) {
-        throw new Error(`Received invalid JSON response from ${response.url}`);
+        throw new ValidationError('Configuration error', data?.detail);
       }
+      throw new Error(`Server connection error (${response.status})`);
+    }
+
+    try {
+      const data = await response.json();
+      state.config = data;
     } catch (error) {
-      state.error = error;
-      return;
+      throw new Error(`Received invalid JSON response from ${response.url}`);
     }
 
     return state.config;
