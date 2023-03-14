@@ -4,8 +4,8 @@ defineProps({
     type: String,
     required: true,
   },
-  message: {
-    type: String,
+  error: {
+    type: Error,
     required: false,
     default: null,
   },
@@ -23,8 +23,13 @@ defineProps({
     <span class="font-semibold">
       {{ title }}
     </span>
-    <span v-if="message" class="text-sm text-gray-400">
-      {{ message }}
+    <span v-if="error" class="text-sm text-gray-500">
+      {{ error.message }}
+    </span>
+    <span v-if="error?.errors" class="text-sm font-mono text-gray-400">
+      <span v-for="error in errors" :key="error.location">
+        {{ error.location }}: {{ error.message }}
+      </span>
     </span>
   </div>
 </template>

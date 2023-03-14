@@ -63,7 +63,7 @@ def get_config() -> Config:
     try:
         server_config = ServerConfig()
 
-        logger.warning(f"Reading config from `{server_config.config_file}`")
+        logger.info(f"Reading config from `{server_config.config_file}`")
 
         with open(server_config.config_file, "r") as config_file:
             yaml_config = yaml_load(config_file, Loader=yaml_loader(
@@ -79,7 +79,7 @@ def get_config() -> Config:
     except ValidationError as e:
         _raise_error(json.loads(e.json()))
     except FileNotFoundError:
-        _raise_error("Configuration file not found")
+        return Config(server=server_config)
     except ConfigurationError as e:
         _raise_error(str(e))
 

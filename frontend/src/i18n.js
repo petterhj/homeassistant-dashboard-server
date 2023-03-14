@@ -8,6 +8,7 @@ const messages = {
       dashboardError: 'Could not load dashboard',
       noConfiguration: 'No configuration',
       noData: 'No data',
+      pageNotFound: 'Page not found',
     },
     datetime: {
       now: 'Now',
@@ -43,7 +44,7 @@ const messages = {
       flap: 'Flap',
       inside: 'Inside',
       outside: 'Outside',
-    }
+    },
   },
   nb: {
     general: {
@@ -52,6 +53,7 @@ const messages = {
       dashboardError: 'Kunne ikke laste inn dashbord',
       noConfiguration: 'Mangler konfiguration',
       noData: 'Mangler data',
+      pageNotFound: 'Siden finnes ikke',
     },
     datetime: {
       now: 'Nå',
@@ -87,15 +89,13 @@ const messages = {
       flap: 'Flap',
       inside: 'Inne',
       outside: 'Ute',
-    }
+    },
   },
 };
 
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
-  // locale: dashboard?.value?.locale?.default || 'en',
-  // fallbackLocale: dashboard?.value?.locale?.fallback || 'en',
   messages,
 });
 

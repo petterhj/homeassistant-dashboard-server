@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
+from pydantic import ValidationError
 
 from .dependencies import get_config
 from .logger import configure_logger
@@ -35,12 +36,14 @@ app.include_router(proxy_router, prefix="/ha")
 app.include_router(static_router)
 
 
+@app.exception_handler(ValidationError)
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(request: Request, exc: ValidationError):
     errors = []
     for error in exc.errors(): 
+        print(error)
         errors.append({
-            "location": ".".join(list(error["loc"])),
+            "location": ".".join([str(l) for l in error["loc"] if l not in ["response"]]),
             "message": error["msg"],
         })
 

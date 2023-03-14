@@ -1,4 +1,5 @@
 import { reactive, toRefs } from 'vue';
+import { ValidationError } from '@/util/errors';
 
 const state = reactive({
   entities: {},
@@ -17,7 +18,7 @@ export function useHomeAssistant() {
     console.warn(`Fetching entity state for ${entityId}, history=${fetchHistory}`);
 
     const response = await fetch(
-      `/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
+      `/api/ha/entity/${entityId}?` + new URLSearchParams({ history: fetchHistory })
     );
 
     console.debug('Request:', response.url);
@@ -25,20 +26,19 @@ export function useHomeAssistant() {
     console.debug('> Status:', response.status);
 
     if (!response?.ok) {
+      if (response.status === 401) {
+        const data = await response.json();
+        throw new Error(data.detail);
+      }
       if (response.status === 404) {
         throw new Error(`Entity ${entityId} not found`);
       }
       if (response.status === 422) {
         const data = await response.json();
-        console.debug(
-          '> Response:',
-          data.detail.map((error) => `${error.location}: ${error.message}`)
-        );
-        throw new Error(
-          `Validation error: ${data.detail
-            .map((error) => `${error.location}: ${error.message}`)
-            .join('\n')}`
-        );
+        throw new ValidationError('Configuration error', data?.detail);
+      }
+      if (response.status === 502) {
+        throw new Error(`Could not connect to Home Assistant`);
       }
       throw new Error('Could not get entity');
     }
@@ -74,7 +74,7 @@ export function useHomeAssistant() {
   const getCalendar = async () => {
     console.warn('Fetching calendar data');
 
-    const response = await fetch('/ha/calendar');
+    const response = await fetch('/api/ha/calendar');
     const data = await response.json();
 
     state.events = data;

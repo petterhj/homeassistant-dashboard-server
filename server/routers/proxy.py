@@ -130,6 +130,6 @@ def _homeassistant_request(method, *args, **kwargs):
         )
     except ConnectionError:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Could not connect to Home Assistant",
         )

@@ -1,4 +1,5 @@
 import { reactive, toRefs } from 'vue';
+import { ValidationError } from '@/util/errors';
 
 const state = reactive({
   config: null,
@@ -14,14 +15,23 @@ export function useServer() {
     console.warn('Fetching dashboard config...');
 
     try {
-      const response = await fetch('/config');
+      const response = await fetch('/api/config');
 
       if (!response?.ok) {
+        if (response.status === 422) {
+          const data = await response.json();
+          throw new ValidationError('Configuration error', data?.detail);
+        }
         state.error = new Error(`Server connection error (${response.status})`);
         return;
       }
-      const data = await response.json();
-      state.config = data;
+
+      try {
+        const data = await response.json();
+        state.config = data;
+      } catch (error) {
+        throw new Error(`Received invalid JSON response from ${response.url}`);
+      }
     } catch (error) {
       state.error = error;
       return;

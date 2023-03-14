@@ -2,6 +2,7 @@
 import { computed, ref, defineAsyncComponent, onErrorCaptured } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BaseCard from './cards/BaseCard.vue';
+import LoadingState from './LoadingState.vue';
 import ErrorState from './ErrorState.vue';
 
 const { t } = useI18n();
@@ -85,15 +86,11 @@ const cardProps = computed(() => {
         </template>
 
         <template #fallback>
-          <ErrorState
-            :title="t('general.loading')"
-            :message="config.type"
-            icon="refresh"
-          />
+          <LoadingState :message="config.type" />
         </template>
       </Suspense>
 
-      <ErrorState v-else :title="t('general.noData')" :message="error.message" />
+      <ErrorState v-else :title="t('general.noData')" :error="error" />
     </BaseCard>
   </template>
 </template>

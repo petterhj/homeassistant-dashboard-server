@@ -6,7 +6,7 @@ from pydantic import (
     BaseModel,
     BaseSettings,
     DirectoryPath,
-    root_validator,
+    # root_validator,
 )
 
 
@@ -32,16 +32,16 @@ class ServerConfig(BaseSettings):
     class Config:
         env_file = ".env"
 
-    @root_validator
-    def check_paths(cls, values):
-        if "data_path" in values:
-            filename = Path(values["config_filename"]).name
-            filepath = Path(values["data_path"] / filename).resolve()
-            if filepath.exists():
-                values["config_filename"] = str(filename)
-            else:
-                raise ValueError(f"File `{filepath}` does not exist")
-        return values
+    # @root_validator
+    # def check_paths(cls, values):
+    #     if "data_path" in values:
+    #         filename = Path(values["config_filename"]).name
+    #         filepath = Path(values["data_path"] / filename).resolve()
+    #         if filepath.exists():
+    #             values["config_filename"] = str(filename)
+    #         else:
+    #             raise ValueError(f"File `{filepath}` does not exist")
+    #     return values
     
     @property
     def config_file(self) -> Path:

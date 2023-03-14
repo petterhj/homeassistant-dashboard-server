@@ -3,11 +3,9 @@ import nb from 'date-fns/locale/nb';
 import setDefaultOptions from 'date-fns/setDefaultOptions';
 import { onMounted } from 'vue';
 import { RouterView } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 import { useServer } from '@/stores/server';
 import i18n from './i18n';
 
-const { t } = useI18n();
 const { getConfig } = useServer();
 
 onMounted(async () => {
@@ -34,7 +32,7 @@ onMounted(async () => {
     </template>
 
     <template #fallback>
-      <div>{{ t('general.loading') }}...</div>
+      <LoadingState />
     </template>
   </Suspense>
 </template>
