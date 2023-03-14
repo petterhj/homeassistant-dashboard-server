@@ -32,7 +32,7 @@ configure_logger(ServerConfig())
     
 
 app = FastAPI()#lifespan=lifespan)
-app.include_router(proxy_router, prefix="/ha")
+app.include_router(proxy_router, prefix="/api/ha")
 app.include_router(static_router)
 
 
@@ -70,7 +70,7 @@ async def output_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-@app.get("/config")
+@app.get("/api/config")
 async def config(
     config: dict = Depends(get_config),
 ) -> Config:
