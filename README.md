@@ -66,9 +66,9 @@ $ python -m venv .venv
 $ source .venv/bin/activate
 $ pip install -r server/requirements.txt
 
-$ playwright install # Download new browsers
+$ playwright install [chromium]  # Download new browsers
 
-$ python -m server [--config-file <file>] # Start uvicorn server
+$ python -m server [--data-path <path>] # Start uvicorn server
 ```
 
 ### Frontend
