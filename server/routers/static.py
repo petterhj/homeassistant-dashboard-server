@@ -39,6 +39,6 @@ async def favicon():
     return FileResponse(assets_path / "static" / "favicon.ico")
 
 
-@router.get('/error.bmp', include_in_schema=False)
+@router.get('/error.png', include_in_schema=False)
 async def error():
-    return FileResponse(assets_path / "static" / "error.bmp")
+    return FileResponse(assets_path / "static" / "error.png")

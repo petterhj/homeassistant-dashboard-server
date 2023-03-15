@@ -5,7 +5,10 @@ from pathlib import Path
 from pydantic import (
     BaseModel,
     BaseSettings,
+    confloat,
+    conint,
     DirectoryPath,
+    root_validator,
 )
 
 
@@ -37,11 +40,20 @@ class ServerConfig(BaseSettings):
 
 
 class ScreenshotConfig(BaseModel):
-    width: int = None
-    height: int = None
-    scale: int = 1
-    timeout: int = 5000
-    delay: int = 0
+    width: conint(ge=100, le=3000) = None
+    height: conint(ge=100, le=3000) = None
+    scale: confloat(ge=1.0, le=5.0) = 1.0
+    timeout: conint(ge=1000, le=30000) = 5000
+    delay: conint(ge=1, le=30) = None
+
+    @root_validator(skip_on_failure=True)
+    def check_values(cls, values):
+        if values["width"] or values["height"]:
+            if not values["width"] or not values["height"]:
+                raise ValueError(
+                    "Both `width` and `height` must be specified when scaling",
+                )
+        return values
 
 
 class OutputFormat(str, Enum):

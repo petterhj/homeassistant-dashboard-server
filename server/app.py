@@ -27,26 +27,18 @@ app.include_router(static_router)
 @app.exception_handler(ValidationError)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: ValidationError):
-    errors = []
-    for error in exc.errors(): 
-        print(error)
-        errors.append({
-            "location": ".".join([str(l) for l in error["loc"] if l not in ["response"]]),
-            "message": error["msg"],
-        })
-
-    return JSONResponse(
-        content=jsonable_encoder({"detail": errors}),
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    )
+    return _validation_error_response(exc)
 
 
 @app.middleware("http")
 async def output_middleware(request: Request, call_next):
     if request.query_params.get("output") == "png":
-        config = ScreenshotConfig.parse_obj(request.query_params)
+        try:
+            config = ScreenshotConfig.parse_obj(request.query_params)
+        except ValidationError as e:
+            return _validation_error_response(e)
 
-        logger.info(f"Generating png out, config={config}")
+        logger.info(f"Generating screenshot, config={config}")
 
         return await take_screenshot(
             url=request.url.remove_query_params(
@@ -66,3 +58,19 @@ async def config(
 
 
 app.mount("/", dashboard_static(), name="dashboard")
+
+
+def _validation_error_response(exc):
+    logger.error(exc)
+
+    errors = []
+    for error in exc.errors(): 
+        errors.append({
+            "location": ".".join([str(l) for l in error["loc"] if l not in ["response"]]),
+            "message": error["msg"],
+        })
+
+    return JSONResponse(
+        content=jsonable_encoder({"detail": errors}),
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    )
