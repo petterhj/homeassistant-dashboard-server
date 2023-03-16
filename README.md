@@ -52,8 +52,17 @@ dashboard:
 ## Build and run
 
 ```sh
-$ docker build [--target rpi] --tag inkplate-dashboard:latest .
-$ docker run -p 9090:8000 --name inkplate --rm inkplate-dashboard
+$ docker build \
+  --target rpi \ # Build for Raspberry Pi (armv7l)
+  --tag inkplate-dashboard:latest \
+  .
+
+$ docker run \
+  -p 9090:8000 \
+  -v $(pwd)/data:/app/data \
+  --name inkplate-dashboard \
+  --rm \
+  inkplate-dashboard
 ```
 
 
