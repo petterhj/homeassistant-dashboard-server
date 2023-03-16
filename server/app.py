@@ -34,17 +34,22 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 async def output_middleware(request: Request, call_next):
     if request.query_params.get("output") == "png":
         try:
-            config = ScreenshotConfig.parse_obj(request.query_params)
+            screenshot_config = ScreenshotConfig.parse_obj(request.query_params)
+            server_config = get_config().server
         except ValidationError as e:
             return _validation_error_response(e)
 
-        logger.info(f"Generating screenshot, config={config}")
+
+        target_url = request.url.remove_query_params(
+            ["output", *screenshot_config.__fields__.keys()]
+        )
+        target_url = target_url.replace(hostname="localhost", port=server_config.port)
+
+        logger.info(f"Generating screenshot, url={target_url}, config={screenshot_config}")
 
         return await take_screenshot(
-            url=request.url.remove_query_params(
-                ["output", *config.__fields__.keys()]
-            ),
-            config=config,
+            url=target_url,
+            config=screenshot_config,
         )
         
     return await call_next(request)

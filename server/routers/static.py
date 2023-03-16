@@ -17,7 +17,7 @@ templates = Jinja2Templates(directory=f"{assets_path.resolve()}/templates")
 def dashboard_static():
     try:
         config = get_config()
-    except ValidationError as e:
+    except ValidationError:
         return templates.TemplateResponse("dashboard/error.html", {
             "request": {},
             "message": f"Invalid configuration",
