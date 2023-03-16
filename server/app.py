@@ -8,7 +8,11 @@ from pydantic import ValidationError
 from .dependencies import get_config
 from .logger import configure_logger
 from .models.config import Config
-from .models.server import ServerConfig, ScreenshotConfig
+from .models.server import (
+    ServerConfig,
+    ScreenshotConfig,
+    OutputFormat,
+)
 from .routers.proxy import router as proxy_router
 from .routers.static import (
     router as static_router,
@@ -32,7 +36,11 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 
 @app.middleware("http")
 async def output_middleware(request: Request, call_next):
-    if request.query_params.get("output") == "png":
+    output_format = request.query_params.get("output")
+
+    if output_format in [OutputFormat.png, OutputFormat.bmp]:
+        output_formt = OutputFormat[output_format]
+
         try:
             screenshot_config = ScreenshotConfig.parse_obj(request.query_params)
             server_config = get_config().server
@@ -45,11 +53,16 @@ async def output_middleware(request: Request, call_next):
         )
         target_url = target_url.replace(hostname="localhost", port=server_config.port)
 
-        logger.info(f"Generating screenshot, url={target_url}, config={screenshot_config}")
+        logger.info("Generating screenshot, url={}, config={}, format={}".format(
+            target_url,
+            screenshot_config,
+            output_formt,
+        ))
 
         return await take_screenshot(
             url=target_url,
             config=screenshot_config,
+            format=output_formt,
         )
         
     return await call_next(request)

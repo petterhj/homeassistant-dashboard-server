@@ -60,3 +60,4 @@ class OutputFormat(str, Enum):
     json = "json"
     html = "html"
     png = "png"
+    bmp = "bmp"

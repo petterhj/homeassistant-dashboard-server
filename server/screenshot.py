@@ -27,7 +27,7 @@ from starlette.background import BackgroundTask
 
 from .dependencies import get_config
 from .models.config import Config
-from .models.server import ScreenshotConfig
+from .models.server import ScreenshotConfig, OutputFormat
 from .routers.static import templates
 
 
@@ -40,9 +40,11 @@ def cleanup_task(path: str) -> None:
     path.unlink()
 
 
-async def take_screenshot(url, config: ScreenshotConfig) -> FileResponse:
-    logger.info(f"Generating screenshot, url={url}, config={config.dict()}")
-
+async def take_screenshot(
+    url: str,
+    config: ScreenshotConfig,
+    format: OutputFormat,
+) -> FileResponse:
     output_path = Path.cwd() / "capture.png"
     error_message = None
     
@@ -95,7 +97,10 @@ async def take_screenshot(url, config: ScreenshotConfig) -> FileResponse:
     return response
 
 
-def generate_fallback_image(config: ScreenshotConfig, message: str = None) -> FileResponse:
+def generate_fallback_image(
+    config: ScreenshotConfig,
+    message: str = None,
+) -> FileResponse:
     logger.info("Generating fallback image")
 
     fallback_path = assets_path / "static" / "error.png"
