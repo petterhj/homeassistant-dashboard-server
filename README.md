@@ -49,6 +49,14 @@ dashboard:
   entity: sun.sun
 ```
 
+## Build and run
+
+```sh
+$ docker build [--target rpi] --tag inkplate-dashboard:latest .
+$ docker run -p 9090:8000 --name inkplate --rm inkplate-dashboard
+```
+
+
 ## Development
 
 ### Server
