@@ -27,7 +27,7 @@ from starlette.background import BackgroundTask
 
 from .dependencies import get_config
 from .models.config import Config
-from .models.server import ScreenshotConfig, OutputFormat
+from .models.server import ScreenshotConfig, ServerConfig, OutputFormat
 from .routers.static import templates
 
 
@@ -42,18 +42,20 @@ def cleanup_task(path: str) -> None:
 
 async def take_screenshot(
     url: str,
-    config: ScreenshotConfig,
-    format: OutputFormat,
+    server_config: ServerConfig,
+    screenshot_config: ScreenshotConfig,
+    output_format: OutputFormat,
 ) -> FileResponse:
-    output_path = Path.cwd() / "capture.png"
+    output_path = server_config.data_path / "capture.png"
     error_message = None
     
-    args = {"device_scale_factor": config.scale}
+    args = {"device_scale_factor": screenshot_config.scale}
 
-    if config.width and config.height:
-        args["viewport"] = {"width": config.width, "height": config.height}
-
-    print(args)
+    if screenshot_config.width and screenshot_config.height:
+        args["viewport"] = {
+            "width": screenshot_config.width,
+            "height": screenshot_config.height,
+        }
 
     async with async_playwright() as p:
         logger.info(f"Launching browser, url=\"{url}\", args={args}")
@@ -67,16 +69,16 @@ async def take_screenshot(
             await page.goto(
                 url=str(url),
                 wait_until="networkidle",
-                timeout=config.timeout,
+                timeout=screenshot_config.timeout,
             )
 
-            if config.delay:
-                logger.debug(f"Delaying screenshot by {config.delay} ms.")
-                await sleep(config.delay / 1000)
+            if screenshot_config.delay:
+                logger.debug(f"Delaying screenshot by {screenshot_config.delay} ms.")
+                await sleep(screenshot_config.delay / 1000)
 
-            logger.info(f"Capturing screenshot (timeout={config.timeout} ms.)")
+            logger.info(f"Capturing screenshot (timeout={screenshot_config.timeout} ms.)")
 
-            await page.screenshot(path=output_path, timeout=config.timeout)
+            await page.screenshot(path=output_path, timeout=screenshot_config.timeout)
 
         except TimeoutError as e:
             logger.error(f"Timeout while generating screenshot: {e}")
@@ -89,31 +91,55 @@ async def take_screenshot(
         finally:
             await page.close()
 
-    if not output_path.exists():
-        return generate_fallback_image(config, error_message)
-
-    response = FileResponse(output_path)
+    if output_path.exists():
+        output_stream = convert_image(
+            image=Image.open(output_path),
+            screenshot_config=screenshot_config,
+            output_format=output_format,
+        )
+    else:
+        output_stream = convert_image(
+            image=generate_fallback_image(screenshot_config, error_message),
+            screenshot_config=screenshot_config,
+            output_format=output_format,
+        )
+    
+    output_stream.seek(0)
+    response = StreamingResponse(
+        content=output_stream,
+        media_type=f"image/{output_format.value}",
+    )
     response.background = BackgroundTask(cleanup_task, output_path)
     return response
 
 
+def convert_image(
+    image: Image,
+    screenshot_config: ScreenshotConfig,
+    output_format: OutputFormat,
+) -> BytesIO:
+    output_format = output_format.value.upper()
+    logger.info(f"Saving image as {output_format}")
+    output_img = BytesIO()
+    image.save(output_img, output_format)
+    return output_img
+
+
 def generate_fallback_image(
-    config: ScreenshotConfig,
+    screenshot_config: ScreenshotConfig,
     message: str = None,
-) -> FileResponse:
+) -> Image:
     logger.info("Generating fallback image")
 
     fallback_path = assets_path / "static" / "error.png"
     font_path = assets_path / "jetbrains-mono.ttf"
-    response = FileResponse(fallback_path)
 
     try:
         fallback_img = Image.open(fallback_path)
-        output_img = BytesIO()
         target_size = fallback_img.size
 
-        if config.width and config.height:
-            target_size = (config.width, config.height)
+        if screenshot_config.width and screenshot_config.height:
+            target_size = (screenshot_config.width, screenshot_config.height)
 
         fallback_img.thumbnail(target_size, Image.LANCZOS)
         new_img = Image.new("RGB", target_size, (255, 255, 255))
@@ -133,13 +159,7 @@ def generate_fallback_image(
                 stroke_fill=(255, 255, 255),
                 fill=(0, 0, 0),
             )
-
-        new_img.save(output_img, "PNG")
-        output_img.seek(0)
-
-        return StreamingResponse(content=output_img, media_type="image/png")
-
     except Exception:
         logger.exception("Could not generate fallback image")
-
-    return response
+        raise
+    return new_img

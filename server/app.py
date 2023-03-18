@@ -61,8 +61,9 @@ async def output_middleware(request: Request, call_next):
 
         return await take_screenshot(
             url=target_url,
-            config=screenshot_config,
-            format=output_formt,
+            server_config=server_config,
+            screenshot_config=screenshot_config,
+            output_format=output_formt,
         )
         
     return await call_next(request)
