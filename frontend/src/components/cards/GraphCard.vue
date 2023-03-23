@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { add, sub, parseISO, endOfDay, startOfDay, eachHourOfInterval } from 'date-fns';
 import { Line } from 'vue-chartjs';
+import { cssvar } from '@/util/layout';
 import { useChart } from '@/composables/chart';
 import { useHomeAssistant } from '@/stores/homeassistant';
 
@@ -34,7 +35,7 @@ const annotationBorder = {
   type: 'line',
   borderWidth: 3,
   borderDash: [3, 6],
-  borderColor: '#999999',
+  borderColor: cssvar('--color-dark-rgb'),
 };
 
 const labels = eachHourOfInterval({
@@ -56,7 +57,7 @@ const chart = useChart({
           ...annotationBorder,
           xMin: new Date(),
           xMax: new Date(),
-          borderColor: '#000000',
+          borderColor: cssvar('--color-dark-rgb'),
           borderDash: [0, 0],
         },
         endOfDay: {
@@ -104,8 +105,8 @@ const chartData = computed(() => {
         fill: true,
         pointRadius: 0,
         // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
-        borderColor: '#333',
-        backgroundColor: '#DFDFDF',
+        borderColor: cssvar('--color-dark-rgb'),
+        backgroundColor: cssvar('--color-lightest-rgb'),
         tension: 0.3,
         datalabels: {
           display: props.show?.labels ? 'auto' : false,

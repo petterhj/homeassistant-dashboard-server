@@ -98,16 +98,16 @@ function formattedWeatherCondition(state) {
       <span class="text-2xl font-bold text-right">
         {{ entity.attributes.temperature }} {{ entity.attributes.temperature_unit }}
       </span>
-      <div class="flex gap-4 justify-end text-gray-600">
+      <div class="flex gap-4 justify-end text-light">
         <span v-if="entity.attributes.wind_speed" class="flex gap-2">
-          <span class="mdi mdi-weather-windy text-gray-400"></span>
+          <span class="mdi mdi-weather-windy text-light"></span>
           <span class="font-medium">
             {{ windSpeedFormattedMs }}
             ({{ getWindBearing(entity.attributes.wind_bearing) }})
           </span>
         </span>
         <span v-if="entity.attributes.precipitation" class="flex gap-2">
-          <span class="mdi mdi-weather-rainy text-gray-400"></span>
+          <span class="mdi mdi-weather-rainy text-light"></span>
           <span class="font-medium">
             {{ entity.attributes.precipitation }}
             {{ entity.attributes.precipitation_unit }}
@@ -127,7 +127,7 @@ function formattedWeatherCondition(state) {
       :key="measurement.datetime"
       class="flex flex-col gap-1 items-center"
     >
-      <span class="text-sm capitalize">
+      <span class="text-sm capitalize font-medium">
         {{ format(parseISO(measurement.datetime), props.dateFormat) }}
       </span>
       <div
@@ -136,7 +136,7 @@ function formattedWeatherCondition(state) {
           getWeatherStateIcon(measurement.condition, isNightTime(measurement.datetime))
         "
       />
-      <span class="text-sm font-medium">
+      <span class="text-sm font-semibold">
         {{ measurement.temperature }} {{ entity.attributes.temperature_unit }}
       </span>
       <!-- <span>{{ measurement.precipitation_probability }}</span> -->

@@ -80,11 +80,11 @@ const items = computed(() => {
     >
       <span
         v-if="itemIcon || icon"
-        :class="['mdi', `mdi-${itemIcon || icon}`, 'text-gray-400']"
+        :class="['mdi', `mdi-${itemIcon || icon}`, 'text-light']"
       />
       <div class="flex flex-col">
         <span class="text-sm font-medium">{{ item.title }}</span>
-        <p v-if="item.description" class="text-sm text-gray-600">
+        <p v-if="item.description" class="text-xs text-light font-medium">
           {{ item.description }}
         </p>
       </div>

@@ -63,13 +63,13 @@ const getIcon = (item) => {
         :class="[
           'mdi',
           `mdi-${getIcon(item)}`,
-          item.status === 'stopped' ? 'text-gray-300' : 'text-gray-400',
+          item.status === 'stopped' ? 'text-lighter' : 'text-light',
         ]"
       />
       <div class="flex flex-col">
         <span
-          class="text-sm line-clamp-1 text-ellipsis"
-          :class="{ 'text-gray-300': item.status === 'stopped' }"
+          class="text-sm font-medium line-clamp-1 text-ellipsis"
+          :class="{ 'text-lighter': item.status === 'stopped' }"
           >{{ name }}</span
         >
       </div>

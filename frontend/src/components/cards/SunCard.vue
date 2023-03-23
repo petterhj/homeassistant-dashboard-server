@@ -138,10 +138,13 @@ const sunData = computed(() => {
           </linearGradient>
 
           <linearGradient :id="ids.dawn" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color: #969696; stop-opacity: 1" />
+            <stop
+              offset="0%"
+              style="stop-color: rgb(var(--color-lighter)); stop-opacity: 1"
+            />
             <stop
               :offset="`${sunData?.dawnProgressPercent ?? 0}%`"
-              style="stop-color: #969696; stop-opacity: 1"
+              style="stop-color: rgb(var(--color-lighter)); stop-opacity: 1"
             />
             <stop
               :offset="`${sunData?.dawnProgressPercent ?? 0}%`"
@@ -150,10 +153,13 @@ const sunData = computed(() => {
           </linearGradient>
 
           <linearGradient :id="ids.day" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color: #dfdfdf; stop-opacity: 1" />
+            <stop
+              offset="0%"
+              style="stop-color: rgb(var(--color-lightest)); stop-opacity: 1"
+            />
             <stop
               :offset="`${sunData?.dayProgressPercent ?? 0}%`"
-              style="stop-color: #dfdfdf; stop-opacity: 1"
+              style="stop-color: rgb(var(--color-lightest)); stop-opacity: 1"
             />
             <stop
               :offset="`${sunData?.dayProgressPercent ?? 0}%`"
@@ -162,10 +168,13 @@ const sunData = computed(() => {
           </linearGradient>
 
           <linearGradient :id="ids.dusk" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color: #969696; stop-opacity: 1" />
+            <stop
+              offset="0%"
+              style="stop-color: rgb(var(--color-lighter)); stop-opacity: 1"
+            />
             <stop
               :offset="`${sunData?.duskProgressPercent ?? 0}%`"
-              style="stop-color: #969696; stop-opacity: 1"
+              style="stop-color: rgb(var(--color-lighter)); stop-opacity: 1"
             />
             <stop
               :offset="`${sunData?.duskProgressPercent ?? 0}%`"

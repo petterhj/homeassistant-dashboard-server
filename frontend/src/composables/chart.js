@@ -13,6 +13,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { cssvar } from '@/util/layout';
 
 export function useChart(chartOptions) {
   ChartJS.register(
@@ -41,8 +42,8 @@ export function useChart(chartOptions) {
       plugins: {
         // https://chartjs-plugin-datalabels.netlify.app/guide/options.html
         datalabels: {
-          color: '#FFF',
-          backgroundColor: '#767676',
+          color: cssvar('--color-white-rgb'),
+          backgroundColor: cssvar('--color-light-rgb'),
           // borderColor: '#333',
           borderRadius: 3,
           padding: { top: 3, bottom: 0, left: 3, right: 3 },
@@ -63,7 +64,7 @@ export function useChart(chartOptions) {
           grid: { display: false },
           ticks: {
             display: true,
-            color: '#333333',
+            color: cssvar('--color-dark-rgb'),
             font: {
               family: 'Roboto',
               weight: 500,

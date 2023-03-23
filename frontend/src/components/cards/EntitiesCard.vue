@@ -116,17 +116,17 @@ const getValue = (entityConfig) => {
       >
         <div v-if="entityConfig.entity in states" class="flex gap-3 items-center text-sm">
           <span>
-            <span class="mdi text-gray-400 text-lg" :class="getIcon(entityConfig)"></span>
+            <span class="mdi text-light text-lg" :class="getIcon(entityConfig)" />
           </span>
           <span class="flex flex-col">
             <span class="font-medium">
               {{ getName(entityConfig) }}
             </span>
-            <span class="text-xs text-gray-400">
+            <span class="text-sm text-light">
               {{ getSecondaryInfo(entityConfig) }}
             </span>
           </span>
-          <span class="flex-grow text-right">
+          <span class="flex-grow text-right font-semibold">
             {{ getValue(entityConfig) }}
           </span>
         </div>
@@ -141,14 +141,14 @@ const getValue = (entityConfig) => {
         :key="`${entityConfig.entity}_${index}`"
       >
         <div v-if="entityConfig.entity in states" class="d-stat inline p-0">
-          <div class="d-stat-title text-xs">
-            <span class="mdi text-gray-400" :class="getIcon(entityConfig)"></span>
-            {{ getName(entityConfig) }}
+          <div class="d-stat-title opacity-100 text-sm font-medium">
+            <span class="mdi text-light mr-1" :class="getIcon(entityConfig)" />
+            <span class="text-light">{{ getName(entityConfig) }}</span>
           </div>
           <div class="d-stat-value px-1 text-lg font-semibold">
             {{ getValue(entityConfig) }}
           </div>
-          <div class="d-stat-desc px-1 text-xs">
+          <div class="d-stat-desc px-1 text-sm text-light opacity-100">
             {{ getSecondaryInfo(entityConfig) }}
           </div>
         </div>

@@ -23,8 +23,8 @@ const { config } = useServer();
   </main>
 
   <div class="fixed bottom-5 left-5 text-sm">
-    <span class="mdi mdi-refresh text-gray-300 mr-2" />
-    <span class="text-gray-400 font-medium">
+    <span class="mdi mdi-refresh text-lighter mr-2" />
+    <span class="text-dark font-medium">
       {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
     </span>
   </div>

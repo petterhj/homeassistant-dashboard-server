@@ -10,10 +10,13 @@ module.exports = {
   //   { pattern: /(h|bg|border)-./ }
   // ],
   theme: {
+    colors: {
+      'dark': 'rgb(var(--color-dark) / <alpha-value>)',
+      'light': 'rgb(var(--color-light) / <alpha-value>)',
+      'lighter': 'rgb(var(--color-lighter) / <alpha-value>)',
+      'lightest': 'rgb(var(--color-lightest) / <alpha-value>)',
+    },
     extend: {
-      colors: {
-        'white': '#ff00Ff',
-      },
       fontFamily: {
         sans: ['Roboto'],
         // 'font-serif': ['Monda', 'cursive'],
@@ -25,7 +28,9 @@ module.exports = {
     require('@tailwindcss/line-clamp'),
   ],
   daisyui: {
+    styled: false,
     themes: false,
+    base: false,
     prefix: 'd-',
   },
 };

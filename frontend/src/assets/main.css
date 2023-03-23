@@ -2,22 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-dark: 0 0 0;
+    --color-light: 55 55 55;
+    --color-lighter: 100 100 100;
+    --color-lightest: 185 185 185;
+    --color-white: 255 255 255;
+
+    --color-dark-rgb: rgb(var(--color-dark));
+    --color-light-rgb: rgb(var(--color-light));
+    --color-lighter-rgb: rgb(var(--color-lighter));
+    --color-lightest-rgb: rgb(var(--color-lightest));
+    --color-white-rgb: rgb(var(--color-white));
+
+    --weather-icon-cloud-front-color: var(--color-lightest-rgb);
+    --weather-icon-cloud-back-color: var(--color-lighter-rgb);
+    --weather-icon-sun-color: var(--color-light-rgb);
+    --weather-icon-rain-color: var(--color-light-rgb);
+    --weather-icon-moon-color: var(--color-light-rgb);
+    --weather-icon-snow-color: var(--color-lightest-rgb);
+    --weather-icon-snow-stroke-color: var(--color-light-rgb);
+  }
+}
+
 
 html, body, #app, main {
-  @apply h-full;
+  @apply h-full text-dark;
 }
 
 hr {
   @apply
     border-2
-    border-gray-200
+    border-lightest
     mt-2
     mb-4
     -mx-2
   ;
 }
 
-.card {
+/* .card {
   position: relative;
 }
 .card:before {
@@ -27,35 +51,27 @@ hr {
   position:absolute;
   left: 0;
   bottom: 0;
-  background:linear-gradient(transparent 1rem, white);
-}
-
-:root {
-  --weather-icon-cloud-front-color: rgb(225, 225, 225);
-  --weather-icon-cloud-back-color: rgb(195, 195, 195);
-  --weather-icon-sun-color: rgb(150, 150, 150);
-  --weather-icon-rain-color: rgb(0, 0, 0);
-  --weather-icon-moon-color: rgb(50, 50, 50);
-}
+  background: linear-gradient(transparent 1rem, white);
+} */
 
 .rain {
-  fill: var(--weather-icon-rain-color, #30b3ff);
+  fill: var(--weather-icon-rain-color);
 }
 .sun {
-  fill: var(--weather-icon-sun-color, #fdd93c);
+  fill: var(--weather-icon-sun-color);
 }
 .moon {
-  fill: var(--weather-icon-moon-color, #fcf497);
+  fill: var(--weather-icon-moon-color);
 }
 .cloud-back {
-  fill: var(--weather-icon-cloud-back-color, #d4d4d4);
+  fill: var(--weather-icon-cloud-back-color);
 }
 .cloud-front {
-  fill: var(--weather-icon-cloud-front-color, #f9f9f9);
+  fill: var(--weather-icon-cloud-front-color);
 }
 .snow {
-  fill: var(--weather-icon-snow-color, #f9f9f9);
-  stroke: var(--weather-icon-snow-stroke-color, #d4d4d4);
+  fill: var(--weather-icon-snow-color);
+  stroke: var(--weather-icon-snow-stroke-color);
   stroke-width: 1;
   paint-order: stroke;
 }

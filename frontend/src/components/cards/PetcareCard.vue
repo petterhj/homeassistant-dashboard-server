@@ -80,9 +80,9 @@ const flapBatteryIcon = computed(() => {
 
   <div class="flex items-center gap-4">
     <div class="d-avatar d-placeholder">
-      <div class="bg-gray-200 text-neutral-content rounded-full w-10 h-10">
+      <div class="bg-lightest rounded-full w-10 h-10">
         <span
-          class="mdi text-gray-600 text-2xl"
+          class="mdi text-dark text-2xl"
           :class="`mdi-${states[petEntity].state === 'on' ? 'home' : 'pine-tree'}`"
         />
       </div>
@@ -92,11 +92,11 @@ const flapBatteryIcon = computed(() => {
         {{ t(`petcare.${states[petEntity].state === 'on' ? 'inside' : 'outside'}`) }}
       </div>
       <div class="flex justify-between text-sm font-medium">
-        <span class="text-gray-400">
+        <span class="text-light">
           {{ formatDistance(new Date(), parseISO(states[petEntity].attributes.since)) }}
           {{ t('datetime.ago') }}
         </span>
-        <div class="text-gray-300">
+        <div class="text-light">
           <span
             class="mdi"
             :class="`mdi-${

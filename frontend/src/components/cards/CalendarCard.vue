@@ -33,7 +33,7 @@ const events = await getCalendar();
 const eventDate = (event) => {
   const eventStart = parseISO(event.start);
   if (isThisWeek(eventStart)) {
-    return format(eventStart, 'EEEE');
+    return format(eventStart, 'EEEEEE.');
   }
   return format(eventStart, 'EEEEEE. d/M');
 };
@@ -62,22 +62,18 @@ const eventIcon = (event) => {
     <li v-for="(event, index) in events" :key="index" class="flex gap-2 ml-2 mb-2">
       <span
         v-if="calendarIcons || itemIcons || icon"
-        :class="['mdi', `mdi-${eventIcon(event)}`, 'text-gray-400']"
+        :class="['mdi', `mdi-${eventIcon(event)}`, 'text-light']"
       />
       <div class="flex flex-col gap-0.25 w-full">
         <div class="flex justify-between font-medium">
           <span class="text-sm">{{ event.summary }}</span>
-          <span class="text-xs text-gray-500 whitespace-nowrap">
-            {{ eventDate(event) }}
+          <span class="text-xs text-light whitespace-nowrap">
+            {{ eventDate(event) }}, {{ eventTime(event) }}
           </span>
-        </div>
-        <div class="flex justify-between text-sm text-gray-500">
-          <span class="text-xs">{{ event.calendar_name }}</span>
-          <span class="text-xs">{{ eventTime(event) }}</span>
         </div>
         <p
           v-if="event.description"
-          class="mt-1 text-xs text-gray-500 font-light line-clamp-2"
+          class="mt-1 text-xs text-light font-medium line-clamp-2"
         >
           {{ event.description }}
         </p>
