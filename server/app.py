@@ -68,7 +68,7 @@ async def capture_task() -> None:
     )
 
 
-@app.get("/captures/latest.{capture_format}")
+@app.get("/dashboard.{capture_format}")
 async def capture(
     capture_format: CaptureFormat,
     capture_files: list = Depends(get_captures),
