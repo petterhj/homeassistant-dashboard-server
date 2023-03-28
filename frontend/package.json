@@ -14,7 +14,7 @@
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "2.2.1",
     "chartjs-plugin-datalabels": "2.2.0",
-    "daisyui": "2.50.1",
+    "daisyui": "2.51.5",
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
     "vue": "^3.2.45",
