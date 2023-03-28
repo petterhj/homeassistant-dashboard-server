@@ -5,6 +5,4 @@ __pycache__/
 output/
 data/
 *.png
-*.yaml
-*.yml
 *.log

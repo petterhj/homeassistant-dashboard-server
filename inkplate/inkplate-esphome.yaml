@@ -1,0 +1,101 @@
+esphome:
+  name: inkplate
+  friendly_name: inkplate
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  level: VERY_VERBOSE
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret encryption_key
+
+ota:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: !secret captive_portal_ssid
+    password: !secret captive_portal_password
+
+captive_portal:
+  
+i2c:
+
+binary_sensor:
+  - platform: status
+    name: "Dashboard Status"
+    id: system_status
+
+switch:
+  - platform: restart
+    name: "Reboot Inkplate"
+    id: reboot
+
+font:
+  - file: "fonts/roboto.ttf"
+    id: roboto
+    size: 96
+
+external_components:
+- source: 'github://pr#3255'
+  components:
+    - display
+    - online_image
+
+online_image:
+  - url: "https://<host>:<port>/dashboard.png"
+    id: png_image
+    format: PNG
+    buffer_size: 2048
+    #slow_drawing: true
+
+mcp23017:
+  - id: mcp23017_hub
+    address: 0x20
+
+display:
+- platform: inkplate6
+  id: inkplate_display
+  greyscale: true
+  partial_updating: false
+  update_interval: 120s
+  model: inkplate_10
+
+  ckv_pin: 32
+  sph_pin: 33
+  gmod_pin:
+    mcp23xxx: mcp23017_hub
+    number: 1
+  gpio0_enable_pin:
+    mcp23xxx: mcp23017_hub
+    number: 8
+  oe_pin:
+    mcp23xxx: mcp23017_hub
+    number: 0
+  spv_pin:
+    mcp23xxx: mcp23017_hub
+    number: 2
+  powerup_pin:
+    mcp23xxx: mcp23017_hub
+    number: 4
+  wakeup_pin:
+    mcp23xxx: mcp23017_hub
+    number: 3
+  vcom_pin:
+    mcp23xxx: mcp23017_hub
+    number: 5
+
+  lambda: |-
+    it.fill(COLOR_ON);
+    it.print(100, 100, id(roboto), COLOR_OFF, TextAlign::TOP_LEFT, ":(");
+    it.image(0, 0, id(png_image), COLOR_ON, COLOR_OFF);

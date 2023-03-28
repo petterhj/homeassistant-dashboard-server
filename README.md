@@ -1,6 +1,14 @@
 # homeassistant-inkplate-dashboard
 
-...
+## Inkplate
+
+> Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
+
+The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/).
+
+* [Inkplate: Get Started Page](https://inkplate.readthedocs.io/en/latest/get-started.html)
+* [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)
+
 
 ## Configuration
 
@@ -16,7 +24,7 @@ LOG_FILE=current.log
 LOG_JSON=false
 ```
 
-Other runtime config, including the dashboard itself, is defined in a YAML file (by default) called `configuration.yaml` placed at the root of the application data path (`DATA_PATH`).
+Other runtime config, including the dashboard itself, is defined in a YAML file called `configuration.yaml` placed at the root of the application data path (`DATA_PATH`).
 
 ```yml
 # config.yml
