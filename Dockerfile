@@ -27,7 +27,7 @@ WORKDIR /app
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 
 FROM run_base AS rpi
