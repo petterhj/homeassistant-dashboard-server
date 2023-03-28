@@ -1,0 +1,6 @@
+.github/*
+.venv/
+__pycache__
+.env*
+frontend/dist
+frontend/node_modules

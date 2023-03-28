@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "minor_version": 3,
+  "key": "core.config",
+  "data": {
+    "latitude": 59.9239573,
+    "longitude": 10.7466634,
+    "elevation": 100,
+    "unit_system_v2": "metric",
+    "location_name": "Foo",
+    "time_zone": "Europe/Oslo",
+    "external_url": null,
+    "internal_url": null,
+    "currency": "EUR",
+    "country": "NO",
+    "language": "en"
+  }
+}

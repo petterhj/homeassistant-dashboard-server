@@ -1,0 +1,42 @@
+{% extends 'proxy/proxy_base.html' %}
+
+{% block title %}
+ {{ entity.entity_id }}
+{% endblock %}
+
+{% block main %}
+<h1>Entity: {{ entity.entity_id }}</h1>
+<h2 class="state">State: {{ entity.state }}</h2>
+<b>Last changed:</b> {{ entity.last_changed }}<br>
+<b>Last updated:</b> {{ entity.last_updated }}<br>
+
+{% with entity=entity %}
+  {% include 'proxy/partials/entity_summary.html' %}
+{% endwith %}
+
+{% if entity.history %}
+  <section class="history">
+    <header>
+      <h3>History ({{ entity.history|length }})</h3>
+      <div>
+        <span class="label">Start - {{ entity.history_start }}</span>
+        <input type="datetime-local" name="start" value="{{entity.history_start}}" disabled>
+      </div>
+      <div>
+        <span class="label">End - {{ entity.history_end }}</span>
+        <input type="datetime-local" name="end" value="{{entity.history_end}}" disabled>
+      </div>
+    </header>
+    
+    {% for entry in entity.history %}
+      {% with entity=entry %}
+        {% include 'proxy/partials/entity_summary.html' %}
+      {% endwith %}
+    {% endfor %}
+  </section>
+{% else %}
+<nav>
+  <a href="?output_format=html&history=true">Include history</a>
+</nav>
+{% endif %}
+{% endblock %}

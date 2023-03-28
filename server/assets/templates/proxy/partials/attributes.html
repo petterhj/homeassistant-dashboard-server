@@ -1,0 +1,23 @@
+<div class="attributes">
+{% for attribute, value in attributes.items() %}
+  <div class="attribute">
+    <span class="label">{{ attribute }}</span>
+    <span class="value">
+      {% if value is iterable and value is not string %}
+        <!-- <table>
+          <tr>
+            <th>Item</th>
+          </tr>
+        {% for item in value %}
+          <tr>
+            <td>{{ item }}</td>
+          </tr>
+        {% endfor %}
+      </table> -->
+      {% else %}
+        {{ value }}
+      {% endif %}
+    </span>
+  </div>
+{% endfor %}
+</div>

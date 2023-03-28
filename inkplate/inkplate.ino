@@ -7,7 +7,6 @@
 #include "Inkplate.h"            //Include Inkplate library to the sketch
 #include "WiFi.h"                //Include library for WiFi
 #include "driver/rtc_io.h"       //ESP32 library used for deep sleep and RTC wake up pins
-// #include "PubSubClient.h"        //mqtt connection
 Inkplate display(INKPLATE_3BIT);
 
 #define uS_TO_S_FACTOR  1000000 // Conversion factor for micro seconds to seconds
@@ -16,10 +15,8 @@ Inkplate display(INKPLATE_3BIT);
 const char *imageUrl = "http://host:port/dashboard.png";
 const char *ssid = ""; // Your WiFi SSID
 const char *password = ""; // Your WiFi password
-// const char *mqtt_server = "192.168.0.34";
 
 WiFiClient espClient;
-// PubSubClient client(espClient);
 
 void connectWifi()
 {
@@ -50,52 +47,6 @@ void displayImage()
     display.display();
 }
 
-// reconnect the mqtt connection
-// void reconnect()
-// {
-//     // Loop until we're reconnected
-//     while (!client.connected())
-//     {
-//         Serial.print("Attempting MQTT connection...");
-//         // Attempt to connect, sending the client name
-//         if (client.connect("Inkplate"))
-//         {
-//             Serial.println("connected");
-//         }
-//         else
-//         {
-//             Serial.print("failed, rc=");
-//             Serial.print(client.state());
-//             Serial.println(" try again in 5 seconds");
-//             // Wait 5 seconds before retrying
-//             delay(5000);
-//         }
-//     }
-// }
-
-// void sendMqttMsg()
-// {
-//       // publish voltage and temperature on mqtt
-//     client.setServer(mqtt_server, 1883);
-
-//     if (!client.connected())
-//     {
-//         reconnect();
-//     }
-//     client.loop();
-    
-//     int temperature;
-//     float voltage;
-//     temperature = display.readTemperature(); // Read temperature from on-board temperature sensor
-//     voltage = display.readBattery(); // Read battery voltage (NOTE: Doe to ESP32 ADC accuracy, you should calibrate the ADC!)
-//     String msg = "inkplate temperature=" + String(temperature) + ",voltage=" + String(voltage);
-//     Serial.println(msg);
-//     // Convert the value to a char array
-//     char *tab2 = new char[msg.length() + 1];
-//     strcpy(tab2, msg.c_str());
-//     client.publish("home/inkplate", tab2);
-// }
-
 void goToSleep()
 {
     WiFi.mode(WIFI_OFF);
@@ -109,7 +60,6 @@ void setup()
     Serial.begin(115200);
     connectWifi();
     displayImage();
-    // sendMqttMsg();
     goToSleep();
 }
 

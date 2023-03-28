@@ -1,0 +1,9 @@
+default_config:
+
+homeassistant:
+  name: Foobar
+  latitude: 60
+  longitude: 11
+  elevation: 123
+  unit_system: metric
+  time_zone: Europe/Oslo

@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-dark: 0 0 0;
+    --color-light: 55 55 55;
+    --color-lighter: 100 100 100;
+    --color-lightest: 185 185 185;
+    --color-white: 255 255 255;
+
+    --color-dark-rgb: rgb(var(--color-dark));
+    --color-light-rgb: rgb(var(--color-light));
+    --color-lighter-rgb: rgb(var(--color-lighter));
+    --color-lightest-rgb: rgb(var(--color-lightest));
+    --color-white-rgb: rgb(var(--color-white));
+
+    --weather-icon-cloud-front-color: var(--color-lightest-rgb);
+    --weather-icon-cloud-back-color: var(--color-lighter-rgb);
+    --weather-icon-sun-color: var(--color-light-rgb);
+    --weather-icon-rain-color: var(--color-light-rgb);
+    --weather-icon-moon-color: var(--color-light-rgb);
+    --weather-icon-snow-color: var(--color-lightest-rgb);
+    --weather-icon-snow-stroke-color: var(--color-light-rgb);
+  }
+}
+
+
+html, body, #app, main {
+  @apply h-full text-dark;
+}
+
+hr {
+  @apply
+    border-2
+    border-lightest
+    mt-2
+    mb-4
+    -mx-2
+  ;
+}
+
+/* .card {
+  position: relative;
+}
+.card:before {
+  content:'';
+  width: 100%;
+  height: 15%;
+  position:absolute;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 1rem, white);
+} */
+
+.rain {
+  fill: var(--weather-icon-rain-color);
+}
+.sun {
+  fill: var(--weather-icon-sun-color);
+}
+.moon {
+  fill: var(--weather-icon-moon-color);
+}
+.cloud-back {
+  fill: var(--weather-icon-cloud-back-color);
+}
+.cloud-front {
+  fill: var(--weather-icon-cloud-front-color);
+}
+.snow {
+  fill: var(--weather-icon-snow-color);
+  stroke: var(--weather-icon-snow-stroke-color);
+  stroke-width: 1;
+  paint-order: stroke;
+}

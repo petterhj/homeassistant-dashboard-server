@@ -1,0 +1,39 @@
+{
+  "name": "homeassistant-inkplate-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.1.96",
+    "chart.js": "4.2.1",
+    "chartjs-adapter-date-fns": "3.0.0",
+    "chartjs-plugin-annotation": "2.1.2",
+    "chartjs-plugin-datalabels": "2.2.0",
+    "daisyui": "2.50.1",
+    "date-fns": "^2.29.3",
+    "lodash": "^4.17.21",
+    "vue": "^3.2.45",
+    "vue-chartjs": "5.2.0",
+    "vue-i18n": "^9.2.2",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.4",
+    "@tailwindcss/line-clamp": "0.4.2",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.22.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.7.1",
+    "tailwind-merge": "^1.10.0",
+    "tailwindcss": "^3.2.6",
+    "vite": "^4.0.0"
+  }
+}

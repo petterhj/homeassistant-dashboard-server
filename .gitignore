@@ -1,6 +1,8 @@
-.env
+.env*
 .vscode/
 .venv/
 __pycache__/
 output/
+data/
 *.png
+*.log

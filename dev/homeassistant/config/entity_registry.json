@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "minor_version": 10,
+  "key": "core.entity_registry",
+  "data": {
+    "entities": [
+      {
+        "aliases": [],
+        "area_id": null,
+        "capabilities": null,
+        "config_entry_id": "671cf999c558028c0edc73266381d08a",
+        "device_class": null,
+        "device_id": "9302e509980120c413ab7acdb91ddd46",
+        "disabled_by": null,
+        "entity_category": null,
+        "entity_id": "weather.oslo",
+        "hidden_by": null,
+        "icon": null,
+        "id": "9fe82554b8dfd21d53fe39411a3b4db7",
+        "has_entity_name": true,
+        "name": null,
+        "options": {},
+        "original_device_class": null,
+        "original_icon": null,
+        "original_name": "Oslo",
+        "platform": "met",
+        "supported_features": 0,
+        "translation_key": null,
+        "unique_id": "59.9239573-10.7466634",
+        "unit_of_measurement": null
+      },
+      {
+        "aliases": [],
+        "area_id": null,
+        "capabilities": null,
+        "config_entry_id": "671cf999c558028c0edc73266381d08a",
+        "device_class": null,
+        "device_id": "9302e509980120c413ab7acdb91ddd46",
+        "disabled_by": null,
+        "entity_category": null,
+        "entity_id": "weather.oslo_hourly",
+        "hidden_by": null,
+        "icon": null,
+        "id": "3020daf211df8c507d810caf423fc683",
+        "has_entity_name": true,
+        "name": null,
+        "options": {},
+        "original_device_class": null,
+        "original_icon": null,
+        "original_name": "Oslo hourly",
+        "platform": "met",
+        "supported_features": 0,
+        "translation_key": null,
+        "unique_id": "59.9239573-10.7466634-hourly",
+        "unit_of_measurement": null
+      }
+    ]
+  }
+}

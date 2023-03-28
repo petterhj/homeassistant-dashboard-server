@@ -1,48 +1,116 @@
 # homeassistant-inkplate-dashboard
 
-Simple app for capturing and hosting screenshots of a specified Home Assistant dashboard. Based on [itobey/hass-lovelace-screenshotter](https://github.com/itobey/hass-lovelace-screenshotter) (fork of [sibbl/hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver)), rewritten using Python and [Playwright](https://playwright.dev/).
+## Inkplate
 
-## Config
+> Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
 
-To configure, update the necessary environment variables specified below in a `.env` file (or see `hashotter/config.py`).
+The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/).
 
-| Variable | Default |
-| --- | --- |
-| DEBUG | `False` |
-| HA_BASE_URL | `http://homeassistant.local:8123` |
-| HA_DASHBOARD_URL | `/lovelace/default_view` |
-| HA_ACCESS_TOKEN | `xxxx` |
-| SERVER_HOST | `0.0.0.0` |
-| SERVER_PORT | `80` |
-| SERVER_OUTPUT_PATH | `/dashboard.png` |
-| SCREENSHOT_HEIGHT | `825` |
-| SCREENSHOT_WIDTH | `1200` |
-| SCREENSHOT_SCALING | `1` |
-| SCREENSHOT_TIMEOUT | `10000` |
-| SCREENSHOT_DELAY | `15` |
-| SCREENSHOT_OUTPUT_PATH | `output/ha.png` |
-| SCREENSHOT_INTERVAL | `600` |
+* [Inkplate: Get Started Page](https://inkplate.readthedocs.io/en/latest/get-started.html)
+* [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)
 
-## Development
+
+## Configuration
+
+The server itself is configured using the environment variables specified below (see `server/models/server.py::ServerConfig` for defaults and more options).
 
 ```sh
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# .env
+DATA_PATH=data
+HOST=127.0.0.1
+PORT=8089
+LOG_LEVEL=info
+LOG_FILE=current.log
+LOG_JSON=false
+```
 
-playwright install # Download new browsers
+Other runtime config, including the dashboard itself, is defined in a YAML file called `configuration.yaml` placed at the root of the application data path (`DATA_PATH`).
 
-DEBUG=true python app.py
+```yml
+# config.yml
+homeassistant:
+  host: !secret homeassistant_host
+  port: 8123
+  ssl: false
+  token: !secret homeassistant_token
+
+timezone: Europe/Oslo
+
+locale:
+  default: nb
+  fallback: en
+
+dashboard:
+  components: !include components.yaml
+```
+
+### Components
+
+#### Groups
+
+#### Cards
+
+##### Sun
+
+```yaml
+- type: sun
+  entity: sun.sun
 ```
 
 ## Build and run
 
 ```sh
-docker build -t hashot .
-docker run \
-    --env-file .env \
-    -p 8081:80 \
-    --name hasshot \
-    --detach \
-    hashot
+$ docker build \
+  --target rpi \ # Build for Raspberry Pi (armv7l)
+  --tag inkplate-dashboard:latest \
+  .
+
+$ docker run \
+  -p 9090:8000 \
+  -v $(pwd)/data:/app/data \
+  --name inkplate-dashboard \
+  --rm \
+  inkplate-dashboard
 ```
+
+
+## Development
+
+### Server
+
+```sh
+# .env
+# ...
+DEBUG=true
+STATIC_PATH=frontend/dist
+VITE_SERVER_URL=http://localhost:8089
+```
+
+```sh
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ pip install -r server/requirements.txt
+
+$ playwright install [chromium]  # Download new browsers
+
+$ python -m server [--data-path <path>] # Start uvicorn server
+```
+
+### Frontend
+
+```
+$ cd frontend/
+$ npm install
+
+$ npm run dev
+
+$ npm run build
+```
+
+#### Home Assistant test instance
+
+```sh
+$ docker-compose -f dev/homeassistant/docker-compose.yml up
+```
+
+Username/password: `foobar`/`foobar`

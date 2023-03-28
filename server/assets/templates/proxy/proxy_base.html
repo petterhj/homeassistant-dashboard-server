@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  body {
+    background-color: #1A1E24;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  a {
+    color: palegreen;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0.5rem 0;
+    color: #B52824;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  .state {
+    color: #AC8093;
+    font-size: 1.25rem;
+  }
+  hr {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 2px solid #B52824;
+  }
+
+  section {
+    margin-top: 2rem;
+  }
+  section > header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+  }
+  section > header > * {
+    text-align: left;
+    flex-basis: 33%;  
+  }
+
+  .attributes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 1rem 0;
+  }
+  .attribute {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.5rem;
+  }
+  .attributes .value {
+    color: #DAD70C;
+  }
+
+  nav {
+    margin-top: 1rem;
+  }
+
+  table {
+    border: 2px solid rgba(0, 0, 0, 1);
+  }
+  th, td {
+    padding: 0.5rem;
+  }
+  td:nth-child(2) {
+    color: #DAD70C;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid rgba(0, 0, 0, 1);
+  }
+  details {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.025);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+  }
+  summary > * {
+    text-align: left;
+    flex-basis: 33%;
+  }
+  .label {
+    display: block;
+    color: rgba(255, 255, 255, 0.25);
+    margin-bottom: 0.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="proxy">
+  {% block main %}{% endblock %}
+</main>
+{% endblock %}
