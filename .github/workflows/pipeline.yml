@@ -1,0 +1,20 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - 'dev/**'
+      - 'inkplate/**'
+  workflow_dispatch:
+
+jobs:
+  # tests:
+  #   name: Run tests
+  #   uses: ./.github/workflows/tests.yml
+
+  push:
+    name: Build and push
+    # needs: [tests]
+    uses: ./.github/workflows/push.yml
