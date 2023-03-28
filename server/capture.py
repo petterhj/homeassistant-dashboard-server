@@ -104,7 +104,7 @@ def save_image(
     logger.info(f"Saving image as {output_format.upper()}")
 
     output_file = server_config.capture_path / "capture_{}.{}".format(
-        datetime.now().isoformat().replace(":", "."),
+        datetime.now().isoformat(timespec="seconds").replace(":", "."),
         output_format.value.lower(),
     )
 
@@ -120,7 +120,10 @@ def generate_fallback_image(
     capture_config: CaptureConfig,
     message: str = None,
 ) -> Image:
-    logger.info("Generating fallback image")
+    logger.info("Generating fallback image, width={}, height={}".format(
+        capture_config.width,
+        capture_config.height,
+    ))
 
     fallback_path = assets_path / "static" / "error.png"
     font_path = assets_path / "jetbrains-mono.ttf"

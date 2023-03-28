@@ -1,4 +1,4 @@
-import json
+from pathlib import Path
 from functools import lru_cache
 
 from fastapi import Depends, HTTPException, status
@@ -8,7 +8,7 @@ from yaml import load as yaml_load
 
 from .configuration import yaml_loader
 from .exceptions import ConfigurationError
-from .models.config import Config
+from .models.config import Config, CaptureFormat
 from .models.server import ServerConfig
 
 
@@ -51,3 +51,14 @@ async def get_homeassistant_client(
         ),
         config.homeassistant.token.get_secret_value(),
     )
+
+
+def get_captures(
+    capture_format: CaptureFormat,
+    config: dict = Depends(get_config),
+) -> list[Path]:
+    capture_path = config.server.capture_path
+    capture_files = sorted([
+        f for f in capture_path.glob(f"*.{capture_format.value}") if "_tmp" not in f.name
+    ], reverse=True)
+    return capture_files

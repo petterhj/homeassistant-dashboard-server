@@ -79,7 +79,7 @@ async def entity(
             "history_end": period_end.isoformat(timespec="seconds"),
         }
 
-    logger.debug(f"> Request duration: {time() - start_time}")
+    logger.debug(f"> Request duration: {round(time() - start_time, 3)} s.")
     
     if output_format is OutputFormat.html:
          return templates.TemplateResponse("proxy/entity.html", {

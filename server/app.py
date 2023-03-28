@@ -6,10 +6,11 @@ from fastapi_utils.tasks import repeat_every
 from loguru import logger
 from pydantic import ValidationError
 
-from .dependencies import get_config
+from .dependencies import get_config, get_captures
 from .logger import configure_logger
 from .models.config import Config, CaptureFormat
 from .models.server import ServerConfig
+from .routers.api import router as api_router
 from .routers.proxy import router as proxy_router
 from .routers.static import (
     router as static_router,
@@ -22,6 +23,7 @@ server_config = ServerConfig()
 configure_logger(server_config)
 
 app = FastAPI()
+app.include_router(api_router, prefix="/api")
 app.include_router(proxy_router, prefix="/api/ha")
 app.include_router(static_router)
 
@@ -66,30 +68,20 @@ async def capture_task() -> None:
     )
 
 
-@app.get("/api/config")
-async def config(
-    config: dict = Depends(get_config),
-) -> Config:
-    return config
-
-
-@app.get("/dashboard.{capture_format}")
+@app.get("/captures/latest.{capture_format}")
 async def capture(
     capture_format: CaptureFormat,
-    config: dict = Depends(get_config),
+    capture_files: list = Depends(get_captures),
 ):
-    capture_path = config.server.capture_path
-    capture_files = sorted([
-        f for f in capture_path.glob(f"*.{capture_format.value}") if "_tmp" not in f.name
-    ], reverse=True)
-    
     if len(capture_files) == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No capture files found",
         )
-
-    return FileResponse(capture_files[0], media_type=f"image/{capture_format.value}")
+    return FileResponse(
+        capture_files[0],
+        media_type=f"image/{capture_format.value}",
+    )
 
 
 app.mount("/", dashboard_static(), name="dashboard")

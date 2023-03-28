@@ -31,8 +31,8 @@ class ServerConfig(BaseSettings):
     debug: bool = False
     host: IPv4Address= "127.0.0.1"
     port: int = 8089
-    capture_interval: conint(ge=60) = 5 * 60
-    capture_keep_count: conint(ge=1) = 5
+    capture_interval: conint(ge=60) = 60#5 * 60
+    capture_keep_count: conint(ge=1) = 15
     log_level: ServerLogLevel = ServerLogLevel.info
     log_filename: Path = "dashboard.log"
     log_json: bool = False
