@@ -27,16 +27,19 @@ WORKDIR /app
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN -m pip install --upgrade pip
 
 
 FROM run_base AS rpi
 
 RUN apt-get update && apt-get install -y chromium
 
-RUN wget https://files.pythonhosted.org/packages/ef/d8/8ababfa424f013cb18e70ac0dac97faf689039526345b25aef54d01a2094/playwright-1.31.1-py3-none-manylinux1_x86_64.whl
-RUN mv playwright-1.31.1-py3-none-manylinux1_x86_64.whl playwright-1.31.1-py3-none-any.whl
+# https://pypi.org/project/playwright/
+#   See "Built Distributions" under "Download files"
+RUN wget https://files.pythonhosted.org/packages/c8/7d/b8c0d1e6e446704522773be63f1807af22390a796c9cc7b06e20d366907d/playwright-1.32.0-py3-none-manylinux1_x86_64.whl
+RUN mv playwright-1.32.0-py3-none-manylinux1_x86_64.whl playwright-1.32.0-py3-none-any.whl
 
-RUN pip install playwright-1.31.1-py3-none-any.whl
+RUN pip install playwright-1.32.0-py3-none-any.whl
 RUN pip install -r ./server/requirements.txt
 
 RUN rm $VIRTUAL_ENV/lib/python3.9/site-packages/playwright/driver/node && \
