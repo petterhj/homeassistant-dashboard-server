@@ -4,5 +4,4 @@
 __pycache__/
 output/
 data/
-*.png
 *.log
