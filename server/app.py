@@ -56,7 +56,7 @@ async def capture_task() -> None:
     target_url = f"http://localhost:{server_config.port}/"
     capture_config = get_config().capture 
 
-    logger.info("Running capture task, url={}, config={}".format(
+    logger.info("Running capture task, url={}, {}".format(
         target_url,
         capture_config,
     ))

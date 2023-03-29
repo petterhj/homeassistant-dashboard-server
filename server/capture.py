@@ -37,42 +37,49 @@ async def capture_screenshot(
         }
 
     async with async_playwright() as p:
-        logger.info(f"Launching browser, url=\"{url}\", args={args}")
-        browser = await p.chromium.launch()
-        context = await browser.new_context(**args)
-
         try:
-            logger.debug(f"Navigating to {url}")
-            page = await context.new_page()
+            logger.info(f"Launching browser, url=\"{url}\", args={args}")
 
-            await page.goto(
-                url=str(url),
-                wait_until="networkidle",
-                timeout=capture_config.timeout,
-            )
-
-            if capture_config.delay:
-                logger.debug(f"Delaying screenshot by {capture_config.delay} ms.")
-                await sleep(capture_config.delay / 1000)
-
-            logger.info(f"Capturing screenshot (timeout={capture_config.timeout} ms.)")
-
-            await page.screenshot(
-                path=tmp_capture_file,
-                timeout=capture_config.timeout,
-            )
-
-        except TimeoutError as e:
-            logger.error(f"Timeout while generating screenshot: {e}")
-            error_message = "Timeout"
+            browser = await p.chromium.launch()
+            context = await browser.new_context(**args)
 
         except Exception as e:
-            logger.exception("Could not generate screenshot")
+            logger.exception("Could not launch browser")
             error_message = str(e)
 
-        finally:
-            logger.debug("Closing the page")
-            await page.close()
+        else:
+            try:
+                logger.debug(f"Navigating to {url}")
+                page = await context.new_page()
+
+                await page.goto(
+                    url=str(url),
+                    wait_until="networkidle",
+                    timeout=capture_config.timeout,
+                )
+
+                if capture_config.delay:
+                    logger.debug(f"Delaying screenshot by {capture_config.delay} ms.")
+                    await sleep(capture_config.delay / 1000)
+
+                logger.info(f"Capturing screenshot (timeout={capture_config.timeout} ms.)")
+
+                await page.screenshot(
+                    path=tmp_capture_file,
+                    timeout=capture_config.timeout,
+                )
+
+            except TimeoutError as e:
+                logger.error(f"Timeout while generating screenshot: {e}")
+                error_message = "Timeout"
+
+            except Exception as e:
+                logger.exception("Could not generate screenshot")
+                error_message = str(e)
+
+            finally:
+                logger.debug("Closing the page")
+                await page.close()
 
     logger.debug(f"Capture file exists: {tmp_capture_file.exists()}")
 
