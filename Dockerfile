@@ -41,13 +41,14 @@ RUN mv playwright-1.32.0-py3-none-manylinux1_x86_64.whl playwright-1.32.0-py3-no
 
 RUN pip install playwright-1.32.0-py3-none-any.whl
 RUN pip install -r ./server/requirements.txt
+RUN rm playwright-1.32.0-py3-none-any.whl
 
 RUN rm $VIRTUAL_ENV/lib/python3.9/site-packages/playwright/driver/node && \
     ln -s /usr/bin/node $VIRTUAL_ENV/lib/python3.9/site-packages/playwright/driver/node
 
 RUN playwright install-deps
-RUN mkdir -p /app/pw-browser/chromium-1048/chrome-linux
-RUN ln -s /usr/bin/chromium /app/pw-browser/chromium-1048/chrome-linux/chrome
+RUN mkdir -p /app/pw-browser/chromium-1055/chrome-linux
+RUN ln -s /usr/bin/chromium /app/pw-browser/chromium-1055/chrome-linux/chrome
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/pw-browser
 
 CMD ["python", "-m", "server"]
