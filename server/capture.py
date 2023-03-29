@@ -23,6 +23,7 @@ async def capture_screenshot(
     url: str,
     server_config: ServerConfig,
     capture_config: CaptureConfig,
+    timezone: str,
 ) -> None:
     capture_path = server_config.capture_path
     tmp_capture_file = capture_path / "capture_tmp.png"
@@ -35,6 +36,9 @@ async def capture_screenshot(
             "width": capture_config.width,
             "height": capture_config.height,
         }
+
+    if timezone:
+        args["timezone_id"] = timezone
 
     async with async_playwright() as p:
         try:

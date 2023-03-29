@@ -53,18 +53,19 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     raise_exceptions=True,
 )
 async def capture_task() -> None:
-    target_url = f"http://localhost:{server_config.port}/"
-    capture_config = get_config().capture 
+    config = get_config()
+    target_url = f"http://localhost:{config.server.port}/"
 
     logger.info("Running capture task, url={}, {}".format(
         target_url,
-        capture_config,
+        config.capture,
     ))
 
     await capture_screenshot(
         url=target_url,
-        server_config=server_config,
-        capture_config=capture_config,
+        server_config=config.server,
+        capture_config=config.capture,
+        timezone=config.timezone,
     )
 
 
