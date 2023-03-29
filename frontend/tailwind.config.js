@@ -6,9 +6,9 @@ module.exports = {
     './src/**/*.{vue,js,ts,jsx,tsx}',
     '../data/**/*.{yml,yaml}',
   ],
-  // safelist: [
-  //   { pattern: /(h|bg|border)-./ }
-  // ],
+  safelist: [
+    { pattern: /(h|bg|border|gap|basis)-./ }
+  ],
   theme: {
     colors: {
       'dark': 'rgb(var(--color-dark) / <alpha-value>)',
