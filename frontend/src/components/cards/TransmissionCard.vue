@@ -57,7 +57,7 @@ const getIcon = (item) => {
 <template>
   <CardTitle :title="title" :icon="icon" />
 
-  <ul>
+  <ul class="w-full">
     <li
       v-for="(item, name, index) in items"
       :key="index"
@@ -70,14 +70,12 @@ const getIcon = (item) => {
           item.status === 'stopped' ? 'text-lighter' : 'text-light',
         ]"
       />
-      <div class="flex flex-col">
-        <span
-          class="text-sm font-medium line-clamp-1 text-ellipsis"
-          :class="{ 'text-lighter': item.status === 'stopped' }"
-        >
-          {{ item.name }}
-        </span>
-      </div>
+      <span
+        class="text-sm font-medium line-clamp-1 text-ellipsis"
+        :class="{ 'text-lighter': item.status === 'stopped' }"
+      >
+        {{ item.name }}
+      </span>
     </li>
   </ul>
 </template>
