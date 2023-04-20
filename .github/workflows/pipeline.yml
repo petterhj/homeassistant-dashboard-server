@@ -8,6 +8,7 @@ on:
       - '.github/**'
       - 'dev/**'
       - 'inkplate/**'
+      - '**/README.md'
   workflow_dispatch:
 
 jobs:

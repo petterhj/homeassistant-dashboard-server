@@ -4,7 +4,7 @@
 
 > Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
 
-The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/).
+The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/). Another excellent alternative, is to use the [PlatformIO](https://platformio.org/)-based solution [lanrat/homeplate](https://github.com/lanrat/homeplate).
 
 * [Inkplate: Get Started Page](https://inkplate.readthedocs.io/en/latest/get-started.html)
 * [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)
