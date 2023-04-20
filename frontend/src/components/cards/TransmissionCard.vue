@@ -10,7 +10,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  itemCount: {
+  limit: {
     type: Number,
     required: false,
     default: 10,
@@ -33,7 +33,11 @@ const items = computed(() => {
   if (!entity || !entity.attributes?.torrent_info) {
     return [];
   }
-  return entity.attributes.torrent_info;
+  return Object.keys(entity.attributes.torrent_info)
+    .map((name) => {
+      return { name, ...entity.attributes.torrent_info[name] };
+    })
+    .slice(0, props.limit);
 });
 
 const getIcon = (item) => {
@@ -70,8 +74,9 @@ const getIcon = (item) => {
         <span
           class="text-sm font-medium line-clamp-1 text-ellipsis"
           :class="{ 'text-lighter': item.status === 'stopped' }"
-          >{{ name }}</span
         >
+          {{ item.name }}
+        </span>
       </div>
     </li>
   </ul>
