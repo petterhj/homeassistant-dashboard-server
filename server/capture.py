@@ -1,11 +1,12 @@
 from asyncio import sleep
+from datetime import datetime
 from pathlib import Path
 from textwrap import wrap
-from datetime import datetime
+from time import mktime
 
 from fastapi import APIRouter
 from loguru import logger
-from PIL import Image, ImageFont, ImageDraw 
+from PIL import Image, ImageFont, ImageDraw, ImageOps
 from playwright.async_api import (
     async_playwright,
     TimeoutError,
@@ -24,7 +25,8 @@ async def capture_screenshot(
     server_config: ServerConfig,
     capture_config: CaptureConfig,
     timezone: str,
-) -> None:
+    name: str,
+) -> Path:
     capture_path = server_config.capture_path
     tmp_capture_file = capture_path / "capture_tmp.png"
     error_message = "Unknown error occured"
@@ -58,7 +60,7 @@ async def capture_screenshot(
 
                 await page.goto(
                     url=str(url),
-                    wait_until="networkidle",
+                    wait_until=capture_config.wait_until,
                     timeout=capture_config.timeout,
                 )
 
@@ -66,7 +68,10 @@ async def capture_screenshot(
                     logger.debug(f"Delaying screenshot by {capture_config.delay} ms.")
                     await sleep(capture_config.delay / 1000)
 
-                logger.info(f"Capturing screenshot (timeout={capture_config.timeout} ms.)")
+                logger.info("Capturing screenshot (name={}, timeout={} ms.)".format(
+                    name,
+                    capture_config.timeout,
+                ))
 
                 await page.screenshot(
                     path=tmp_capture_file,
@@ -75,7 +80,7 @@ async def capture_screenshot(
 
             except TimeoutError as e:
                 logger.error(f"Timeout while generating screenshot: {e}")
-                error_message = "Timeout"
+                error_message = f"Timeout ({capture_config.timeout} ms.)"
 
             except Exception as e:
                 logger.exception("Could not generate screenshot")
@@ -86,54 +91,72 @@ async def capture_screenshot(
                 await page.close()
 
     logger.debug(f"Capture file exists: {tmp_capture_file.exists()}")
+    captured_file_path = None
 
     if tmp_capture_file.exists():
-        save_image(
+        captured_file_path = save_image(
             image=Image.open(tmp_capture_file),
             server_config=server_config,
             capture_config=capture_config,
+            name=name,
         )
 
     else:
-        save_image(
+        captured_file_path = save_image(
             image=generate_fallback_image(capture_config, error_message),
             server_config=server_config,
             capture_config=capture_config,
+            name=name,
         )
     
     capture_cleanup(server_config)
+    return captured_file_path
 
 
 def save_image(
     image: Image,
     server_config: ServerConfig,
     capture_config: CaptureConfig,
-) -> None:
+    name: str,
+) -> Path:
     output_format = capture_config.format
     bit_depth = capture_config.bit_depth
 
-    logger.info(f"Saving image as {output_format.upper()}")
-
-    output_file = server_config.capture_path / "capture_{}.{}".format(
-        datetime.now().isoformat(timespec="seconds").replace(":", "."),
+    output_file = server_config.capture_path / "{}_{}.{}".format(
+        # datetime.now().isoformat(timespec="seconds").replace(":", "."),
+        int(mktime(datetime.now().timetuple())),
+        name,
         output_format.value.lower(),
     )
 
+    logger.info(f"Saving image as {output_format.upper()} to {output_file}")
+
+    if capture_config.invert:
+        logger.debug("> Inverting image")
+        image = image.convert('RGB')
+        image = ImageOps.invert(image)
+
+    if capture_config.grayscale:
+        logger.debug("> Converting image to grayscale")
+        image = image.convert('L')
+
     if output_format == CaptureFormat.png and bit_depth:
-        logger.info(f"Converting image, bith_depth={bit_depth}")
+        logger.debug(f"> Setting bit depth {bit_depth}")
         image = image.convert("P", palette=Image.ADAPTIVE, colors=bit_depth)
 
     image.save(output_file, output_format.value.upper())
-    logger.debug(f"Saved image to {output_file}")
+    logger.info(f"Saved image to {output_file}")
+    return output_file
     
 
 def generate_fallback_image(
     capture_config: CaptureConfig,
     message: str = None,
 ) -> Image:
-    logger.info("Generating fallback image, width={}, height={}".format(
+    logger.info("Generating fallback image, width={}, height={}, message={}".format(
         capture_config.width,
         capture_config.height,
+        message,
     ))
 
     fallback_path = assets_path / "static" / "error.png"

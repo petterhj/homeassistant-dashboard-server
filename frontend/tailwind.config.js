@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 module.exports = {
