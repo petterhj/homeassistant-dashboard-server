@@ -18,6 +18,11 @@ const props = defineProps({
     default: 'list',
     validator: (val) => ['list', 'grid', 'grouped'].includes(val),
   },
+  columns: {
+    type: Number,
+    required: false,
+    default: 2,
+  },
   groups: {
     type: Array,
     required: false,
@@ -36,7 +41,15 @@ const props = defineProps({
 });
 
 const states = await getEntities(
-  props.entities.map((entityConfig) => entityConfig.entity)
+  props.entities
+    .map((entityConfig) => entityConfig.entity)
+    .concat(
+      // Include any entities when used as source for `secondaryInfo`
+      props.entities
+        .map((entityConfig) => entityConfig.secondaryInfo)
+        .filter((source) => source && source.startsWith('sensor.'))
+    )
+    .filter((value, index, array) => array.indexOf(value) === index)
 );
 
 const getIcon = (entityConfig) => {
@@ -64,12 +77,19 @@ const getSecondaryInfo = (entityConfig) => {
   // https://www.home-assistant.io/dashboards/entities/#secondary_info
   const stateData = states[entityConfig.entity];
 
-  if (entityConfig.secondaryInfo && entityConfig.secondaryInfo.startsWith('attribute.')) {
-    const attribute = entityConfig.secondaryInfo.replace('attribute.', '');
-    if (stateData?.attributes[attribute]) {
-      return stateData.attributes[attribute];
-    } else {
-      return '?';
+  if (entityConfig.secondaryInfo) {
+    if (entityConfig.secondaryInfo.startsWith('attribute.')) {
+      const attribute = entityConfig.secondaryInfo.replace('attribute.', '');
+      if (stateData?.attributes[attribute]) {
+        return stateData.attributes[attribute];
+      } else {
+        return '?';
+      }
+    } else if (entityConfig.secondaryInfo.startsWith('sensor.')) {
+      const stateData = states[entityConfig.secondaryInfo];
+      const state = stateData.state;
+      const unitOfMeasurement = stateData?.attributes?.unit_of_measurement;
+      return unitOfMeasurement ? `${state} ${unitOfMeasurement}` : state;
     }
   }
 
@@ -147,7 +167,7 @@ const getGroupEntities = (groupConfig) => {
   </template>
 
   <template v-else-if="display === 'grid'">
-    <div class="grid grid-cols-2 gap-4">
+    <div :class="['grid', `grid-cols-${columns}`, 'gap-4']">
       <template
         v-for="(entityConfig, index) in entities"
         :key="`${entityConfig.entity}_${index}`"
