@@ -1,4 +1,3 @@
-from asyncio import sleep
 from datetime import datetime
 from pathlib import Path
 from textwrap import wrap
@@ -65,8 +64,8 @@ async def capture_screenshot(
                 )
 
                 if capture_config.delay:
-                    logger.debug(f"Delaying screenshot by {capture_config.delay} ms.")
-                    await sleep(capture_config.delay / 1000)
+                    logger.info(f"Delaying screenshot by {capture_config.delay} ms.")
+                    await page.wait_for_timeout(capture_config.delay);
 
                 logger.info("Capturing screenshot (name={}, timeout={} ms.)".format(
                     name,
