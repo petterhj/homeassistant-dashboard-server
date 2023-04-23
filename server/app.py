@@ -66,6 +66,7 @@ async def capture_dashboard_task() -> None:
         server_config=config.server,
         capture_config=config.capture,
         timezone=config.timezone,
+        locale=config.locale,
         name="dashboard",
     )
 
@@ -117,6 +118,7 @@ async def remote_capture(
         server_config=config.server,
         capture_config=capture_config,
         timezone=config.timezone,
+        locale=config.locale,
         name=remote_id,
     )
 

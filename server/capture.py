@@ -23,6 +23,7 @@ async def capture_screenshot(
     url: str,
     server_config: ServerConfig,
     capture_config: CaptureConfig,
+    locale: str,
     timezone: str,
     name: str,
 ) -> Path:
@@ -40,6 +41,12 @@ async def capture_screenshot(
 
     if timezone:
         args["timezone_id"] = timezone
+
+
+    if locale.default == "nb":
+        args["locale"] = "no-NO"
+    else:
+        args["locale"] = "en-GB"
 
     async with async_playwright() as p:
         try:
