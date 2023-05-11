@@ -17,6 +17,11 @@ const props = defineProps({
   //   type: String,
   //   required: true,
   // },
+  annotations: {
+    type: Array,
+    required: false,
+    default: null,
+  },
   show: {
     type: Object,
     required: false,
@@ -65,6 +70,12 @@ const chart = useChart({
           xMin: endOfDay(now),
           xMax: endOfDay(now),
         },
+        ...props.annotations.map((annotation) => ({
+          type: 'line',
+          borderColor: cssvar('--color-dark-rgb'),
+          borderWidth: 4,
+          ...annotation,
+        })),
       },
     },
   },

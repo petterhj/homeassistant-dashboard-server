@@ -16,8 +16,9 @@ async def config(
     return config
 
 
-@router.get("/captures/{capture_format}")
+@router.get("/captures/{capture_name}/{capture_format}")
 async def captures(
+    capture_name: str,
     capture_files: list = Depends(get_captures),
 )  -> list[Path]:
     return capture_files

@@ -55,10 +55,11 @@ async def get_homeassistant_client(
 
 def get_captures(
     capture_format: CaptureFormat,
+    capture_name: str = "dashboard",
     config: dict = Depends(get_config),
 ) -> list[Path]:
     capture_path = config.server.capture_path
     capture_files = sorted([
-        f for f in capture_path.glob(f"*.{capture_format.value}") if "_tmp" not in f.name
+        f for f in capture_path.glob(f"*_{capture_name}.{capture_format.value}") if "_tmp" not in f.name
     ], reverse=True)
     return capture_files

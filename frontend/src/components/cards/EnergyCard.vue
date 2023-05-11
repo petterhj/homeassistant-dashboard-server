@@ -11,7 +11,6 @@ const props = defineProps({
 });
 
 const entity = await getEntity(props.entity);
-
 </script>
 
 <template>

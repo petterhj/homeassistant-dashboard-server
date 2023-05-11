@@ -10,7 +10,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  itemCount: {
+  limit: {
     type: Number,
     required: false,
     default: 10,
@@ -33,7 +33,11 @@ const items = computed(() => {
   if (!entity || !entity.attributes?.torrent_info) {
     return [];
   }
-  return entity.attributes.torrent_info;
+  return Object.keys(entity.attributes.torrent_info)
+    .map((name) => {
+      return { name, ...entity.attributes.torrent_info[name] };
+    })
+    .slice(0, props.limit);
 });
 
 const getIcon = (item) => {
@@ -53,7 +57,7 @@ const getIcon = (item) => {
 <template>
   <CardTitle :title="title" :icon="icon" />
 
-  <ul>
+  <ul class="w-full">
     <li
       v-for="(item, name, index) in items"
       :key="index"
@@ -66,13 +70,12 @@ const getIcon = (item) => {
           item.status === 'stopped' ? 'text-lighter' : 'text-light',
         ]"
       />
-      <div class="flex flex-col">
-        <span
-          class="text-sm font-medium line-clamp-1 text-ellipsis"
-          :class="{ 'text-lighter': item.status === 'stopped' }"
-          >{{ name }}</span
-        >
-      </div>
+      <span
+        class="text-sm font-medium line-clamp-1 text-ellipsis"
+        :class="{ 'text-lighter': item.status === 'stopped' }"
+      >
+        {{ item.name }}
+      </span>
     </li>
   </ul>
 </template>

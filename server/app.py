@@ -52,7 +52,7 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     wait_first=True,
     raise_exceptions=True,
 )
-async def capture_task() -> None:
+async def capture_dashboard_task() -> None:
     config = get_config()
     target_url = f"http://localhost:{config.server.port}/"
 
@@ -66,6 +66,8 @@ async def capture_task() -> None:
         server_config=config.server,
         capture_config=config.capture,
         timezone=config.timezone,
+        locale=config.locale,
+        name="dashboard",
     )
 
 
@@ -81,6 +83,47 @@ async def capture(
         )
     return FileResponse(
         capture_files[0],
+        media_type=f"image/{capture_format.value}",
+    )
+
+
+@app.get("/{remote_id}.{capture_format}")
+async def remote_capture(
+    remote_id: str,
+    capture_format: CaptureFormat,
+):
+    config = get_config()
+
+    if not config.remote:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No remotes configured",
+        )
+
+    if remote_id not in config.remote:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unknown remote ID provided (valid: {})".format(
+                ", ".join(f"`{id}`" for id in config.remote.keys()),
+            ),
+        )
+
+    remote_config = config.remote[remote_id]
+    capture_config = config.capture.copy(
+        update=remote_config.capture.dict(exclude_defaults=True),
+    ) if remote_config.capture else config.capture
+
+    captured_file_path = await capture_screenshot(
+        url=remote_config.url,
+        server_config=config.server,
+        capture_config=capture_config,
+        timezone=config.timezone,
+        locale=config.locale,
+        name=remote_id,
+    )
+
+    return FileResponse(
+        captured_file_path,
         media_type=f"image/{capture_format.value}",
     )
 

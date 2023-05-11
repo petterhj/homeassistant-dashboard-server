@@ -38,7 +38,11 @@ const snakeToPascal = (str) => {
 };
 
 const componentType = computed(() => {
-  return props?.config?.components ? 'group' : 'card';
+  if (Object.prototype.hasOwnProperty.call(props?.config, 'components')) {
+    return 'group';
+  } else {
+    return 'card';
+  }
 });
 
 const component = computed(() => {

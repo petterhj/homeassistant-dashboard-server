@@ -1,10 +1,12 @@
-# homeassistant-inkplate-dashboard
+# homeassistant-dashboard-server
 
-## Inkplate
+A simple, customizable Home Assistant dashboard that can be used as a "backend" for wall-mounted displays like the [Inkplate 10](#inkplate). The server automatically captures screenshots of the dashboard at configured interval, and is an alternative to other similar software like [sibbl/hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver), and at the same time an alternative to dealing with [kiosk-mode](https://github.com/maykar/kiosk-mode), [card-mod](https://github.com/thomasloven/lovelace-card-mod) and [layout-card](https://github.com/thomasloven/lovelace-layout-card) plugins for Home Assistant.
+
+#### Inkplate
 
 > Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
 
-The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/).
+The Inkplate MCU must be programmed to periodically download and display the captured dashboard image. See samples in the `inkplate/` folder for how to do this, either by using the [Arduino](https://github.com/SolderedElectronics/Inkplate-Arduino-library/)-based sketch or the config file for using the Inkplate with [ESPHome](http://esphome.io/). Another excellent alternative, is to use the [PlatformIO](https://platformio.org/)-based solution [lanrat/homeplate](https://github.com/lanrat/homeplate).
 
 * [Inkplate: Get Started Page](https://inkplate.readthedocs.io/en/latest/get-started.html)
 * [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)

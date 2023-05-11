@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 module.exports = {
@@ -7,7 +8,9 @@ module.exports = {
     '../data/**/*.{yml,yaml}',
   ],
   safelist: [
-    { pattern: /(h|bg|border|gap|basis)-./ }
+    { pattern: /(h|bg|border|gap|basis|)-./ },
+    /^p(\w?)-/,
+    /^\-?m(\w?)-/,
   ],
   theme: {
     colors: {
