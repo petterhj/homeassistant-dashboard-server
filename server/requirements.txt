@@ -3,7 +3,7 @@ fastapi==0.95.1
 homeassistant-api==4.1.1
 Jinja2==3.1.2
 loguru==0.6.0
-Pillow==9.4.0
+Pillow==9.5.0
 playwright==1.32.0
 pydantic>=1.6.2,<2.0.0
 python-dateutil==2.8.2
