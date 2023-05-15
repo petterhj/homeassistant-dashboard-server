@@ -91,7 +91,7 @@ onMounted(() => {
   left: -7px;
   width: 12px;
   height: 12px;
-  border: 4px solid var(--color-light-rgb);
+  border: 4px solid var(--color-lighter-rgb);
   background: #ffffff;
   outline: 6px solid #ffffff;
   border-radius: 50%;
