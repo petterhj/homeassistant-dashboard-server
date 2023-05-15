@@ -12,7 +12,7 @@
     "@mdi/font": "^7.1.96",
     "chart.js": "4.2.1",
     "chartjs-adapter-date-fns": "3.0.0",
-    "chartjs-plugin-annotation": "2.2.1",
+    "chartjs-plugin-annotation": "3.0.0",
     "chartjs-plugin-datalabels": "2.2.0",
     "daisyui": "2.51.5",
     "date-fns": "^2.29.3",
