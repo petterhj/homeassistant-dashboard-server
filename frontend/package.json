@@ -9,12 +9,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@mdi/font": "^7.1.96",
+    "@mdi/font": "^7.2.96",
     "chart.js": "4.2.1",
     "chartjs-adapter-date-fns": "3.0.0",
-    "chartjs-plugin-annotation": "2.2.1",
+    "chartjs-plugin-annotation": "3.0.0",
     "chartjs-plugin-datalabels": "2.2.0",
-    "daisyui": "2.51.5",
+    "daisyui": "2.51.6",
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
     "vue": "^3.2.45",
@@ -25,9 +25,9 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@tailwindcss/line-clamp": "0.4.4",
-    "@vitejs/plugin-vue": "^4.1.0",
+    "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.0.0",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.14",
     "eslint": "^8.40.0",
     "eslint-plugin-vue": "^9.3.0",
     "postcss": "^8.4.21",
