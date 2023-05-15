@@ -85,8 +85,9 @@ const entity = await getEntity(props.entity, { history: true });
 
 const chartData = computed(() => {
   const { attributes, history } = entity;
+  const historyData = history ? history : [];
 
-  const temperatureData = history
+  const temperatureData = historyData
     .map((f) => ({
       x: parseISO(f.last_updated),
       y: f.attributes.temperature,
@@ -126,8 +127,26 @@ const chartData = computed(() => {
 
   return data;
 });
+
+const chartProps = computed(() => {
+  let options = chart.options;
+  const values = chartData.value?.datasets[0].data;
+
+  if (values.length) {
+    const min = Math.min(...values.map((v) => v.y));
+    const max = Math.max(...values.map((v) => v.y));
+
+    options.scales.y.min = Math.floor(min - min * 0.15);
+    options.scales.y.max = Math.ceil(max * 1.15);
+  }
+
+  return {
+    options,
+    data: chartData.value,
+  };
+});
 </script>
 
 <template>
-  <Line v-if="chartData" :options="chart.options" :data="chartData" />
+  <Line v-if="chartData" v-bind="chartProps" />
 </template>
