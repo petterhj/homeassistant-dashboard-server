@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@mdi/font": "^7.1.96",
+    "@mdi/font": "^7.2.96",
     "chart.js": "4.2.1",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "2.2.1",
