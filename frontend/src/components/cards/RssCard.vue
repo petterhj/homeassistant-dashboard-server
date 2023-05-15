@@ -101,15 +101,15 @@ onMounted(() => {
       </div>
 
       <div class="rss-item__inner mb-3 max-h-32">
-        <span v-if="item.datetime" class="mr-2 font-bold text-lighter">
+        <span v-if="item.datetime" class="mr-2 font-medium text-lighter">
           {{ format(item.datetime, props.dateFormat) }}
         </span>
-        <span class="mr-2 font-bold">
+        <span class="mr-2 font-medium">
           {{ item.title }}
         </span>
         <span
           v-if="showDescription && item.description"
-          :class="['text-light', lineClampClass]"
+          :class="['text-light', 'text-xs', lineClampClass]"
         >
           {{ item.description }}
         </span>
