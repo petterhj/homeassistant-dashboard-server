@@ -8,7 +8,7 @@ module.exports = {
     '../data/**/*.{yml,yaml}',
   ],
   safelist: [
-    { pattern: /(h|bg|border|gap|basis|)-./ },
+    { pattern: /(h|bg|border|gap|basis|line-clamp|)-./ },
     /^p(\w?)-/,
     /^\-?m(\w?)-/,
   ],

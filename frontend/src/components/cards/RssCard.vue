@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { format, parse } from 'date-fns';
 import CardTitle from './partials/CardTitle.vue';
 
@@ -20,11 +20,43 @@ const props = defineProps({
     required: false,
     default: 'rss-box',
   },
+  show: {
+    type: Object,
+    required: false,
+  },
+  itemLimit: {
+    type: Number,
+    required: false,
+    default: 10,
+  },
   dateFormat: {
     type: String,
     required: false,
     default: 'HH:mm',
   },
+  lineClamp: {
+    type: Number,
+    required: false,
+    default: 3,
+  },
+});
+
+const lineClampClass = computed(() => {
+  return props.lineClamp > 0 ? `line-clamp-${props.lineClamp}` : null;
+});
+
+const showCategories = computed(() => {
+  if (props.show?.categories === undefined) {
+    return true;
+  }
+  return props.show?.categories;
+});
+
+const showDescription = computed(() => {
+  if (props.show?.description === undefined) {
+    return true;
+  }
+  return props.show?.description;
 });
 
 onMounted(() => {
@@ -51,11 +83,14 @@ onMounted(() => {
 
   <div v-if="items.length" class="flex flex-col px-2">
     <div
-      v-for="(item, index) in items"
+      v-for="(item, index) in items.slice(0, itemLimit)"
       :key="index"
       class="rss-item relative text-sm pl-4"
     >
-      <div v-if="item.categories.length" class="flex gap-3 pt-[2px] mb-1">
+      <div
+        v-if="showCategories && item.categories.length"
+        class="flex gap-3 pt-[2px] mb-1"
+      >
         <span
           v-for="category in item.categories"
           :key="category"
@@ -65,14 +100,17 @@ onMounted(() => {
         </span>
       </div>
 
-      <div class="rss-item__inner mb-4 max-h-32">
+      <div class="rss-item__inner mb-3 max-h-32">
         <span v-if="item.datetime" class="mr-2 font-bold text-lighter">
           {{ format(item.datetime, props.dateFormat) }}
         </span>
         <span class="mr-2 font-bold">
           {{ item.title }}
         </span>
-        <span v-if="item.description" class="text-light line-clamp-3">
+        <span
+          v-if="showDescription && item.description"
+          :class="['text-light', lineClampClass]"
+        >
           {{ item.description }}
         </span>
       </div>
