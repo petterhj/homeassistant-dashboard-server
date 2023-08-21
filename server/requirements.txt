@@ -1,5 +1,5 @@
 fastapi-utils==0.2.1
-fastapi==0.95.2
+fastapi==0.101.1
 homeassistant-api==4.1.1.post1
 Jinja2==3.1.2
 loguru==0.7.0
