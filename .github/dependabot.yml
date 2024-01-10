@@ -12,6 +12,10 @@ updates:
       interval: "weekly"
     labels:
       - "backend"
+    groups:
+      pip:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/frontend"
@@ -19,3 +23,7 @@ updates:
       interval: "weekly"
     labels:
       - "frontend"
+    groups:
+      npm:
+        patterns:
+          - "*"
