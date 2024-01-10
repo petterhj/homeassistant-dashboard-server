@@ -28,7 +28,7 @@ from .static import templates
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("")
 async def config(
     client: HomeAssistantClient = Depends(get_homeassistant_client),
 ) -> homeassistant.Config:

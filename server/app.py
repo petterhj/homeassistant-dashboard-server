@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from .dependencies import get_config, get_captures
 from .logger import configure_logger
-from .models.config import Config, CaptureFormat
+from .models.config import CaptureFormat
 from .models.server import ServerConfig
 from .routers.api import router as api_router
 from .routers.proxy import router as proxy_router
@@ -34,11 +34,15 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     logger.error(exc)
 
     errors = []
-    for error in exc.errors(): 
-        errors.append({
-            "location": ".".join([str(l) for l in error["loc"] if l not in ["response"]]),
-            "message": error["msg"],
-        })
+    for error in exc.errors():
+        errors.append(
+            {
+                "location": ".".join(
+                    [str(l) for l in error["loc"] if l not in ["response"]]
+                ),
+                "message": error["msg"],
+            }
+        )
 
     return JSONResponse(
         content=jsonable_encoder({"detail": errors}),
@@ -56,10 +60,12 @@ async def capture_dashboard_task() -> None:
     config = get_config()
     target_url = f"http://localhost:{config.server.port}/"
 
-    logger.info("Running capture task, url={}, {}".format(
-        target_url,
-        config.capture,
-    ))
+    logger.info(
+        "Running capture task, url={}, {}".format(
+            target_url,
+            config.capture,
+        )
+    )
 
     await capture_screenshot(
         url=target_url,
@@ -72,18 +78,33 @@ async def capture_dashboard_task() -> None:
 
 
 @app.get("/dashboard.{capture_format}")
+@app.get("/{timestamp}_dashboard.{capture_format}")
 async def capture(
     capture_format: CaptureFormat,
+    timestamp: int = None,
     capture_files: list = Depends(get_captures),
 ):
-    if len(capture_files) == 0:
+    capture_format = capture_format.value
+    target_filename = f"{timestamp}_dashboard.{capture_format}" if timestamp else None
+
+    if len(capture_files) == 0 or (
+        target_filename and target_filename not in [f.name for f in capture_files]
+    ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No capture files found",
         )
+
+    if target_filename:
+        for cf in capture_files:
+            if cf.name == target_filename:
+                capture_file = cf
+    else:
+        capture_file = capture_files[0]
+
     return FileResponse(
-        capture_files[0],
-        media_type=f"image/{capture_format.value}",
+        capture_file,
+        media_type=f"image/{capture_format}",
     )
 
 
@@ -109,9 +130,13 @@ async def remote_capture(
         )
 
     remote_config = config.remote[remote_id]
-    capture_config = config.capture.copy(
-        update=remote_config.capture.dict(exclude_defaults=True),
-    ) if remote_config.capture else config.capture
+    capture_config = (
+        config.capture.copy(
+            update=remote_config.capture.dict(exclude_defaults=True),
+        )
+        if remote_config.capture
+        else config.capture
+    )
 
     captured_file_path = await capture_screenshot(
         url=remote_config.url,
