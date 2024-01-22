@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createI18n } from 'vue-i18n';
 
 const messages = {
@@ -13,8 +14,10 @@ const messages = {
     datetime: {
       now: 'Now',
       ago: 'ago',
+      today: 'Today',
     },
     weather: {
+      forecast: 'Forecast',
       states: {
         'clear-night': 'Klart',
         'cloudy': 'Cloudy',
@@ -33,11 +36,15 @@ const messages = {
       },
     },
     sun: {
+      sun: 'Sun',
       sunrise: 'Sunrise',
       sunset: 'Sunset',
       dawn: 'Dawn',
       dusk: 'Dusk',
       solarNoon: 'Solar noon',
+    },
+    todo: {
+      todo: 'Todo',
     },
     petcare: {
       hub: 'Hub',
@@ -58,8 +65,10 @@ const messages = {
     datetime: {
       now: 'Nå',
       ago: 'siden',
+      today: 'I dag',
     },
     weather: {
+      forecast: 'Værvarsel',
       states: {
         'clear-night': 'Klart',
         'cloudy': 'Skyet',
@@ -78,11 +87,15 @@ const messages = {
       },
     },
     sun: {
+      sun: 'Sol',
       sunrise: 'Soloppgang',
       sunset: 'Solnedgang',
       dawn: 'Gryning',
       dusk: 'Skumring',
       solarNoon: 'Middag',
+    },
+    todo: {
+      todo: 'Gjøreliste',
     },
     petcare: {
       hub: 'Hub',

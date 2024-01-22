@@ -1,83 +1,139 @@
 <script setup>
-import { format, parseISO, isThisWeek } from 'date-fns';
+import { computed } from 'vue';
+import {
+  differenceInSeconds,
+  format,
+  isBefore,
+  isThisWeek,
+  isToday,
+  parseISO,
+  subHours,
+} from 'date-fns';
+import { useI18n } from 'vue-i18n';
 import { useHomeAssistant } from '@/stores/homeassistant';
-import CardTitle from './partials/CardTitle.vue';
+import { useCard } from '@/composables/card';
+import { BASE_CARD_PROPS } from '@/util/card';
+import BaseCard from '@/components/generic/BaseCard.vue';
 
+const { t } = useI18n();
 const { getCalendar } = useHomeAssistant();
 
 const props = defineProps({
-  title: {
-    type: String,
+  ...BASE_CARD_PROPS,
+  calendars: {
+    type: Array,
     required: false,
-    default: null,
-  },
-  icon: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  itemIcon: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  calendarIcons: {
-    type: Object,
-    required: false,
-    default: null,
+    default: () => [],
   },
 });
 
-const events = await getCalendar();
+const events = await getCalendar(props.calendars);
+const card = useCard(props, {
+  title: 'Calendar',
+  icon: 'calendar-blank-outline',
+});
 
-const eventDate = (event) => {
-  const eventStart = parseISO(event.start);
-  if (isThisWeek(eventStart)) {
-    return format(eventStart, 'EEEEEE.');
+const eventDateTime = (event) => {
+  // Date format
+  const { start, end } = event;
+
+  let dateFormat = format(start, 'EEEEEE. d/M');
+  let startTime = format(start, 'HH:mm');
+  let endTime = end ? format(end, 'HH:mm') : null;
+
+  if (isToday(start)) {
+    dateFormat = t('datetime.today');
+  } else if (isThisWeek(start)) {
+    dateFormat = format(start, 'iii.');
   }
-  return format(eventStart, 'EEEEEE. d/M');
-};
-const eventTime = (event) => {
-  const eventStart = parseISO(event.start);
-  const eventEnd = event.end ? parseISO(event.end) : null;
-  let formattedEnd = eventEnd ? format(eventEnd, '-HH:mm') : null;
-  const formattedDate = format(eventStart, 'HH:mm');
-  return formattedDate + formattedEnd;
-};
-const eventIcon = (event) => {
-  if (
-    props.calendarIcons &&
-    Object.prototype.hasOwnProperty.call(props.calendarIcons, event.entity_id)
-  ) {
-    return props.calendarIcons[event.entity_id];
+  dateFormat = dateFormat.charAt(0).toUpperCase() + dateFormat.slice(1);
+
+  if (differenceInSeconds(end, start) === 86400) {
+    // All-day event
+    return dateFormat;
+  } else if (startTime === '00:00' && endTime === '00:00') {
+    // Multi-day event
+    return `${dateFormat} - ${format(subHours(end, 5), 'iii. d/M')}`;
   }
-  return props.itemIcon || props.icon;
+
+  return dateFormat + ', ' + startTime + (endTime ? `-${endTime}` : '');
 };
+
+const sortedEvents = computed(() => {
+  const now = new Date();
+  return events
+    .map((e) => ({
+      ...e,
+      start: parseISO(e.start),
+      end: parseISO(e.end),
+    }))
+    .filter((e) => {
+      const calendarConfig = props.calendars.find((c) => c.entity === e.entity_id);
+      if (calendarConfig?.filterBegun === true) {
+        return !isBefore(e.start, now);
+      }
+      return true;
+    })
+    .sort((a, b) => a.start - b.start)
+    .slice(0, 10);
+});
+
+function eventIcon(event) {
+  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+
+  if (calendarConfig?.icon) {
+    return calendarConfig.icon;
+  }
+  return props.itemIcon || props.icon || card.icon;
+}
+
+function showDescription(event) {
+  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+  if (!event.description || calendarConfig?.showDescription === false) {
+    return false;
+  }
+  return true;
+}
+
+function showCalendarName(event) {
+  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+  if (!event.calendar_name || calendarConfig?.showCalendarName === false) {
+    return false;
+  }
+  return true;
+}
 </script>
 
 <template>
-  <CardTitle :title="title" :icon="icon" />
-
-  <ul>
-    <li v-for="(event, index) in events" :key="index" class="flex gap-2 ml-2 mb-2">
-      <span
-        v-if="calendarIcons || itemIcons || icon"
-        :class="['mdi', `mdi-${eventIcon(event)}`, 'text-light']"
-      />
-      <div class="flex flex-col gap-0.25 w-full">
-        <div class="flex justify-between font-medium">
-          <span class="text-sm">{{ event.summary }}</span>
-          <span class="text-xs text-light whitespace-nowrap">
-            {{ eventDate(event) }}, {{ eventTime(event) }}
+  <BaseCard v-bind="card">
+    <ul>
+      <li
+        v-for="(event, index) in sortedEvents"
+        :key="index"
+        class="flex gap-2 ml-2 mb-2"
+      >
+        <span
+          v-if="eventIcon(event)"
+          :class="['mdi', `mdi-${eventIcon(event)}`, 'text-light']"
+        />
+        <div class="flex flex-col gap-0.25 w-full">
+          <div class="flex justify-between font-medium">
+            <span class="text-sm">{{ event.summary }}</span>
+            <span class="text-xs text-light whitespace-nowrap">
+              {{ eventDateTime(event) }}
+            </span>
+          </div>
+          <span
+            v-if="showCalendarName(event)"
+            class="mt-1 text-xs text-lighter line-clamp-1"
+          >
+            {{ event.calendar_name }}
           </span>
+          <p v-if="showDescription(event)" class="mt-1 text-xs text-light line-clamp-2">
+            {{ event.description }}
+          </p>
         </div>
-        <p
-          v-if="event.description"
-          class="mt-1 text-xs text-light font-medium line-clamp-2"
-        >
-          {{ event.description }}
-        </p>
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </BaseCard>
 </template>

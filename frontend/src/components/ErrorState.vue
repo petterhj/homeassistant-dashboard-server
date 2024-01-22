@@ -23,7 +23,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="h-full p-4 flex flex-col gap-2 items-center justify-center bg-lightest">
+  <div
+    class="card card--error p-4 flex flex-col gap-2 items-center justify-center bg-lightest"
+  >
     <span
       class="mdi text-lighter"
       :class="[`mdi-${icon}`, size === 'large' ? 'text-8xl' : 'text-4xl']"
@@ -31,7 +33,7 @@ defineProps({
     <span class="font-semibold">
       {{ title }}
     </span>
-    <span v-if="error" class="text-sm text-light">
+    <span v-if="error" class="text-sm text-light text-center">
       {{ error.message }}
     </span>
     <span v-if="error?.errors" class="text-sm font-mono text-lighter">

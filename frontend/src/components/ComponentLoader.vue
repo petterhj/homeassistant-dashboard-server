@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, defineAsyncComponent, onErrorCaptured } from 'vue';
 import { useI18n } from 'vue-i18n';
-import BaseCard from './cards/BaseCard.vue';
 import LoadingState from './LoadingState.vue';
 import ErrorState from './ErrorState.vue';
 
@@ -18,6 +17,7 @@ const props = defineProps({
   },
 });
 
+const card = ref(null);
 const error = ref(null);
 
 onErrorCaptured((err) => {
@@ -47,36 +47,32 @@ const componentType = computed(() => {
 
 const component = computed(() => {
   const fileName = `${snakeToPascal(`${props.type}-${componentType.value}`)}`;
-  const path = componentType.value === 'group' ? 'groups' : 'cards';
-  console.group(`Loading component ${fileName}`);
-  console.debug('> type:', props.config.type);
-  console.debug('> style:', cardStyle.value);
-  console.debug('> props:', cardProps.value);
-  console.groupEnd();
-  return defineAsyncComponent(() => import(`./${path}/${fileName}.vue`));
-});
 
-const cardStyle = computed(() => {
-  const { style } = props.config;
-  if (typeof style === 'object') {
-    const b = Object.values(style).join(' ');
-    return b;
-  } else if (typeof style === 'string') {
-    return style;
+  if (componentType.value === 'group') {
+    return defineAsyncComponent(() => import(`./generic/CardGroup.vue`));
   }
-  return '';
+
+  console.group(`Loading component '${fileName}'`);
+  for (const [key, value] of Object.entries(props.config)) {
+    console.debug(`> ${key}:`, value);
+  }
+  console.groupEnd();
+
+  return defineAsyncComponent(() => import(`./cards/${fileName}.vue`));
 });
 
 const cardProps = computed(() => {
-  // eslint-disable-next-line no-unused-vars
-  const { type, style, ...rest } = props.config;
-  return rest;
+  const { style, ...rest } = props.config;
+  return {
+    cardStyle: style,
+    ...rest,
+  };
 });
 </script>
 
 <template>
   <template v-if="componentType === 'group'">
-    <component :card-style="cardStyle" :is="component">
+    <component :is="component" v-bind="cardProps">
       <ComponentLoader
         v-for="(componentConfig, index) in config.components"
         :key="index"
@@ -87,18 +83,16 @@ const cardProps = computed(() => {
   </template>
 
   <template v-else>
-    <BaseCard :type="config.type" :card-style="cardStyle">
-      <Suspense v-if="!error">
-        <template #default>
-          <component :is="component" v-bind="cardProps" />
-        </template>
+    <Suspense v-if="!error">
+      <template #default>
+        <component ref="card" :is="component" v-bind="cardProps" />
+      </template>
 
-        <template #fallback>
-          <LoadingState :message="config.type" />
-        </template>
-      </Suspense>
+      <template #fallback>
+        <LoadingState :message="config.type" />
+      </template>
+    </Suspense>
 
-      <ErrorState v-else :title="t('general.noData')" :error="error" />
-    </BaseCard>
+    <ErrorState v-else :title="t('general.noData')" :error="error" />
   </template>
 </template>

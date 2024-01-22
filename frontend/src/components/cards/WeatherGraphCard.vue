@@ -1,152 +1,137 @@
 <script setup>
 import { computed } from 'vue';
-import { add, sub, parseISO, endOfDay, startOfDay, eachHourOfInterval } from 'date-fns';
-import { Line } from 'vue-chartjs';
-import { cssvar } from '@/util/layout';
-import { useChart } from '@/composables/chart';
+import { add, sub, parseISO } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 import { useHomeAssistant } from '@/stores/homeassistant';
+import { useCard } from '@/composables/card';
+import { BASE_CARD_PROPS } from '@/util/card';
+import { parseAnnotations } from '@/util/chart';
+import BaseCard from '@/components/generic/BaseCard.vue';
+import LineChart from '@/components/generic/LineChart.vue';
 
-const { getEntity } = useHomeAssistant();
+const { t } = useI18n();
+const { getEntity, getServiceResponse } = useHomeAssistant();
 
 const props = defineProps({
+  ...BASE_CARD_PROPS,
   entity: {
     type: String,
     required: true,
   },
   attribute: {
     type: String,
-    required: true,
-  },
-  show: {
-    type: Object,
     required: false,
+    default: 'temperature',
   },
-  dateFormat: {
+  unit: {
     type: String,
     required: false,
-    default: 'MM yy',
+    default: null,
   },
-});
-
-const now = new Date();
-
-const annotationBorder = {
-  drawTime: 'beforeDatasetsDraw',
-  type: 'line',
-  borderWidth: 3,
-  borderDash: [3, 6],
-  borderColor: cssvar('--color-dark-rgb'),
-};
-
-const labels = eachHourOfInterval({
-  start: sub(now, { hours: 12 }),
-  end: add(now, { hours: 24 }),
-});
-
-const chart = useChart({
-  plugins: {
-    datalabels: {
-      display: !!props.show?.labels,
-    },
-    annotation: {
-      annotations: {
-        startOfDay: {
-          ...annotationBorder,
-          xMin: startOfDay(now),
-          xMax: startOfDay(now),
-        },
-        now: {
-          ...annotationBorder,
-          xMin: new Date(),
-          xMax: new Date(),
-          borderColor: cssvar('--color-dark-rgb'),
-          borderDash: [0, 0],
-        },
-        endOfDay: {
-          ...annotationBorder,
-          xMin: endOfDay(now),
-          xMax: endOfDay(now),
-        },
-      },
+  includeForecast: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  includeHistory: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  forecastType: {
+    type: String,
+    required: false,
+    default: 'hourly',
+    validator(value) {
+      return ['daily', 'hourly', 'twice_daily'].includes(value);
     },
   },
-  scales: {
-    x: {
-      min: labels[0],
-      max: labels[labels.length - 1],
-      ticks: {
-        maxRotation: 0,
-      },
-    },
+  annotations: {
+    type: Array,
+    required: false,
+    default: () => ['now', 'startOfDay', 'endOfDay'],
   },
 });
+const card = useCard(props, {
+  title: t('weather.forecast'),
+  icon: 'chart-timeline-variant',
+  style: ['h-56'],
+});
 
-const entity = await getEntity(props.entity, { history: true });
+const entity = await getEntity(props.entity, { history: props.includeHistory });
+const forecast = props.includeForecast
+  ? await getServiceResponse('weather', 'get_forecasts', props.entity, {
+      type: props.forecastType,
+    })
+  : null;
+
+const unit = props.unit || entity?.attributes[`${props.attribute}_unit`];
 
 const chartData = computed(() => {
-  const { attributes, history } = entity;
-  const historyData = history ? history : [];
-
-  const temperatureData = historyData
-    .map((f) => ({
-      x: parseISO(f.last_updated),
-      y: f.attributes.temperature,
-    }))
-    .concat(
-      attributes.forecast.map((f) => ({
-        x: parseISO(f.datetime),
-        y: f.temperature,
-      }))
+  const { attributes, history, lastUpdated } = entity;
+  let data = [[parseISO(lastUpdated), attributes[props.attribute]]];
+  if (props.includeHistory && history) {
+    data = data.concat(
+      history.map((f) => [parseISO(f.last_updated), f.attributes[props.attribute]])
     );
+  }
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        yAxisID: 'y',
-        xAxisID: 'x',
-        data: temperatureData,
-        // data: [],
-        borderWidth: 5,
-        fill: true,
-        pointRadius: 0,
-        // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
-        borderColor: cssvar('--color-dark-rgb'),
-        backgroundColor: cssvar('--color-lightest-rgb'),
-        tension: 0.3,
-        datalabels: {
-          display: 'auto',
-          formatter: (value) => {
-            return value.y + '°';
-          },
-        },
-      },
-      // { data: windSpeedData },
-    ],
+  if (props.includeForecast && forecast) {
+    const forecastData = forecast?.forecast || [];
+    data = data.concat(
+      forecastData.map((f) => [parseISO(f.datetime), f[props.attribute]])
+    );
+  }
+
+  return [data.sort((a, b) => a[0] - b[0])];
+});
+
+const xAxisScale = computed(() => {
+  const now = new Date();
+  return {
+    min: sub(now, { hours: 12 }),
+    max: add(now, { hours: 24 }),
   };
+});
 
-  return data;
+const yAxisScale = computed(() => {
+  const { min: xMin, max: xMax } = xAxisScale.value;
+
+  if (xMin && xMax && chartData.value.length) {
+    const values = chartData.value
+      .map((s) => s.filter((p) => p[0] >= xMin && p[0] <= xMax).map((p) => p[1]))
+      .flat();
+    return {
+      min: Math.floor(Math.min(...values)) + -2,
+      max: Math.ceil(Math.max(...values)) + 2,
+    };
+  }
+  return {
+    minInterval: 1,
+    maxInterval: 1,
+    min: 'dataMin',
+    max: 'dataMax',
+    boundaryGap: ['10%', '10%'],
+  };
 });
 
 const chartProps = computed(() => {
-  let options = chart.options;
-  const values = chartData.value?.datasets[0].data;
-
-  if (values.length) {
-    const min = Math.min(...values.map((v) => v.y));
-    const max = Math.max(...values.map((v) => v.y));
-
-    options.scales.y.min = Math.floor(min - min * 0.15);
-    options.scales.y.max = Math.ceil(max * 1.15);
-  }
-
   return {
-    options,
     data: chartData.value,
+    xFormat: 'HH',
+    xAxis: false,
+    xAxisScale: xAxisScale.value,
+    yAxis: false,
+    yAxisScale: yAxisScale.value,
+    yValueFormatter: (val) => (unit ? `${val}${unit}` : val),
+    stepLine: false,
+    annotations: parseAnnotations(props.annotations, chartData.value),
   };
 });
 </script>
 
 <template>
-  <Line v-if="chartData" v-bind="chartProps" />
+  <BaseCard v-bind="card">
+    <LineChart v-bind="chartProps" />
+  </BaseCard>
 </template>

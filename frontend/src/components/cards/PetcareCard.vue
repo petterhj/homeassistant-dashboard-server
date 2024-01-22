@@ -3,12 +3,15 @@ import { computed } from 'vue';
 import { formatDistance, parseISO } from 'date-fns';
 import { useI18n } from 'vue-i18n';
 import { useHomeAssistant } from '@/stores/homeassistant';
-import CardTitle from './partials/CardTitle.vue';
+import { useCard } from '@/composables/card';
+import { BASE_CARD_PROPS } from '@/util/card';
+import BaseCard from '@/components/generic/BaseCard.vue';
 
 const { t } = useI18n();
 const { getEntities } = useHomeAssistant();
 
 const props = defineProps({
+  ...BASE_CARD_PROPS,
   petEntity: {
     type: String,
     required: true,
@@ -25,16 +28,12 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  title: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  icon: {
-    type: String,
-    required: false,
-    default: null,
-  },
+});
+
+const card = useCard(props, {
+  title: 'Petcare',
+  icon: 'cat',
+  style: ['h-44'],
 });
 
 const states = await getEntities([
@@ -76,47 +75,47 @@ const flapBatteryIcon = computed(() => {
 </script>
 
 <template>
-  <CardTitle v-if="title" :title="title" :icon="icon" />
-
-  <div class="flex items-center gap-4">
-    <div class="d-avatar d-placeholder">
-      <div class="bg-lightest rounded-full w-10 h-10">
-        <span
-          class="mdi text-dark text-2xl"
-          :class="`mdi-${states[petEntity].state === 'on' ? 'home' : 'pine-tree'}`"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col flex-1">
-      <div class="text-lg leading-5 font-semibold">
-        {{ t(`petcare.${states[petEntity].state === 'on' ? 'inside' : 'outside'}`) }}
-      </div>
-      <div class="flex justify-between text-sm font-medium">
-        <span class="text-light">
-          {{ formatDistance(new Date(), parseISO(states[petEntity].attributes.since)) }}
-          {{ t('datetime.ago') }}
-        </span>
-        <div class="text-light">
+  <BaseCard v-bind="card">
+    <div class="flex items-center gap-4">
+      <div class="d-avatar d-placeholder">
+        <div class="bg-lightest rounded-full w-10 h-10">
           <span
-            class="mdi"
-            :class="`mdi-${
-              states[hubEntity].state === 'on'
-                ? 'check-circle-outline'
-                : 'alert-circle-outline'
-            }`"
+            class="mdi text-dark text-2xl"
+            :class="`mdi-${states[petEntity].state === 'on' ? 'home' : 'pine-tree'}`"
           />
-          <span
-            class="mdi"
-            :class="`mdi-${
-              states[hubEntity].state === 'on'
-                ? 'check-circle-outline'
-                : 'alert-circle-outline'
-            }`"
-          />
-          <span class="mdi" :class="`mdi-${flapBatteryIcon}`" />
-          <span>{{ states[props.flapBatteryEntity].state }} %</span>
+        </div>
+      </div>
+      <div class="flex flex-col flex-1">
+        <div class="text-lg leading-5 font-semibold">
+          {{ t(`petcare.${states[petEntity].state === 'on' ? 'inside' : 'outside'}`) }}
+        </div>
+        <div class="flex justify-between text-sm font-medium">
+          <span class="text-light">
+            {{ formatDistance(new Date(), parseISO(states[petEntity].attributes.since)) }}
+            {{ t('datetime.ago') }}
+          </span>
+          <div class="text-light">
+            <span
+              class="mdi"
+              :class="`mdi-${
+                states[hubEntity].state === 'on'
+                  ? 'check-circle-outline'
+                  : 'alert-circle-outline'
+              }`"
+            />
+            <span
+              class="mdi"
+              :class="`mdi-${
+                states[hubEntity].state === 'on'
+                  ? 'check-circle-outline'
+                  : 'alert-circle-outline'
+              }`"
+            />
+            <span class="mdi" :class="`mdi-${flapBatteryIcon}`" />
+            <span>{{ states[props.flapBatteryEntity].state }} %</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </BaseCard>
 </template>

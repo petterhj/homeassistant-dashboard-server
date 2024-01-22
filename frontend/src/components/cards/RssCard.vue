@@ -1,33 +1,32 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { format, parse } from 'date-fns';
-import CardTitle from './partials/CardTitle.vue';
+import { format } from 'date-fns';
+import { useCard } from '@/composables/card';
+import { BASE_CARD_PROPS } from '@/util/card';
+import BaseCard from '@/components/generic/BaseCard.vue';
 
 const items = ref([]);
 
 const props = defineProps({
+  ...BASE_CARD_PROPS,
   url: {
     type: String,
     required: true,
   },
-  title: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  icon: {
-    type: String,
-    required: false,
-    default: 'rss-box',
-  },
-  show: {
-    type: Object,
-    required: false,
-  },
-  itemLimit: {
+  limit: {
     type: Number,
     required: false,
     default: 10,
+  },
+  showCategories: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  showDescription: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
   dateFormat: {
     type: String,
@@ -41,22 +40,13 @@ const props = defineProps({
   },
 });
 
+const card = useCard(props, {
+  title: 'RSS',
+  icon: 'rss-box',
+});
+
 const lineClampClass = computed(() => {
   return props.lineClamp > 0 ? `line-clamp-${props.lineClamp}` : null;
-});
-
-const showCategories = computed(() => {
-  if (props.show?.categories === undefined) {
-    return true;
-  }
-  return props.show?.categories;
-});
-
-const showDescription = computed(() => {
-  if (props.show?.description === undefined) {
-    return true;
-  }
-  return props.show?.description;
 });
 
 onMounted(() => {
@@ -66,6 +56,17 @@ onMounted(() => {
     .then((response) => response.text())
     .then((str) => new window.DOMParser().parseFromString(str, 'text/xml'))
     .then((data) => {
+      if (!props.title) {
+        try {
+          const feedTitle = data
+            .querySelector('channel')
+            .querySelector('title').innerHTML;
+          card.title = feedTitle;
+        } catch {
+          /* pass */
+        }
+      }
+
       items.value = [...data.querySelectorAll('item')].map((item) => ({
         title: item.querySelector('title').innerHTML,
         description: item.querySelector('description').innerHTML,
@@ -79,43 +80,43 @@ onMounted(() => {
 </script>
 
 <template>
-  <CardTitle v-if="title" :title="title" :icon="icon" />
-
-  <div v-if="items.length" class="flex flex-col px-2">
-    <div
-      v-for="(item, index) in items.slice(0, itemLimit)"
-      :key="index"
-      class="rss-item relative text-sm pl-4"
-    >
+  <BaseCard v-bind="card">
+    <div v-if="items.length" class="flex flex-col px-2">
       <div
-        v-if="showCategories && item.categories.length"
-        class="flex gap-3 pt-[2px] mb-1"
+        v-for="(item, index) in items.slice(0, limit)"
+        :key="index"
+        class="rss-item relative text-sm pl-4"
       >
-        <span
-          v-for="category in item.categories"
-          :key="category"
-          class="rss-item__category relative text-xs font-medium text-lighter"
+        <div
+          v-if="showCategories && item.categories.length"
+          class="flex gap-3 pt-[2px] mb-1 line-clamp-1"
         >
-          {{ category }}
-        </span>
-      </div>
+          <span
+            v-for="category in item.categories"
+            :key="category"
+            class="rss-item__category relative text-xs font-medium text-lighter whitespace-nowrap"
+          >
+            {{ category }}
+          </span>
+        </div>
 
-      <div class="rss-item__inner mb-3 max-h-32">
-        <span v-if="item.datetime" class="mr-2 font-medium text-lighter">
-          {{ format(item.datetime, props.dateFormat) }}
-        </span>
-        <span class="mr-2 font-medium">
-          {{ item.title }}
-        </span>
-        <span
-          v-if="showDescription && item.description"
-          :class="['text-light', 'text-xs', lineClampClass]"
-        >
-          {{ item.description }}
-        </span>
+        <div class="rss-item__inner mb-3 max-h-32">
+          <span v-if="item.datetime" class="mr-2 font-medium text-lighter">
+            {{ format(item.datetime, props.dateFormat) }}
+          </span>
+          <span class="mr-2 font-medium">
+            {{ item.title }}
+          </span>
+          <span
+            v-if="showDescription && item.description"
+            :class="['text-light', 'text-xs', lineClampClass]"
+          >
+            {{ item.description }}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
+  </BaseCard>
 </template>
 
 <style scoped>

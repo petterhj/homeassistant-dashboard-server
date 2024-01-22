@@ -29,11 +29,9 @@ LOG_JSON=false
 Other runtime config, including the dashboard itself, is defined in a YAML file called `configuration.yaml` placed at the root of the application data path (`DATA_PATH`).
 
 ```yml
-# config.yml
+# configuration.yml
 homeassistant:
-  host: !secret homeassistant_host
-  port: 8123
-  ssl: false
+  url: !secret homeassistant_url
   token: !secret homeassistant_token
 
 timezone: Europe/Oslo
@@ -44,19 +42,190 @@ locale:
 
 dashboard:
   components: !include components.yaml
+
+capture:
+  timeout: 10000
+  width: 1200
+  height: 825
+```
+
+```yml
+# components.yaml
+- type: vertical-stack
+  style: gap-12
+  components:
+    - type: weather-forecast
+      entity: weather.oslo_hourly
+      show:
+        state: true
+        forecast: true
+      dateFormat: HH:mm
+    - type: weather-graph
+      entity: weather.oslo_hourly
+      attribute: temperature
+      show:
+        labels: true
+      dateFormat: HH
+    - type: sun
+    - type: weather-forecast
+      entity: weather.oslo
+      show:
+        state: false
+
+# - type: vertical-stack
+#   style: gap-12
+#   components:
+#     ...
+```
+
+```yml
+# secrets.yaml
+homeassistant_url: http://ha.lan
+homeassistant_token:
 ```
 
 ### Components
 
 #### Groups
 
+```yaml
+- type: horizontal-stack
+  components:
+    - type: vertical-stack
+      style: gap-2
+      components:
+        - type: ...
+```
+
 #### Cards
+
+```yaml
+- type: ...
+  title: ...
+  icon: ...
+```
+
+##### Entities
+
+```yaml
+- type: entities
+  display: list (default) | grid | grouped
+  columns: 2 (default, when using `grid`)
+  entities:
+    - sensor.power_consumption
+    - entity: sensor.electricity_price
+      precision: 2
+      secondaryInfo: last-changed
+    - entity: sensor.monthly_electricity_cost
+      precision: 0
+      unit: kr
+      name: Monthly cost
+      icon: cash
+      secondaryInfo: sensor.electricity_price
+    - entity: sun.sun
+      secondaryInfo: attribute.next_dawn
+  # ...
+  groups: # optional
+    - id: temp
+      title: Temperatures
+      icon: thermometer
+  entities:
+    - entity: climate.heater
+      group: temp
+      attribute: temperature
+      unit: °C
+    - entity: sensor.temp2
+      group: temp
+```
+
+##### Graph
+
+```yaml
+- type: graph
+  entity: sensor.download_speed
+  unit: null (default, uses `unit_of_measurement`)
+  xAxis: false | true (default) | { min, max }
+  yAxis: false | true (default) | { min, max }
+  labels: [true | false | 'min' + 'max' (default)]
+  annotations: [average, <number:yval> ...] (default)
+```
 
 ##### Sun
 
 ```yaml
 - type: sun
-  entity: sun.sun
+  entity: sun.sun # optional, default
+```
+
+##### Weather Forecasst
+
+```yaml
+- type: weather-forecast
+  entity: weather.home
+  state: true (default) | false 
+  forecast: true | 'daily' | 'hourly' (default) | false
+```
+
+##### Weather Graph
+
+```yaml
+- type: weather-graph
+  entity: weather.home
+  attribute: temperature (default)
+  unit: null (default, uses `{attribute}_unit`)
+  includeForecast: true (default) | false 
+  includeHistory: true (default) | false
+  forecastType: daily | hourly (default) | twice_daily
+  annotations: [now, startOfDay, endOfDay] (default)
+```
+
+##### Todo List
+
+```yaml
+- type: todo-list
+  entity: todo.shopping
+```
+
+##### RSS
+
+```yaml
+- type: rss
+  url: https://www.nrk.no/toppsaker.rss
+  limit: 10 (default)
+```
+
+##### Transmission
+
+```yaml
+- type: transmission
+  entity: sensor.transmission_total_torrents # optional, default
+  limit: 15 (default)
+  dateFormat: HH:mm (default)
+  lineClamp: 3 (default)
+  showCategories: true (default)
+  showDescription: true (default)
+```
+
+##### Petcare
+
+```yaml
+- type: petcare
+  petEntity: binary_sensor.cat
+  hubEntity: binary_sensor.hub
+  flapBatteryEntity: sensor.hub_battery_level
+  flapConnectivityEntity: binary_sensor.hub_connectivity
+```
+
+##### Markdown
+
+```yaml
+- type: markdown
+  entity: sensor.markdown
+  attribute: description
+  # or
+  content: |
+    # Foo
+    Bar
 ```
 
 ## Build and run
@@ -94,6 +263,7 @@ $ source .venv/bin/activate
 $ pip install -r server/requirements.txt
 
 $ playwright install [chromium]  # Download new browsers
+$ playwright install-deps
 
 $ python -m server [--data-path <path>] # Start uvicorn server
 ```

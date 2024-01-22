@@ -9,8 +9,13 @@ const state = reactive({
 export function useHomeAssistant() {
   const getEntity = async (entityId, options) => {
     if (Object.prototype.hasOwnProperty.call(state.entities, entityId)) {
-      console.debug(`Returning cached entity state for ${entityId}`);
-      return state.entities[entityId];
+      const entityState = state.entities[entityId];
+      if (options?.history === true && !entityState.history) {
+        console.warn(`Refetching entity state for ${entityId} (missing history)`);
+      } else {
+        console.warn(`Returning cached entity state for ${entityId}`);
+        return entityState;
+      }
     }
 
     const fetchHistory = !!options?.history;
@@ -71,10 +76,34 @@ export function useHomeAssistant() {
     return entities;
   };
 
-  const getCalendar = async () => {
+  const getServiceResponse = async (domain, service, target, data) => {
+    console.warn(`Calling service ${service} for ${domain}, target=${target}`);
+
+    const response = await fetch(
+      `/api/ha/service/${domain}/${service}?` +
+        new URLSearchParams({
+          target,
+          data: JSON.stringify(data || {}),
+        })
+    );
+
+    if (!response?.ok) {
+      if ([400, 408].includes(response.status)) {
+        const data = await response.json();
+        throw new Error(data.detail);
+      }
+      throw new Error('Could not get service data');
+    }
+
+    const responseData = await response.json();
+    return responseData[target];
+  };
+
+  const getCalendar = async (calendars) => {
     console.warn('Fetching calendar data');
 
-    const response = await fetch('/api/ha/calendar');
+    const query = new URLSearchParams(calendars.map((c) => ['calendar', c.entity]));
+    const response = await fetch('/api/ha/calendar?' + query);
     const data = await response.json();
 
     state.events = data;
@@ -86,6 +115,7 @@ export function useHomeAssistant() {
     ...toRefs(state),
     getEntity,
     getEntities,
+    getServiceResponse,
     getCalendar,
   };
 }

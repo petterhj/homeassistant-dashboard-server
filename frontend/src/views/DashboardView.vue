@@ -8,10 +8,10 @@ const { config } = useServer();
 </script>
 
 <template>
-  <main class="h-full">
+  <main class="h-[calc(100%-2rem)]">
     <div
+      class="h-full flex flex-col gap-4 p-4 pb-0"
       v-if="config?.dashboard?.components?.length"
-      class="h-full grid grid-cols-3 gap-12 p-4 pb-14"
     >
       <ComponentLoader
         v-for="(component, index) in config.dashboard.components"
@@ -21,11 +21,19 @@ const { config } = useServer();
       />
     </div>
   </main>
-
-  <div class="fixed bottom-5 left-5 text-sm">
+  <footer class="h-8 px-4 leading-8 text-sm">
     <span class="mdi mdi-refresh text-lighter mr-2" />
     <span class="text-dark font-medium">
       {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
     </span>
-  </div>
+  </footer>
 </template>
+
+<style>
+.card {
+  border: 4px solid blue;
+  flex: 1 0 auto;
+  height: 0px;
+  overflow: hidden;
+}
+</style>

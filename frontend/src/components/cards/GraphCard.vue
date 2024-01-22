@@ -1,138 +1,94 @@
 <script setup>
 import { computed } from 'vue';
-import { add, sub, parseISO, endOfDay, startOfDay, eachHourOfInterval } from 'date-fns';
-import { Line } from 'vue-chartjs';
-import { cssvar } from '@/util/layout';
-import { useChart } from '@/composables/chart';
+import { parseISO } from 'date-fns';
 import { useHomeAssistant } from '@/stores/homeassistant';
+import { useCard } from '@/composables/card';
+import { BASE_CARD_PROPS } from '@/util/card';
+import { parseAnnotations } from '@/util/chart';
+import BaseCard from '@/components/generic/BaseCard.vue';
+import LineChart from '@/components/generic/LineChart.vue';
 
-const { getEntity } = useHomeAssistant();
+const { getEntities } = useHomeAssistant();
 
 const props = defineProps({
-  entity: {
-    type: String,
+  ...BASE_CARD_PROPS,
+  entities: {
+    type: Array,
     required: true,
   },
-  // attribute: {
-  //   type: String,
-  //   required: true,
-  // },
-  annotations: {
-    type: Array,
+  unit: {
+    type: String,
     required: false,
     default: null,
   },
-  show: {
-    type: Object,
+  labels: {
+    type: [Boolean, Array],
     required: false,
+    default: () => ['min', 'max'],
   },
-  dateFormat: {
-    type: String,
+  annotations: {
+    type: Array,
     required: false,
-    default: 'MM yy',
+    default: () => ['now', 'startOfDay', 'endOfDay'],
+  },
+  xAxis: {
+    type: [Boolean, Object],
+    required: false,
+    default: () => {},
+  },
+  yAxis: {
+    type: [Boolean, Object],
+    required: false,
+    default: () => {},
   },
 });
 
-const now = new Date();
-
-const annotationBorder = {
-  drawTime: 'beforeDatasetsDraw',
-  type: 'line',
-  borderWidth: 3,
-  borderDash: [3, 6],
-  borderColor: cssvar('--color-dark-rgb'),
-};
-
-const labels = eachHourOfInterval({
-  start: sub(now, { hours: 23 }),
-  // end: add(now, { hours: 24 }),
-  end: now,
-});
-
-const chart = useChart({
-  plugins: {
-    annotation: {
-      annotations: {
-        startOfDay: {
-          ...annotationBorder,
-          xMin: startOfDay(now),
-          xMax: startOfDay(now),
-        },
-        now: {
-          ...annotationBorder,
-          xMin: new Date(),
-          xMax: new Date(),
-          borderColor: cssvar('--color-dark-rgb'),
-          borderDash: [0, 0],
-        },
-        endOfDay: {
-          ...annotationBorder,
-          xMin: endOfDay(now),
-          xMax: endOfDay(now),
-        },
-        ...props.annotations.map((annotation) => ({
-          type: 'line',
-          borderColor: cssvar('--color-dark-rgb'),
-          borderWidth: 4,
-          ...annotation,
-        })),
-      },
-    },
-  },
-  scales: {
-    x: {
-      min: labels[0],
-      max: labels[labels.length - 1],
-      ticks: {
-        maxRotation: 0,
-      },
-    },
-  },
-});
-
-const entity = await getEntity(props.entity, { history: true });
+const entities = await getEntities(props.entities, { history: true });
+const card = useCard(props, { style: ['h-56'] });
 
 const chartData = computed(() => {
-  const { history } = entity;
+  const series = [];
+  for (const entity of Object.values(entities)) {
+    const { state, history, lastUpdated } = entity;
+    let data = [[parseISO(lastUpdated), parseFloat(state)]];
+    data = data.concat(
+      history.map((r) => [parseISO(r.last_updated), parseFloat(r.state)])
+    );
+    series.push(data.filter((p) => !isNaN(p[1])).sort((a, b) => a[0] - b[0]));
+  }
+  return series;
+});
 
-  const datasetData = history
-    .filter((value, index) => {
-      return index % 5 == 0;
-    })
-    .map((entry) => ({
-      x: parseISO(entry.last_updated),
-      y: entry.state,
-    }));
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        yAxisID: 'y',
-        xAxisID: 'x',
-        data: datasetData,
-        // data: [],
-        borderWidth: 5,
-        fill: true,
-        pointRadius: 0,
-        // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
-        borderColor: cssvar('--color-dark-rgb'),
-        backgroundColor: cssvar('--color-lightest-rgb'),
-        tension: 0.3,
-        datalabels: {
-          display: props.show?.labels ? 'auto' : false,
-          formatter: (value) => {
-            return value.y;
-          },
-        },
-      },
-    ],
+const chartProps = computed(() => {
+  return {
+    data: chartData.value,
+    xAxis: props.xAxis !== false,
+    xAxisScale:
+      props.xAxis !== false
+        ? {
+            min: props.xAxis?.min,
+            max: props.xAxis?.max,
+          }
+        : null,
+    xFormat: 'HH',
+    yAxis: props.yAxis !== false,
+    yAxisScale:
+      props.yAxis !== false
+        ? {
+            min: props.yAxis?.min,
+            max: props.yAxis?.max,
+          }
+        : null,
+    lineSymbols: false,
+    // yValueFormatter: (val) => (unit.value ? `${val} ${unit.value}` : val),
+    labels: props.labels,
+    annotations: parseAnnotations(props.annotations, chartData.value),
   };
-
-  return data;
 });
 </script>
 
 <template>
-  <Line v-if="chartData" :options="chart.options" :data="chartData" />
+  <BaseCard v-bind="card">
+    <LineChart v-bind="chartProps" />
+  </BaseCard>
 </template>

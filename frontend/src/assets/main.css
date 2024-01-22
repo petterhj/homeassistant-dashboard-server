@@ -27,8 +27,12 @@
 }
 
 
-html, body, #app, main {
+html, body, #app {
   @apply h-full text-dark;
+}
+
+#app {
+  @apply flex flex-col overflow-hidden;
 }
 
 hr {
