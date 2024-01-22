@@ -7,7 +7,7 @@ RUN npm ci
 RUN npm run build
 
 
-FROM python:3.9-bullseye as run_base
+FROM python:3.11-bullseye as run_base
 
 ENV HOST=0.0.0.0
 ENV PORT=8000
@@ -56,6 +56,7 @@ CMD ["python", "-m", "server"]
 
 FROM run_base AS any
 
+RUN apt-get update && apt-get upgrade
 RUN pip install -r ./server/requirements.txt
 RUN playwright install-deps
 RUN playwright install chromium

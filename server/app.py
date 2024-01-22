@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, Request, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi_utils.tasks import repeat_every
 from loguru import logger
 from pydantic import ValidationError
 
@@ -17,6 +16,7 @@ from .routers.static import (
     dashboard_static,
 )
 from .capture import capture_screenshot
+from .util import repeat_every
 
 
 server_config = ServerConfig()

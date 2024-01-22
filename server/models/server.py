@@ -2,11 +2,8 @@ from enum import Enum
 from ipaddress import IPv4Address
 from pathlib import Path
 
-from pydantic import (
-    BaseSettings,
-    conint,
-    DirectoryPath,
-)
+from pydantic import conint, DirectoryPath
+from pydantic_settings import BaseSettings
 
 
 class OutputFormat(str, Enum):
@@ -37,6 +34,7 @@ class ServerConfig(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
     
     @property
     def config_file(self) -> Path:
