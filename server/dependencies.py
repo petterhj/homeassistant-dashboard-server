@@ -44,11 +44,7 @@ async def get_homeassistant_client(
     config: Config = Depends(get_config),
 ) -> HomeAssistantClient:
     yield HomeAssistantClient(
-        "{}://{}:{}/api".format(
-            'https' if config.homeassistant.ssl else 'http',
-            config.homeassistant.host,
-            config.homeassistant.port,
-        ),
+        "{}/api".format(config.homeassistant.url),
         config.homeassistant.token.get_secret_value(),
     )
 

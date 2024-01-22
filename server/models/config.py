@@ -13,9 +13,7 @@ from .server import ServerConfig
 
 
 class HomeAssistantConfig(BaseModel):
-    host: IPv4Address = "127.0.0.1"
-    port: int = 8123
-    ssl: bool = False
+    url: AnyHttpUrl = "http://127.0.0.1:8123"
     token: SecretStr = SecretStr("")
 
 

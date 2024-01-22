@@ -36,10 +36,10 @@ RUN apt-get update && apt-get install -y chromium
 
 # https://pypi.org/project/playwright/
 #   See "Built Distributions" under "Download files"
-RUN wget https://files.pythonhosted.org/packages/c8/7d/b8c0d1e6e446704522773be63f1807af22390a796c9cc7b06e20d366907d/playwright-1.32.0-py3-none-manylinux1_x86_64.whl
-RUN mv playwright-1.32.0-py3-none-manylinux1_x86_64.whl playwright-1.32.0-py3-none-any.whl
+RUN wget https://files.pythonhosted.org/packages/e1/3f/871db50c0aaf8d7764d0b53de28dcdd00c5ee1c32e27452a60a6da606130/playwright-1.40.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
+RUN mv playwright-1.40.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl playwright.whl
 
-RUN pip install playwright-1.32.0-py3-none-any.whl
+RUN pip install playwright.whl
 RUN pip install -r ./server/requirements.txt
 RUN rm playwright-1.32.0-py3-none-any.whl
 

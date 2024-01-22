@@ -6,6 +6,7 @@
 {{ super() }}
 <style>
   h2 { color: gray; }
+  .detail { color: gray; }
   img { height: 33%; }
 </style>
 {% endblock %}
@@ -14,4 +15,7 @@
 <h1>Error</h1>
 <img src="/error.png" class="image" />
 <h2>{{ message }}</h2>
+{% if details %}
+<span class="details">{{ details }}</span>
+{% endif %}
 {% endblock %}

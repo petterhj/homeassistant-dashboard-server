@@ -1,5 +1,7 @@
-from time import time
+from asyncio import timeout as async_timeout
 from datetime import datetime, timedelta
+from json import loads as json_loads
+from time import time
 
 from dateutil import parser as date_parser
 from dateutil.relativedelta import relativedelta
@@ -8,6 +10,7 @@ from fastapi import (
     Depends,
     HTTPException,
     Path as PathParam,
+    Query as QueryParam,
     Request,
     status,
 )
@@ -22,6 +25,7 @@ from requests.exceptions import ConnectionError
 from ..models import homeassistant
 from ..models.server import OutputFormat
 from ..dependencies import get_homeassistant_client
+from ..socket import socket_service_call
 from .static import templates
 
 
@@ -90,27 +94,73 @@ async def entity(
     return output
 
 
+@router.get("/service/{domain}/{service}")
+async def entity(
+    domain: str,
+    service: str,
+    target: str,
+    data: str = None,
+    client: HomeAssistantClient = Depends(get_homeassistant_client),
+):
+    """
+    The REST API endpoint for calling services does not currently support
+    responses, i.e. for `weather/get_forecast`. Use a websocket connection
+    instead.
+        https://github.com/home-assistant/core/issues/99820
+        https://github.com/home-assistant/core/pull/98610
+        https://github.com/zachowj/node-red-contrib-home-assistant-websocket/issues/972
+        https://developers.home-assistant.io/docs/api/websocket/#calling-a-service
+    """
+
+    try:
+        timeout = 2
+
+        async with async_timeout(timeout):
+            return await socket_service_call(
+                ha_api_url=client.api_url,
+                ha_token=client.token,
+                domain=domain,
+                service=service,
+                target={"entity_id": target},
+                service_data=json_loads(data) if data else {},
+            )
+    except TimeoutError as e:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail=f"Home Assistant: Timeout ({timeout} s.)",
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Home Assistant: {e}",
+        )
+
 
 @router.get("/calendar")
 async def calendar(
     client: HomeAssistantClient = Depends(get_homeassistant_client),
+    calendar: list[str] = QueryParam(None)
 ) -> list[homeassistant.CalendarEvent]:
     now = datetime.now()
     calendar_events = []
 
-    calendars = _homeassistant_request(client.request, "calendars")
+    calendars = {c["entity_id"]: c["name"] for c in _homeassistant_request(
+        client.request, "calendars"
+    )}
 
-    for calendar in calendars:
-        entity_id = calendar['entity_id']
+    if calendar and len(calendar) > 0:
+        calendars = {
+            entity_id: name for entity_id, name in calendars.items() if entity_id in calendar
+        }
+
+    for entity_id, name in calendars.items():
         for event in client.request(f"calendars/{entity_id}", params={
             "start": now.isoformat(),
             "end": (now + relativedelta(months=3)).isoformat(),
         }):
             event["entity_id"] = entity_id
-            event["calendar_name"] = calendar["name"]
+            event["calendar_name"] = name
             calendar_events.append(event)
-    
-    calendar_events.sort(key=lambda event: date_parser.parse(event["start"]["dateTime"]))
 
     return calendar_events
 

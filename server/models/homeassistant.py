@@ -37,4 +37,7 @@ class CalendarEvent(BaseModel):
 
     @validator("start", "end", pre=True)
     def parse_datetime(cls, v):
-        return parser.parse(v["dateTime"])
+        if v.get("dateTime"):
+            return parser.parse(v["dateTime"])
+        if v.get("date"):
+            return parser.parse(v["date"])

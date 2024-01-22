@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -17,10 +17,17 @@ templates = Jinja2Templates(directory=f"{assets_path.resolve()}/templates")
 def dashboard_static():
     try:
         config = get_config()
-    except ValidationError:
+    except ValidationError as e:
         return templates.TemplateResponse("dashboard/error.html", {
             "request": {},
-            "message": f"Invalid configuration",
+            "message": "Invalid configuration",
+            "details": str(e),
+        })
+    except HTTPException as e:
+        return templates.TemplateResponse("dashboard/error.html", {
+            "request": {},
+            "message": "Invalid configuration",
+            "details": e.detail,
         })
 
     static_path = config.server.static_path.resolve()
@@ -28,7 +35,8 @@ def dashboard_static():
     if not static_path.exists():
         return templates.TemplateResponse("dashboard/error.html", {
             "request": {},
-            "message": f"Static path `{static_path}` not found.",
+            "message": "Static path not found",
+            "details": static_path,
         })
 
     return StaticFiles(directory=static_path, html=True)
