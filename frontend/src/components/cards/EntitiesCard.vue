@@ -201,17 +201,17 @@ const getGroupEntities = (groupConfig) => {
         >
           <div
             v-if="entityConfig.entity in states"
-            class="d-stat inline p-0"
+            class="inline p-0"
             :style="[query?.debug === 'true' ? { background: '#CCC' } : null]"
           >
-            <div class="d-stat-title leading-4 opacity-100 text-sm font-medium">
+            <div class="leading-4 opacity-100 text-sm font-medium">
               <span class="mdi text-light mr-1" :class="getIcon(entityConfig)" />
               <span class="text-light">{{ getName(entityConfig) }}</span>
             </div>
-            <div class="d-stat-value px-1 text-lg font-semibold">
+            <div class="px-1 text-lg font-semibold">
               {{ getValue(entityConfig) }}
             </div>
-            <div class="d-stat-desc leading-4 px-1 text-sm text-light opacity-100">
+            <div class="leading-4 px-1 text-sm text-light opacity-100">
               {{ getSecondaryInfo(entityConfig) }}
             </div>
           </div>

@@ -9,29 +9,29 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@mdi/font": "^7.2.96",
-    "daisyui": "2.51.6",
-    "date-fns": "^3.3.0",
+    "@mdi/font": "^7.4.47",
+    "daisyui": "^4.6.0",
+    "date-fns": "^3.3.1",
     "downsample": "^1.4.0",
     "echarts": "^5.4.3",
     "markdown-it": "^14.0.0",
-    "vue": "^3.3.4",
+    "vue": "^3.4.15",
     "vue-echarts": "^6.6.8",
-    "vue-i18n": "^9.2.2",
-    "vue-router": "^4.2.1"
+    "vue-i18n": "^9.9.0",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.6.1",
+    "@rushstack/eslint-patch": "^1.7.0",
     "@tailwindcss/line-clamp": "0.4.4",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "@vue/eslint-config-prettier": "^7.0.0",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vue/eslint-config-prettier": "^9.0.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.19.2",
+    "eslint-plugin-vue": "^9.20.1",
     "postcss": "^8.4.33",
-    "prettier": "^2.8.8",
-    "tailwind-merge": "^1.12.0",
-    "tailwindcss": "^3.3.2",
-    "vite": "^4.5.1"
+    "prettier": "^3.2.4",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.12"
   }
 }

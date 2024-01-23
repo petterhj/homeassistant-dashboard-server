@@ -77,8 +77,8 @@ const flapBatteryIcon = computed(() => {
 <template>
   <BaseCard v-bind="card">
     <div class="flex items-center gap-4">
-      <div class="d-avatar d-placeholder">
-        <div class="bg-lightest rounded-full w-10 h-10">
+      <div>
+        <div class="flex items-center justify-center bg-lightest rounded-full w-10 h-10">
           <span
             class="mdi text-dark text-2xl"
             :class="`mdi-${states[petEntity].state === 'on' ? 'home' : 'pine-tree'}`"

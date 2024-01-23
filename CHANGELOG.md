@@ -1,3 +1,8 @@
+## ?.?.?
+
+- Removed dependency on daisyUI.
+- Upgraded dependencies.
+
 ## 0.2.2
 
 - Added current version to dashboard footer.

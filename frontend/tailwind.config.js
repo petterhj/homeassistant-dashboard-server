@@ -8,9 +8,8 @@ module.exports = {
     '../data/**/*.{yml,yaml}',
   ],
   safelist: [
+    { pattern: /grid-cols-.+/ },
     { pattern: /(h|bg|border|gap|basis|line-clamp|)-./ },
-    /^p(\w?)-/,
-    /^\-?m(\w?)-/,
   ],
   theme: {
     colors: {
@@ -22,17 +21,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Roboto'],
-        // 'font-serif': ['Monda', 'cursive'],
       },
     },
-  },
-  plugins: [
-    require('daisyui'),
-  ],
-  daisyui: {
-    styled: false,
-    themes: false,
-    base: false,
-    prefix: 'd-',
   },
 };
