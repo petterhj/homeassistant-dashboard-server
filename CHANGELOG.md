@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.2.3
 
 - Removed dependency on daisyUI.
 - Upgraded dependencies.
