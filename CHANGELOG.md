@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.2.2
 
 - Added current version to dashboard footer.
 - Frontend `package*.json` files are now also version bumped.
