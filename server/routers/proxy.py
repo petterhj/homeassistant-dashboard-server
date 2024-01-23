@@ -50,10 +50,12 @@ async def entity(
     significant_changes_only: bool = False,
     output_format: OutputFormat = OutputFormat.json,
 ) -> homeassistant.Entity:
-    logger.info("Fetching entity data for {} (history={})".format(
-        entity_id,
-        history,        
-    ))
+    logger.info(
+        "Fetching entity data for {} (history={})".format(
+            entity_id,
+            history,
+        )
+    )
     start_time = time()
 
     entity = _homeassistant_request(client.get_entity, entity_id=entity_id)
@@ -64,7 +66,7 @@ async def entity(
 
     if history:
         now = datetime.now()
-            
+
         if not period_start:
             period_start = now - timedelta(days=1)
         if not period_end:
@@ -84,12 +86,15 @@ async def entity(
         }
 
     logger.debug(f"> Request duration: {round(time() - start_time, 3)} s.")
-    
+
     if output_format is OutputFormat.html:
-         return templates.TemplateResponse("proxy/entity.html", {
-            "request": request,
-            "entity": output,
-        })
+        return templates.TemplateResponse(
+            "proxy/entity.html",
+            {
+                "request": request,
+                "entity": output,
+            },
+        )
 
     return output
 
@@ -139,25 +144,31 @@ async def entity(
 @router.get("/calendar")
 async def calendar(
     client: HomeAssistantClient = Depends(get_homeassistant_client),
-    calendar: list[str] = QueryParam(None)
+    calendar: list[str] = QueryParam(None),
 ) -> list[homeassistant.CalendarEvent]:
     now = datetime.now()
     calendar_events = []
 
-    calendars = {c["entity_id"]: c["name"] for c in _homeassistant_request(
-        client.request, "calendars"
-    )}
+    calendars = {
+        c["entity_id"]: c["name"]
+        for c in _homeassistant_request(client.request, "calendars")
+    }
 
     if calendar and len(calendar) > 0:
         calendars = {
-            entity_id: name for entity_id, name in calendars.items() if entity_id in calendar
+            entity_id: name
+            for entity_id, name in calendars.items()
+            if entity_id in calendar
         }
 
     for entity_id, name in calendars.items():
-        for event in client.request(f"calendars/{entity_id}", params={
-            "start": now.isoformat(),
-            "end": (now + relativedelta(months=3)).isoformat(),
-        }):
+        for event in client.request(
+            f"calendars/{entity_id}",
+            params={
+                "start": now.isoformat(),
+                "end": (now + relativedelta(months=3)).isoformat(),
+            },
+        ):
             event["entity_id"] = entity_id
             event["calendar_name"] = name
             calendar_events.append(event)

@@ -12,9 +12,10 @@ from .exceptions import ConfigurationError
 
 def secret_constructor(base_path: Path) -> str:
     """Read secret from secrets file."""
+
     def _get_secret(loader: SafeLoader, node: ScalarNode) -> str:
-        secrets_file_path = base_path / 'secrets.yaml'
-        
+        secrets_file_path = base_path / "secrets.yaml"
+
         if not secrets_file_path.exists():
             raise ConfigurationError(
                 f"Could not locate {secrets_file_path.resolve()}",
@@ -29,6 +30,7 @@ def secret_constructor(base_path: Path) -> str:
                 )
 
             return secrets.get(node.value)
+
     return _get_secret
 
 
@@ -39,5 +41,5 @@ def yaml_loader(base_path: Path):
         loader_class=loader,
         base_dir=base_path,
     )
-    loader.add_constructor(u"!secret", secret_constructor(base_path))
+    loader.add_constructor("!secret", secret_constructor(base_path))
     return loader

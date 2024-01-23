@@ -20,14 +20,17 @@ def get_config() -> Config:
         logger.info(f"Reading config from `{server_config.config_file}`")
 
         with open(server_config.config_file, "r") as config_file:
-            yaml_config = yaml_load(config_file, Loader=yaml_loader(
-                base_path=server_config.config_file.parent
-            ))
+            yaml_config = yaml_load(
+                config_file,
+                Loader=yaml_loader(base_path=server_config.config_file.parent),
+            )
 
             if "server" in yaml_config:
-                logger.warning("The `server` key cannot be configured using YAML")
+                logger.warning(
+                    "The `server` key cannot be configured using YAML"
+                )
                 del yaml_config["server"]
-            
+
             return Config(server=server_config, **yaml_config)
 
     except FileNotFoundError:
@@ -55,7 +58,14 @@ def get_captures(
     config: dict = Depends(get_config),
 ) -> list[Path]:
     capture_path = config.server.capture_path
-    capture_files = sorted([
-        f for f in capture_path.glob(f"*_{capture_name}.{capture_format.value}") if "_tmp" not in f.name
-    ], reverse=True)
+    capture_files = sorted(
+        [
+            capture_file
+            for capture_file in capture_path.glob(
+                f"*_{capture_name}.{capture_format.value}"
+            )
+            if "_tmp" not in capture_file.name
+        ],
+        reverse=True,
+    )
     return capture_files

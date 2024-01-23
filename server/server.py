@@ -6,10 +6,7 @@ from socket import socket
 from typing import Optional, List, Callable
 
 from fastapi import FastAPI
-from uvicorn import (
-    Config as UvicornConfig,
-    Server as UvicornServer
-)
+from uvicorn import Config as UvicornConfig, Server as UvicornServer
 from uvicorn.supervisors import Multiprocess
 from uvicorn.supervisors.watchfilesreload import (
     FileFilter,
@@ -50,7 +47,7 @@ class Reloader(WatchFilesReload):
             unique_paths = {Path(c[1]) for c in changes}
             return [p for p in unique_paths if self.watch_filter(p)]
         return None
-    
+
 
 class Server:
     def __init__(self, app: FastAPI, server_config: ServerConfig):
@@ -64,7 +61,7 @@ class Server:
             reload_config["reload_dirs"].append("./server/")
 
         self.config = UvicornConfig(
-            'server.app:app',
+            "server.app:app",
             host=str(server_config.host),
             port=server_config.port,
             log_level="debug" if server_config.debug else "info",
@@ -79,7 +76,7 @@ class Server:
             self.supervisor_type = Reloader
         if self.config.workers > 1:
             self.supervisor_type = Multiprocess
-    
+
     def run(self):
         if self.supervisor_type:
             sock = self.config.bind_socket()

@@ -23,7 +23,7 @@ class ServerConfig(BaseSettings):
     data_path: DirectoryPath = "data"
     config_filename: str = "configuration.yaml"
     debug: bool = False
-    host: IPv4Address= "127.0.0.1"
+    host: IPv4Address = "127.0.0.1"
     port: int = 8089
     capture_interval: conint(ge=60) = 60 * 3
     capture_keep_count: conint(ge=1) = 15
@@ -35,7 +35,7 @@ class ServerConfig(BaseSettings):
     class Config:
         env_file = ".env"
         extra = "ignore"
-    
+
     @property
     def config_file(self) -> Path:
         return self.data_path.resolve() / self.config_filename

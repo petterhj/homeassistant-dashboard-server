@@ -30,7 +30,7 @@ async def capture_screenshot(
     capture_path = server_config.capture_path
     tmp_capture_file = capture_path / "capture_tmp.png"
     error_message = "Unknown error occured"
-    
+
     args = {"device_scale_factor": capture_config.scale}
 
     if capture_config.width and capture_config.height:
@@ -42,7 +42,6 @@ async def capture_screenshot(
     if timezone:
         args["timezone_id"] = timezone
 
-
     if locale.default == "nb":
         args["locale"] = "no-NO"
     else:
@@ -50,7 +49,7 @@ async def capture_screenshot(
 
     async with async_playwright() as p:
         try:
-            logger.info(f"Launching browser, url=\"{url}\", args={args}")
+            logger.info(f'Launching browser, url="{url}", args={args}')
 
             browser = await p.chromium.launch()
             context = await browser.new_context(**args)
@@ -71,13 +70,17 @@ async def capture_screenshot(
                 )
 
                 if capture_config.delay:
-                    logger.info(f"Delaying screenshot by {capture_config.delay} ms.")
-                    await page.wait_for_timeout(capture_config.delay);
+                    logger.info(
+                        f"Delaying screenshot by {capture_config.delay} ms."
+                    )
+                    await page.wait_for_timeout(capture_config.delay)
 
-                logger.info("Capturing screenshot (name={}, timeout={} ms.)".format(
-                    name,
-                    capture_config.timeout,
-                ))
+                logger.info(
+                    "Capturing screenshot (name={}, timeout={} ms.)".format(
+                        name,
+                        capture_config.timeout,
+                    )
+                )
 
                 await page.screenshot(
                     path=tmp_capture_file,
@@ -114,7 +117,7 @@ async def capture_screenshot(
             capture_config=capture_config,
             name=name,
         )
-    
+
     capture_cleanup(server_config)
     return captured_file_path
 
@@ -139,12 +142,12 @@ def save_image(
 
     if capture_config.invert:
         logger.debug("> Inverting image")
-        image = image.convert('RGB')
+        image = image.convert("RGB")
         image = ImageOps.invert(image)
 
     if capture_config.grayscale:
         logger.debug("> Converting image to grayscale")
-        image = image.convert('L')
+        image = image.convert("L")
 
     if output_format == CaptureFormat.png and bit_depth:
         logger.debug(f"> Setting bit depth {bit_depth}")
@@ -153,17 +156,19 @@ def save_image(
     image.save(output_file, output_format.value.upper())
     logger.info(f"Saved image to {output_file}")
     return output_file
-    
+
 
 def generate_fallback_image(
     capture_config: CaptureConfig,
     message: str = None,
 ) -> Image:
-    logger.info("Generating fallback image, width={}, height={}, message={}".format(
-        capture_config.width,
-        capture_config.height,
-        message,
-    ))
+    logger.info(
+        "Generating fallback image, width={}, height={}, message={}".format(
+            capture_config.width,
+            capture_config.height,
+            message,
+        )
+    )
 
     fallback_path = assets_path / "static" / "error.png"
     font_path = assets_path / "jetbrains-mono.ttf"
@@ -177,10 +182,13 @@ def generate_fallback_image(
 
         fallback_img.thumbnail(target_size, Image.LANCZOS)
         new_img = Image.new("RGB", target_size, (255, 255, 255))
-        new_img.paste(fallback_img, (
-            int((target_size[0] - fallback_img.size[0]) / 2),
-            int((target_size[1] - fallback_img.size[1]) / 2)
-        ))
+        new_img.paste(
+            fallback_img,
+            (
+                int((target_size[0] - fallback_img.size[0]) / 2),
+                int((target_size[1] - fallback_img.size[1]) / 2),
+            ),
+        )
 
         if message:
             font = ImageFont.truetype(str(font_path), 20)
@@ -214,18 +222,20 @@ def capture_cleanup(server_config: ServerConfig) -> None:
         tmp_capture_file.unlink()
 
     for capture_format in CaptureFormat:
-        capture_files = sorted([
-            f for f in capture_path.glob(f"*.{capture_format.value}")
-        ])
+        capture_files = sorted(
+            [f for f in capture_path.glob(f"*.{capture_format.value}")]
+        )
 
         if len(capture_files) <= capture_keep_count:
             continue
 
-        logger.info("Deleting {}/{} capture files of type {}".format(
-            len(capture_files) - capture_keep_count,
-            len(capture_files),
-            capture_format.value,
-        ))
+        logger.info(
+            "Deleting {}/{} capture files of type {}".format(
+                len(capture_files) - capture_keep_count,
+                len(capture_files),
+                capture_format.value,
+            )
+        )
 
         for file in capture_files[:-capture_keep_count]:
             logger.debug(f"Deleting capture file `{file}`")

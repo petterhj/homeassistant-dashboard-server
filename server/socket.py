@@ -21,25 +21,35 @@ async def socket_service_call(
                 data = json.loads(data)
 
                 if data["type"] == "auth_required":
-                    await websocket.send(json.dumps({
-                        "type": "auth",
-                        "access_token": ha_token,
-                    }))
+                    await websocket.send(
+                        json.dumps(
+                            {
+                                "type": "auth",
+                                "access_token": ha_token,
+                            }
+                        )
+                    )
                 elif data["type"] == "auth_invalid":
                     raise Exception(data["message"])
                 elif data["type"] == "auth_ok":
-                    await websocket.send(json.dumps({
-                        "id": call_id,
-                        "type": "call_service",
-                        "domain": domain,
-                        "service": service,
-                        "service_data": service_data,
-                        "target": target,
-                        "return_response": True
-                    }))
+                    await websocket.send(
+                        json.dumps(
+                            {
+                                "id": call_id,
+                                "type": "call_service",
+                                "domain": domain,
+                                "service": service,
+                                "service_data": service_data,
+                                "target": target,
+                                "return_response": True,
+                            }
+                        )
+                    )
                 elif data["type"] == "result" and data["id"] == call_id:
                     if not data["success"]:
-                        raise Exception(f"{data['error']['code']}: {data['error']['message']}")
+                        raise Exception(
+                            f"{data['error']['code']}: {data['error']['message']}"
+                        )
                     return data["result"]["response"]
 
         except ConnectionClosed as e:

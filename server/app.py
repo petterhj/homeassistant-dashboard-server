@@ -85,10 +85,13 @@ async def capture(
     capture_files: list = Depends(get_captures),
 ):
     capture_format = capture_format.value
-    target_filename = f"{timestamp}_dashboard.{capture_format}" if timestamp else None
+    target_filename = (
+        f"{timestamp}_dashboard.{capture_format}" if timestamp else None
+    )
 
     if len(capture_files) == 0 or (
-        target_filename and target_filename not in [f.name for f in capture_files]
+        target_filename
+        and target_filename not in [f.name for f in capture_files]
     ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

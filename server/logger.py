@@ -20,12 +20,14 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
 
 
 def configure_logger(config: ServerConfig):
     # log_level = logging.getLevelName(config.log_level.value.upper())
-    
+
     # Intercept everything at the root logger
     logging.root.handlers = [InterceptHandler()]
     # logging.root.setLevel(logging.INFO)
@@ -36,17 +38,19 @@ def configure_logger(config: ServerConfig):
         logging.getLogger(name).propagate = True
 
     # Configure loguru
-    logger.configure(handlers=[
-        {
-            "sink": sys.stdout,
-            "serialize": config.log_json,
-            "level": config.log_level.value.upper(),
-        },
-        {
-            "sink": config.data_path / config.log_filename,
-            "rotation": "10 MB",
-            "retention": "7 days",
-            "serialize": config.log_json,
-            "level": config.log_level.value.upper(),
-        },
-    ])
+    logger.configure(
+        handlers=[
+            {
+                "sink": sys.stdout,
+                "serialize": config.log_json,
+                "level": config.log_level.value.upper(),
+            },
+            {
+                "sink": config.data_path / config.log_filename,
+                "rotation": "10 MB",
+                "retention": "7 days",
+                "serialize": config.log_json,
+                "level": config.log_level.value.upper(),
+            },
+        ]
+    )
