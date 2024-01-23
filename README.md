@@ -233,7 +233,7 @@ homeassistant_token:
 
 ```sh
 $ docker build \
-  --target rpi \ # Build for Raspberry Pi (armv7l)
+  --target alt \ # Alternative build/install method (custom distribution)
   --tag inkplate-dashboard:latest \
   --tag inkplate-dashboard:<version> \
   .

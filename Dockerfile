@@ -33,25 +33,25 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN python3 -m pip install --upgrade pip
 
 
-FROM run_base AS rpi
+FROM run_base AS alt
 
 RUN apt-get update && apt-get install -y chromium
 
 # https://pypi.org/project/playwright/
-#   See "Built Distributions" under "Download files"
-RUN wget https://files.pythonhosted.org/packages/e1/3f/871db50c0aaf8d7764d0b53de28dcdd00c5ee1c32e27452a60a6da606130/playwright-1.40.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
-RUN mv playwright-1.40.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl playwright.whl
+#   See "Built Distributions" under "Download files".
+#   Also update chromium build (symbolic link).
+RUN wget https://files.pythonhosted.org/packages/a1/14/026f013297d5fc57362f9adc145d9d7024adc240290445498e97f89b690a/playwright-1.41.0-py3-none-manylinux1_x86_64.whl
 
-RUN pip install playwright.whl
+RUN pip install playwright-1.41.0-py3-none-manylinux1_x86_64.whl
 RUN pip install -r ./server/requirements.txt
-RUN rm playwright-1.32.0-py3-none-any.whl
+RUN rm playwright-1.41.0-py3-none-manylinux1_x86_64.whl
 
-RUN rm $VIRTUAL_ENV/lib/python3.9/site-packages/playwright/driver/node && \
-    ln -s /usr/bin/node $VIRTUAL_ENV/lib/python3.9/site-packages/playwright/driver/node
+RUN rm $VIRTUAL_ENV/lib/python3.11/site-packages/playwright/driver/node && \
+    ln -s /usr/bin/node $VIRTUAL_ENV/lib/python3.11/site-packages/playwright/driver/node
 
 RUN playwright install-deps
-RUN mkdir -p /app/pw-browser/chromium-1055/chrome-linux
-RUN ln -s /usr/bin/chromium /app/pw-browser/chromium-1055/chrome-linux/chrome
+RUN mkdir -p /app/pw-browser/chromium-1091/chrome-linux
+RUN ln -s /usr/bin/chromium /app/pw-browser/chromium-1091/chrome-linux/chrome
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/pw-browser
 
 CMD ["python", "-m", "server"]

@@ -1,3 +1,8 @@
+## ?.?.?
+
+- Fixed docker build.
+- Upgraded to Playwright 1.41.0.
+
 ## 0.2.3
 
 - Removed dependency on daisyUI.
