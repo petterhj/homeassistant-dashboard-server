@@ -124,7 +124,6 @@ const chartProps = computed(() => {
     yAxis: false,
     yAxisScale: yAxisScale.value,
     yValueFormatter: (val) => (unit ? `${val}${unit}` : val),
-    stepLine: false,
     annotations: parseAnnotations(props.annotations, chartData.value),
   };
 });

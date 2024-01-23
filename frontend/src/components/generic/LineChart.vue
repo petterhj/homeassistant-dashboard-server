@@ -80,7 +80,7 @@ const props = defineProps({
   stepLine: {
     type: Boolean,
     required: false,
-    default: true,
+    default: false,
   },
   annotations: {
     type: Array,
@@ -115,8 +115,12 @@ const chartOptions = computed(() => {
     tooltip: {
       trigger: 'item',
       formatter: ({ data }) => {
-        const [x, y] = data;
-        return `<div>${format(x, 'yy-MM-dd, HH:mm x')}: ${y}</div>`;
+        try {
+          const [x, y] = data;
+          return `<div>${format(x, 'yy-MM-dd, HH:mm x')}: ${y}</div>`;
+        } catch {
+          /* pass */
+        }
       },
     },
     xAxis: {

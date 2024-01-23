@@ -146,6 +146,7 @@ homeassistant_token:
   unit: null (default, uses `unit_of_measurement`)
   xAxis: false | true (default) | { min, max }
   yAxis: false | true (default) | { min, max }
+  targetResolution: null (default) | <number>
   labels: [true | false | 'min' + 'max' (default)]
   annotations: [average, <number:yval> ...] (default)
 ```

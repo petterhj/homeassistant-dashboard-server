@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { parseISO } from 'date-fns';
+import { LTTB } from 'downsample';
 import { useHomeAssistant } from '@/stores/homeassistant';
 import { useCard } from '@/composables/card';
 import { BASE_CARD_PROPS } from '@/util/card';
@@ -41,6 +42,11 @@ const props = defineProps({
     required: false,
     default: () => {},
   },
+  targetResolution: {
+    type: Number,
+    required: false,
+    default: null,
+  },
 });
 
 const entities = await getEntities(props.entities, { history: true });
@@ -51,10 +57,16 @@ const chartData = computed(() => {
   for (const entity of Object.values(entities)) {
     const { state, history, lastUpdated } = entity;
     let data = [[parseISO(lastUpdated), parseFloat(state)]];
-    data = data.concat(
-      history.map((r) => [parseISO(r.last_updated), parseFloat(r.state)])
-    );
-    series.push(data.filter((p) => !isNaN(p[1])).sort((a, b) => a[0] - b[0]));
+    data = data
+      .concat(history.map((r) => [parseISO(r.last_updated), parseFloat(r.state)]))
+      .filter((p) => !isNaN(p[1]))
+      .sort((a, b) => a[0] - b[0]);
+
+    if (props.targetResolution && props.targetResolution < data.length) {
+      data = LTTB(data, 15);
+    }
+
+    series.push(data);
   }
   return series;
 });

@@ -16,6 +16,7 @@
     "chartjs-plugin-datalabels": "2.2.0",
     "daisyui": "2.51.6",
     "date-fns": "^3.3.0",
+    "downsample": "^1.4.0",
     "echarts": "^5.4.3",
     "lodash": "^4.17.21",
     "markdown-it": "^14.0.0",
