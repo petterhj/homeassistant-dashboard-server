@@ -235,6 +235,7 @@ homeassistant_token:
 $ docker build \
   --target rpi \ # Build for Raspberry Pi (armv7l)
   --tag inkplate-dashboard:latest \
+  --tag inkplate-dashboard:<version> \
   .
 
 $ docker run \

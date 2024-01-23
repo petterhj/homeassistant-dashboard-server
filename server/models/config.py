@@ -1,5 +1,6 @@
 from enum import Enum
 from ipaddress import IPv4Address
+from os import environ
 
 from pydantic import (
     AnyHttpUrl,
@@ -64,3 +65,4 @@ class Config(BaseModel):
     dashboard: DashboardConfig = DashboardConfig()
     remote: dict[str, RemoteConfig] = None
     capture: CaptureConfig = CaptureConfig()
+    version: str = environ.get("APP_VERSION")

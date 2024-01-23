@@ -3,6 +3,9 @@ FROM node:18-alpine AS build_frontend
 COPY ./frontend /frontend
 WORKDIR /frontend
 
+ARG DOCKER_TAG
+ENV APP_VERSION=$DOCKER_TAG
+
 RUN npm ci
 RUN npm run build
 

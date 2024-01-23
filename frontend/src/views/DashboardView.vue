@@ -21,11 +21,17 @@ const { config } = useServer();
       />
     </div>
   </main>
-  <footer class="h-8 px-4 leading-8 text-sm">
-    <span class="mdi mdi-refresh text-lighter mr-2" />
-    <span class="text-dark font-medium">
-      {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
-    </span>
+
+  <footer class="flex flex-row justify-between items-center h-8 px-4 leading-8">
+    <div class="text-sm">
+      <span class="mdi mdi-refresh text-lighter mr-2" />
+      <span class="text-dark font-medium">
+        {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
+      </span>
+    </div>
+    <div v-if="config?.version" class="text-xs text-lightest">
+      {{ config.version }}
+    </div>
   </footer>
 </template>
 
