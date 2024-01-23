@@ -259,19 +259,24 @@ VITE_SERVER_URL=http://localhost:8089
 ```
 
 ```sh
+# Setup
 $ python -m venv .venv
 $ source .venv/bin/activate
-$ pip install -r server/requirements.txt
+$ pip install -r server/requirements.txt -r requirements.dev.txt
 
 $ playwright install [chromium]  # Download new browsers
 $ playwright install-deps
 
-$ python -m server [--data-path <path>] # Start uvicorn server
+# Start development server (uvicorn)
+$ python -m server [--data-path <path>]
+
+# Linting
+$ black server/
 ```
 
 ### Frontend
 
-```
+```sh
 $ cd frontend/
 $ npm install
 
@@ -280,10 +285,17 @@ $ npm run dev
 $ npm run build
 ```
 
+### Bump version
+
+```sh
+$ bumpversion [major|minor|patch]
+$ git push --tags
+```
+
 #### Home Assistant test instance
 
 ```sh
 $ docker-compose -f dev/homeassistant/docker-compose.yml up
 ```
 
-Username/password: `foobar`/`foobar`
+Username/password: `foobar`/`foobar`.
