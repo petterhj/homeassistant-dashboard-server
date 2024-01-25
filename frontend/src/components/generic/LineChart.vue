@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { use } from 'echarts/core';
-import { SVGRenderer } from 'echarts/renderers';
+import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 import {
   GridComponent,
@@ -10,17 +10,19 @@ import {
   TitleComponent,
   TooltipComponent,
 } from 'echarts/components';
+import { LabelLayout } from 'echarts/features';
 import { format } from 'date-fns';
 import VChart from 'vue-echarts';
 import { cssvar } from '@/util/layout';
 import { DEFAULT_LABEL_STYLE } from '@/util/chart';
 
 use([
+  CanvasRenderer,
   GridComponent,
+  LabelLayout,
   LineChart,
   MarkLineComponent,
   MarkPointComponent,
-  SVGRenderer,
   TitleComponent,
   TooltipComponent,
 ]);

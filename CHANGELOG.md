@@ -3,6 +3,8 @@
 - Fixed docker build.
 - Upgraded to Playwright 1.41.0.
 - Error card should now be rendered without a blue border.
+- Fixed overlapping graph labels after building by specifying `LabelLayout` in
+  order to prevent unwanted tree-shaking.
 
 ## 0.2.3
 
