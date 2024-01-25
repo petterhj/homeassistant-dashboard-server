@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.3.0
 
 - Fixed docker build.
 - Upgraded to Playwright 1.41.0.
