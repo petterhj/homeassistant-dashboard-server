@@ -15,7 +15,7 @@ jobs:
 
       - name: Read current version
         run: |
-          echo "VERSION=$(awk -F "= " '/current_version/ {print $2}' .bumpversion.cfg)" >> $GITHUB_ENV
+          echo "VERSION=$(awk -F "= " '/current_version / {print $2}' .bumpversion.cfg)" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
