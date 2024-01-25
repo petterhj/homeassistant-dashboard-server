@@ -3,7 +3,7 @@
 A simple, customizable Home Assistant dashboard that can be used as a "backend" for wall-mounted displays like the [Inkplate 10](#inkplate). The server automatically captures screenshots of the dashboard at configured interval, and is an alternative to other similar software like [sibbl/hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver), and at the same time an alternative to dealing with [kiosk-mode](https://github.com/maykar/kiosk-mode), [card-mod](https://github.com/thomasloven/lovelace-card-mod) and [layout-card](https://github.com/thomasloven/lovelace-layout-card) plugins for Home Assistant.
 
 <div align="center">
-  <img src="/screenshots/v023_screenshot?raw=true" alt="screenshot_1200_825">
+  <img src="/screenshots/v023_screenshot.png?raw=true" alt="screenshot_1200_825">
 </div>
 
 #### Inkplate
