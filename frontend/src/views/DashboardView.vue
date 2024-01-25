@@ -34,12 +34,3 @@ const { config } = useServer();
     </div>
   </footer>
 </template>
-
-<style>
-.card {
-  border: 4px solid blue;
-  flex: 1 0 auto;
-  height: 0px;
-  overflow: hidden;
-}
-</style>
