@@ -2,6 +2,15 @@
 
 A simple, customizable Home Assistant dashboard that can be used as a "backend" for wall-mounted displays like the [Inkplate 10](#inkplate). The server automatically captures screenshots of the dashboard at configured interval, and is an alternative to other similar software like [sibbl/hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver), and at the same time an alternative to dealing with [kiosk-mode](https://github.com/maykar/kiosk-mode), [card-mod](https://github.com/thomasloven/lovelace-card-mod) and [layout-card](https://github.com/thomasloven/lovelace-layout-card) plugins for Home Assistant.
 
+<div align="center">
+  <img
+    src="/screenshots/v023_screenshot_1200_825.png?raw=true"
+    width="600"
+    alt="screenshot_1200_825"
+    style="border: 1rem solid #666;"
+  >
+</div>
+
 #### Inkplate
 
 > Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
