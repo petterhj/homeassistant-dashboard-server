@@ -237,7 +237,6 @@ homeassistant_token:
 
 ```sh
 $ docker build \
-  --target alt \ # Alternative build/install method (custom distribution)
   --tag inkplate-dashboard:latest \
   --tag inkplate-dashboard:<version> \
   .
