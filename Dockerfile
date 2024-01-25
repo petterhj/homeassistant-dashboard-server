@@ -3,14 +3,13 @@ FROM node:18-alpine AS build_frontend
 COPY ./frontend /frontend
 WORKDIR /frontend
 
-ARG DOCKER_TAG
-ENV APP_VERSION=$DOCKER_TAG
-
 RUN npm ci
 RUN npm run build
 
 FROM python:3.11-bullseye as serve
 
+ARG DOCKER_TAG
+ENV APP_VERSION=$DOCKER_TAG
 ENV HOST=0.0.0.0
 ENV PORT=8000
 EXPOSE 8000
