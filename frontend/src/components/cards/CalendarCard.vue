@@ -20,6 +20,11 @@ const { getCalendar } = useHomeAssistant();
 
 const props = defineProps({
   ...BASE_CARD_PROPS,
+  limit: {
+    type: Number,
+    required: false,
+    default: 10,
+  },
   calendars: {
     type: Array,
     required: false,
@@ -75,7 +80,7 @@ const sortedEvents = computed(() => {
       return true;
     })
     .sort((a, b) => a.start - b.start)
-    .slice(0, 10);
+    .slice(0, props.limit);
 });
 
 function eventIcon(event) {
@@ -84,7 +89,8 @@ function eventIcon(event) {
   if (calendarConfig?.icon) {
     return calendarConfig.icon;
   }
-  return props.itemIcon || props.icon || card.icon;
+
+  return props.icon || card.icon;
 }
 
 function showDescription(event) {

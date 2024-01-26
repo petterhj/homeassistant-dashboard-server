@@ -184,6 +184,20 @@ homeassistant_token:
   annotations: [now, startOfDay, endOfDay] (default)
 ```
 
+##### Calendar
+
+```yaml
+- type: calendar
+  limit: 10 (default) # Limit events
+  calendars: # Optional list of calendars to include (defaults to all calendar entities)
+    - entity: calendar.work
+      icon: flag # defaults to card icon
+      showDescription: true (default) | false
+      showCalendarName: true (default) | false
+      filterBegun: false (default) | true # Filter events that have begun
+```
+
+
 ##### Todo List
 
 ```yaml
