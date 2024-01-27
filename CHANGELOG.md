@@ -1,3 +1,7 @@
+## ?.?.?
+
+- Weather graph labels are now shown above annotation lines.
+
 ## 0.3.1
 
 - Overflowing cards are now faded towards the bottom.

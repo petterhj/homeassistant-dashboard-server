@@ -84,6 +84,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  seriesZIndex: {
+    type: Number,
+    required: false,
+    default: null,
+  },
   annotations: {
     type: Array,
     required: false,
@@ -185,7 +190,7 @@ const chartOptions = computed(() => {
       symbolSize: props.lineSymbols ? 6 : 0,
       color: cssvar('--color-dark-rgb'),
       areaStyle: { opacity: 0.25 },
-      // z: 10,
+      z: props.seriesZIndex,
       emphasis: { disabled: true },
       lineStyle: { width: 4 },
       label: {

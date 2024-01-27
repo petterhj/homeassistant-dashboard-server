@@ -129,6 +129,7 @@ const chartProps = computed(() => {
     yAxisScale: yAxisScale.value,
     yValueFormatter: (val) => (unit ? `${val}${unit}` : val),
     annotations: parseAnnotations(props.annotations, chartData.value),
+    seriesZIndex: 6,
   };
 });
 </script>
