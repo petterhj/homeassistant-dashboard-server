@@ -71,6 +71,7 @@ const chartData = computed(() => {
   const { attributes, history, lastUpdated } = entity;
   let data = [[parseISO(lastUpdated), attributes[props.attribute]]];
   if (props.includeHistory && history) {
+    console.log(history);
     data = data.concat(
       history.map((f) => [parseISO(f.last_updated), f.attributes[props.attribute]])
     );
@@ -101,9 +102,13 @@ const yAxisScale = computed(() => {
     const values = chartData.value
       .map((s) => s.filter((p) => p[0] >= xMin && p[0] <= xMax).map((p) => p[1]))
       .flat();
+
+    const min = Math.min(...values) * 1.1;
+    const max = Math.max(...values) * 1.1;
+
     return {
-      min: Math.floor(Math.min(...values)) + -2,
-      max: Math.ceil(Math.max(...values)) + 2,
+      min: min >= 0 ? 0 : min,
+      max: max <= 0 ? 0 : max,
     };
   }
   return {
@@ -111,7 +116,6 @@ const yAxisScale = computed(() => {
     maxInterval: 1,
     min: 'dataMin',
     max: 'dataMax',
-    boundaryGap: ['10%', '10%'],
   };
 });
 

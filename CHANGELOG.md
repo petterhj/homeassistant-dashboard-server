@@ -3,6 +3,7 @@
 - Overflowing cards are now faded towards the bottom.
 - Calendar cards can now be configured to display a limited amount of events.
 - The margin of list card items (list, calendar, todo) have been reduced.
+- The Y axis in the temperature graph are now padded by 10%.
 
 ## 0.3.0
 
