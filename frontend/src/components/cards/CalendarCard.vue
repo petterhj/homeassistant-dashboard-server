@@ -113,11 +113,7 @@ function showCalendarName(event) {
 <template>
   <BaseCard v-bind="card">
     <ul>
-      <li
-        v-for="(event, index) in sortedEvents"
-        :key="index"
-        class="flex gap-2 ml-2 mb-2"
-      >
+      <li v-for="(event, index) in sortedEvents" :key="index" class="flex gap-2 mb-1">
         <span
           v-if="eventIcon(event)"
           :class="['mdi', `mdi-${eventIcon(event)}`, 'text-light']"

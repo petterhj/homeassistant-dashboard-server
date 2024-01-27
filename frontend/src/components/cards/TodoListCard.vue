@@ -42,7 +42,7 @@ function renderItem(itemSummary) {
       <li
         v-for="({ summary }, index) in todos?.items"
         :key="index"
-        class="flex gap-2 ml-2 mb-1 items-center"
+        class="flex gap-2 mb-1 items-center"
       >
         <span class="mdi mdi-checkbox-blank-outline text-light" />
         <span class="text-sm font-medium" v-html="renderItem(summary)" />

@@ -2,6 +2,7 @@
 
 - Overflowing cards are now faded towards the bottom.
 - Calendar cards can now be configured to display a limited amount of events.
+- The margin of list card items (list, calendar, todo) have been reduced.
 
 ## 0.3.0
 

@@ -73,7 +73,7 @@ const items = computed(() => {
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="flex gap-2 ml-2 mb-1 items-center"
+        class="flex gap-2 mb-1 items-center"
       >
         <span
           v-if="itemIcon || icon"
