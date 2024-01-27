@@ -7,15 +7,15 @@ export function useCard(props, options) {
     props.title === false
       ? null
       : typeof props.title === 'string'
-      ? props.title
-      : options?.title || null
+        ? props.title
+        : options?.title || null
   );
   const icon = ref(
     props.icon === false
       ? null
       : typeof props.icon === 'string'
-      ? props.icon
-      : options?.icon || null
+        ? props.icon
+        : options?.icon || null
   );
   const style = ref(options?.style || []);
 
@@ -36,13 +36,7 @@ export function useCard(props, options) {
         propStyles = props.cardStyle.split(' ');
       }
     }
-    const mergedStyle = twMerge(BASE_CARD_STYLE, style.value, propStyles);
-    // console.log('%c cardStyle', 'color: red');
-    // console.log('> base: ', BASE_CARD_STYLE.join(' '));
-    // console.log('> props:', propStyles.join(' '));
-    // console.log('> opts :', style.value.join(' '));
-    // console.log('> merged=', mergedStyle);
-    return mergedStyle;
+    return twMerge(BASE_CARD_STYLE, style.value, propStyles);
   });
 
   return reactive({

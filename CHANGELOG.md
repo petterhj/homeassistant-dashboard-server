@@ -1,5 +1,6 @@
 ## ?.?.?
 
+- Overflowing cards are now faded towards the bottom.
 - Calendar cards can now be configured to display a limited amount of events.
 
 ## 0.3.0

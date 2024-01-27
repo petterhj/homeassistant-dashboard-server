@@ -91,6 +91,8 @@ const props = defineProps({
   },
 });
 
+defineEmits(['finished']);
+
 const markPointData = computed(() => {
   const data = [];
   if (props.labels?.length) {
@@ -225,5 +227,5 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
-  <v-chart ref="chart" :option="chartOptions" autoresize />
+  <v-chart ref="chart" :option="chartOptions" autoresize @finished="$emit('finished')" />
 </template>

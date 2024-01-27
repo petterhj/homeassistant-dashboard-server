@@ -134,3 +134,9 @@ const chartProps = computed(() => {
     <LineChart v-bind="chartProps" />
   </BaseCard>
 </template>
+
+<style scoped>
+:deep(.card-content) {
+  height: 100%;
+}
+</style>
