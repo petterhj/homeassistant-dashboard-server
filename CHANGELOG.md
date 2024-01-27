@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.3.2
 
 - Weather graph labels are now shown above annotation lines.
 
