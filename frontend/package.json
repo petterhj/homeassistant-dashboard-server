@@ -11,28 +11,28 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "@vueuse/core": "^10.7.2",
-    "date-fns": "^3.3.1",
+    "@vueuse/core": "^10.9.0",
+    "date-fns": "^3.6.0",
     "downsample": "^1.4.0",
-    "echarts": "^5.4.3",
+    "echarts": "^5.5.0",
     "markdown-it": "^14.0.0",
-    "vue": "^3.4.15",
-    "vue-echarts": "^6.6.8",
-    "vue-i18n": "^9.9.0",
-    "vue-router": "^4.2.5"
+    "vue": "^3.4.21",
+    "vue-echarts": "^6.6.9",
+    "vue-i18n": "^9.10.2",
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.7.0",
+    "@rushstack/eslint-patch": "^1.7.2",
     "@tailwindcss/line-clamp": "0.4.4",
-    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.20.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.23.0",
     "postcss": "^8.4.33",
-    "prettier": "^3.2.4",
-    "tailwind-merge": "^2.2.1",
+    "prettier": "^3.2.5",
+    "tailwind-merge": "^2.2.2",
     "tailwindcss": "^3.4.1",
-    "vite": "^5.0.12"
+    "vite": "^5.1.6"
   }
 }
