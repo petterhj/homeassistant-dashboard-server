@@ -1,8 +1,9 @@
 ## ?.?.?
 
-- Add tile card for single entities.
+- Added tile card for single entities.
 - Tolerate empty configuration file.
 - Tolerate trailing slash in configured Home Assistant URL.
+- Upgraded dependencies.
 
 ## 0.3.2
 
