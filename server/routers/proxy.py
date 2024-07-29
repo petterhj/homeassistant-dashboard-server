@@ -17,6 +17,7 @@ from fastapi import (
 from homeassistant_api import Client as HomeAssistantClient
 from homeassistant_api.errors import (
     EndpointNotFoundError,
+    InternalServerError,
     UnauthorizedError,
 )
 from loguru import logger
@@ -162,16 +163,19 @@ async def calendar(
         }
 
     for entity_id, name in calendars.items():
-        for event in client.request(
-            f"calendars/{entity_id}",
-            params={
-                "start": now.isoformat(),
-                "end": (now + relativedelta(months=3)).isoformat(),
-            },
-        ):
-            event["entity_id"] = entity_id
-            event["calendar_name"] = name
-            calendar_events.append(event)
+        try:
+            for event in client.request(
+                f"calendars/{entity_id}",
+                params={
+                    "start": now.isoformat(),
+                    "end": (now + relativedelta(months=3)).isoformat(),
+                },
+            ):
+                event["entity_id"] = entity_id
+                event["calendar_name"] = name
+                calendar_events.append(event)
+        except InternalServerError:
+            pass
 
     return calendar_events
 

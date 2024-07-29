@@ -3,6 +3,7 @@
 - Added tile card for single entities.
 - Tolerate empty configuration file.
 - Tolerate trailing slash in configured Home Assistant URL.
+- Ignore events returned correctly from the Home Assistant API.
 - Upgraded dependencies.
 
 ## 0.3.2
