@@ -25,6 +25,10 @@ def get_config() -> Config:
                 Loader=yaml_loader(base_path=server_config.config_file.parent),
             )
 
+            if not yaml_config:
+                logger.warning("Configuration file empty, using defaults")
+                return Config(server=server_config)
+
             if "server" in yaml_config:
                 logger.warning(
                     "The `server` key cannot be configured using YAML"

@@ -1,5 +1,6 @@
 ## ?.?.?
 
+- Tolerate empty configuration file.
 - Tolerate trailing slash in configured Home Assistant URL.
 
 ## 0.3.2
