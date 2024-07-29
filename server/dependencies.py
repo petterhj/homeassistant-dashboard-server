@@ -46,8 +46,11 @@ def get_config() -> Config:
 async def get_homeassistant_client(
     config: Config = Depends(get_config),
 ) -> HomeAssistantClient:
+    ha_url = str(config.homeassistant.url)
+    if ha_url.endswith("/"):
+        ha_url = ha_url[:-1]
     yield HomeAssistantClient(
-        "{}api".format(config.homeassistant.url),
+        f"{ha_url}/api",
         config.homeassistant.token.get_secret_value(),
     )
 

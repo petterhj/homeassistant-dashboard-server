@@ -1,3 +1,7 @@
+## ?.?.?
+
+- Tolerate trailing slash in configured Home Assistant URL.
+
 ## 0.3.2
 
 - Weather graph labels are now shown above annotation lines.
