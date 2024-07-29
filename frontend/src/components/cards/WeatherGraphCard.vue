@@ -71,7 +71,6 @@ const chartData = computed(() => {
   const { attributes, history, lastUpdated } = entity;
   let data = [[parseISO(lastUpdated), attributes[props.attribute]]];
   if (props.includeHistory && history) {
-    console.log(history);
     data = data.concat(
       history.map((f) => [parseISO(f.last_updated), f.attributes[props.attribute]])
     );

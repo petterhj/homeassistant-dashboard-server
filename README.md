@@ -109,6 +109,15 @@ homeassistant_token:
   icon: ...
 ```
 
+##### Tile
+
+```yaml
+- type: tile
+  entity: sun.sun
+  title: null (default, uses friendly name or id) | false
+  icon: flag # defaults to lightning bolt
+```
+
 ##### Entities
 
 ```yaml
@@ -196,7 +205,6 @@ homeassistant_token:
       showCalendarName: true (default) | false
       filterBegun: false (default) | true # Filter events that have begun
 ```
-
 
 ##### Todo List
 

@@ -1,5 +1,6 @@
 ## ?.?.?
 
+- Add tile card for single entities.
 - Tolerate empty configuration file.
 - Tolerate trailing slash in configured Home Assistant URL.
 

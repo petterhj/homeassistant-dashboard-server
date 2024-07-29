@@ -23,7 +23,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="error-card p-4 flex flex-col gap-2 items-center justify-center bg-lightest">
+  <div
+    class="error-card p-4 min-h-24 flex flex-col gap-2 items-center justify-center bg-lightest"
+  >
     <span
       class="mdi text-lighter"
       :class="[`mdi-${icon}`, size === 'large' ? 'text-8xl' : 'text-4xl']"
