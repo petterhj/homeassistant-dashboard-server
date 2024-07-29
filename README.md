@@ -280,7 +280,7 @@ VITE_SERVER_URL=http://localhost:8089
 # Setup
 $ python -m venv .venv
 $ source .venv/bin/activate
-$ pip install -r server/requirements.txt -r requirements.dev.txt
+$ pip install -r server/requirements.txt -r server/requirements.dev.txt
 
 $ playwright install [chromium]  # Download new browsers
 $ playwright install-deps
