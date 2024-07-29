@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.4.0
 
 - Added tile card for single entities.
 - Tolerate empty configuration file.
