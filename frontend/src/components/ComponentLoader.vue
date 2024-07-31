@@ -107,6 +107,7 @@ const cardProps = computed(() => {
       v-else
       :title="t('general.noData')"
       :error="error"
+      :component-type="config.type"
     />
   </template>
 </template>

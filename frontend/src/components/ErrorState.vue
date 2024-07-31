@@ -19,6 +19,11 @@ defineProps({
     required: false,
     default: 'small',
   },
+  componentType: {
+    type: String,
+    required: false,
+    default: null,
+  },
 });
 </script>
 
@@ -26,11 +31,16 @@ defineProps({
   <div
     class="
       error-card
+      relative
       p-4 min-h-24
       flex flex-col gap-2 items-center justify-center
       bg-lightest
     "
   >
+    <span class="absolute bottom-1 left-1 flex items-center text-lighter text-xs">
+      {{ componentType }}
+    </span>
+
     <span
       class="mdi text-lighter"
       :class="[`mdi-${icon}`, size === 'large' ? 'text-8xl' : 'text-4xl']"

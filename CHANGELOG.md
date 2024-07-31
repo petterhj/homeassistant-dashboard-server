@@ -1,5 +1,6 @@
 ## ?.?.?
 
+- Component type is now shown on cards when in error state.
 - Bumped dependencies and reworked linting regime.
 - Improved error handling for calendar data.
 
