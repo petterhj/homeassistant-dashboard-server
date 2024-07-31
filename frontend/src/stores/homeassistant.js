@@ -104,6 +104,13 @@ export function useHomeAssistant() {
 
     const query = new URLSearchParams(calendars.map((c) => ['calendar', c.entity]));
     const response = await fetch('/api/ha/calendar?' + query);
+
+    if (!response?.ok) {
+      if (response.status === 502) {
+        throw new Error('Could not connect to Home Assistant');
+      }
+    }
+
     const data = await response.json();
 
     state.events = data;

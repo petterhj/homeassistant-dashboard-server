@@ -1,6 +1,7 @@
 ## ?.?.?
 
 - Bumped dependencies and reworked linting regime.
+- Improved error handling for calendar data.
 
 ## 0.4.0
 
