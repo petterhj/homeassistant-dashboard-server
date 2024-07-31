@@ -94,7 +94,12 @@ onMounted(() => {
           <span
             v-for="category in item.categories"
             :key="category"
-            class="rss-item__category relative text-xs font-medium text-lighter whitespace-nowrap"
+            class="
+              rss-item__category
+              relative
+              text-xs font-medium text-lighter
+              whitespace-nowrap
+            "
           >
             {{ category }}
           </span>

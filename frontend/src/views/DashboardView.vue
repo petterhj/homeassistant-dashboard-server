@@ -10,8 +10,8 @@ const { config } = useServer();
 <template>
   <main class="h-[calc(100%-2rem)]">
     <div
-      class="h-full flex flex-col gap-4 p-4 pb-0"
       v-if="config?.dashboard?.components?.length"
+      class="h-full flex flex-col gap-4 p-4 pb-0"
     >
       <ComponentLoader
         v-for="(component, index) in config.dashboard.components"

@@ -78,18 +78,18 @@ const chartProps = computed(() => {
     xAxisScale:
       props.xAxis !== false
         ? {
-            min: props.xAxis?.min,
-            max: props.xAxis?.max,
-          }
+          min: props.xAxis?.min,
+          max: props.xAxis?.max,
+        }
         : null,
     xFormat: 'HH',
     yAxis: props.yAxis !== false,
     yAxisScale:
       props.yAxis !== false
         ? {
-            min: props.yAxis?.min,
-            max: props.yAxis?.max,
-          }
+          min: props.yAxis?.min,
+          max: props.yAxis?.max,
+        }
         : null,
     lineSymbols: false,
     // yValueFormatter: (val) => (unit.value ? `${val} ${unit.value}` : val),

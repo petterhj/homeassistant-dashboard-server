@@ -146,18 +146,18 @@ const chartOptions = computed(() => {
         show: props.xAxis,
         formatter: props.xFormat
           ? (value) => {
-              return format(value, props.xFormat);
-            }
+            return format(value, props.xFormat);
+          }
           : {
-              year: '{yyyy}',
-              month: '{MMM}',
-              day: '{d} {MMM}',
-              hour: '{HH}:{mm}',
-              minute: '{HH}:{mm}',
-              second: '{HH}:{mm}:{ss}',
-              millisecond: '{hh}:{mm}:{ss} {SSS}',
-              none: '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss} {SSS}',
-            },
+            year: '{yyyy}',
+            month: '{MMM}',
+            day: '{d} {MMM}',
+            hour: '{HH}:{mm}',
+            minute: '{HH}:{mm}',
+            second: '{HH}:{mm}:{ss}',
+            millisecond: '{hh}:{mm}:{ss} {SSS}',
+            none: '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss} {SSS}',
+          },
         fontSize: 12,
         fontWeight: 'bolder',
         hideOverlap: true,
@@ -232,5 +232,10 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
-  <v-chart ref="chart" :option="chartOptions" autoresize @finished="$emit('finished')" />
+  <v-chart
+    ref="chart"
+    :option="chartOptions"
+    autoresize
+    @finished="$emit('finished')"
+  />
 </template>

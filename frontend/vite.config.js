@@ -23,7 +23,6 @@ export default ({ mode }) => {
         // https://vitejs.dev/config/server-options.html#server-proxy
         // https://github.com/http-party/node-http-proxy#options
         '/api': {
-          // eslint-disable-next-line no-undef
           target: process.env.VITE_SERVER_URL,
           headers: { 'Content-Type': 'application/json' },
           // rewrite: (path) => path.replace(/\/api/, ''),

@@ -1,3 +1,7 @@
+## ?.?.?
+
+- Bumped dependencies and reworked linting regime.
+
 ## 0.4.0
 
 - Added tile card for single entities.

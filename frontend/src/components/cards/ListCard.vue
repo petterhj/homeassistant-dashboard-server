@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue';
 import { useHomeAssistant } from '@/stores/homeassistant';
-import { useCard } from '@/composables/card';
 import { BASE_CARD_PROPS } from '@/util/card';
 import BaseCard from '@/components/generic/BaseCard.vue';
 

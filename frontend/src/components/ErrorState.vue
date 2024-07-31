@@ -24,7 +24,12 @@ defineProps({
 
 <template>
   <div
-    class="error-card p-4 min-h-24 flex flex-col gap-2 items-center justify-center bg-lightest"
+    class="
+      error-card
+      p-4 min-h-24
+      flex flex-col gap-2 items-center justify-center
+      bg-lightest
+    "
   >
     <span
       class="mdi text-lighter"
@@ -37,8 +42,8 @@ defineProps({
       {{ error.message }}
     </span>
     <span v-if="error?.errors" class="text-sm font-mono text-lighter">
-      <span v-for="error in error.errors" :key="error.location">
-        {{ error.location }}: {{ error.message }}
+      <span v-for="e in error.errors" :key="e.location">
+        {{ e.location }}: {{ e.message }}
       </span>
     </span>
   </div>

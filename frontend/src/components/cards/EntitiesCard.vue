@@ -141,7 +141,8 @@ const getValue = (entityConfig) => {
   let state = stateData.state;
 
   if ((entityConfig.precision >= 0 || stateClass) && !isNaN(parseFloat(state))) {
-    // `state_class`: Type of state. If not `None`, the sensor is assumed to be numerical.
+    // `state_class`: Type of state. If not `None`,
+    // the sensor is assumed to be numerical.
     // https://developers.home-assistant.io/docs/core/entity/sensor/#properties
     const precision = entityConfig.precision || 0;
     state = parseFloat(state).toFixed(precision);
@@ -221,7 +222,10 @@ const getGroupEntities = (groupConfig) => {
 
     <template v-else-if="display === 'grouped' && groups.length">
       <div class="flex flex-col gap-2">
-        <template v-for="(groupConfig, index) in groups" :key="`group_${index}`">
+        <template
+          v-for="(groupConfig, index) in groups"
+          :key="`group_${index}`"
+        >
           <div class="flex gap-3 items-center text-sm">
             <span>
               <span

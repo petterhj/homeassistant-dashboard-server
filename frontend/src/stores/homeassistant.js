@@ -43,7 +43,7 @@ export function useHomeAssistant() {
         throw new ValidationError('Configuration error', data?.detail);
       }
       if (response.status === 502) {
-        throw new Error(`Could not connect to Home Assistant`);
+        throw new Error('Could not connect to Home Assistant');
       }
       throw new Error('Could not get entity');
     }

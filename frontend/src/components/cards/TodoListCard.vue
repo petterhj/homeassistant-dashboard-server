@@ -45,6 +45,7 @@ function renderItem(itemSummary) {
         class="flex gap-2 mb-1 items-center"
       >
         <span class="mdi mdi-checkbox-blank-outline text-light" />
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <span class="text-sm font-medium" v-html="renderItem(summary)" />
       </li>
     </ul>

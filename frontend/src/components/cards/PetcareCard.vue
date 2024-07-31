@@ -72,13 +72,26 @@ const flapBatteryIcon = computed(() => {
     return 'battery-unknown';
   }
 });
+
+const isInside = computed(() => {
+  return states[props.petEntity].state === 'on';
+});
+
+const formattedDatetime = computed(() => {
+  return formatDistance(
+    new Date(),
+    parseISO(states[props.petEntity].attributes.since)
+  );
+});
 </script>
 
 <template>
   <BaseCard v-bind="card">
     <div class="flex items-center gap-4">
       <div>
-        <div class="flex items-center justify-center bg-lightest rounded-full w-10 h-10">
+        <div
+          class="flex items-center justify-center bg-lightest rounded-full w-10 h-10"
+        >
           <span
             class="mdi text-dark text-2xl"
             :class="`mdi-${states[petEntity].state === 'on' ? 'home' : 'pine-tree'}`"
@@ -87,18 +100,18 @@ const flapBatteryIcon = computed(() => {
       </div>
       <div class="flex flex-col flex-1">
         <div class="text-lg leading-5 font-semibold">
-          {{ t(`petcare.${states[petEntity].state === 'on' ? 'inside' : 'outside'}`) }}
+          {{ t(`petcare.${isInside ? 'inside' : 'outside'}`) }}
         </div>
         <div class="flex justify-between text-sm font-medium">
           <span class="text-light">
-            {{ formatDistance(new Date(), parseISO(states[petEntity].attributes.since)) }}
+            {{ formattedDatetime }}
             {{ t('datetime.ago') }}
           </span>
           <div class="text-light">
             <span
               class="mdi"
               :class="`mdi-${
-                states[hubEntity].state === 'on'
+                isInside
                   ? 'check-circle-outline'
                   : 'alert-circle-outline'
               }`"
@@ -106,13 +119,13 @@ const flapBatteryIcon = computed(() => {
             <span
               class="mdi"
               :class="`mdi-${
-                states[hubEntity].state === 'on'
+                isInside
                   ? 'check-circle-outline'
                   : 'alert-circle-outline'
               }`"
             />
             <span class="mdi" :class="`mdi-${flapBatteryIcon}`" />
-            <span>{{ states[props.flapBatteryEntity].state }} %</span>
+            <span>{{ states[flapBatteryEntity].state }} %</span>
           </div>
         </div>
       </div>

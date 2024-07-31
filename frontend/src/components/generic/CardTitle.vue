@@ -17,5 +17,5 @@ defineProps({
     <span v-if="icon" class="mdi text-light mr-1" :class="['mdi-' + icon]" />
     {{ title }}
   </h1>
-  <hr />
+  <hr>
 </template>

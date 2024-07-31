@@ -49,7 +49,7 @@ const component = computed(() => {
   const fileName = `${snakeToPascal(`${props.type}-${componentType.value}`)}`;
 
   if (componentType.value === 'group') {
-    return defineAsyncComponent(() => import(`./generic/CardGroup.vue`));
+    return defineAsyncComponent(() => import('./generic/CardGroup.vue'));
   }
 
   console.group(`Loading component '${fileName}'`);
@@ -72,7 +72,13 @@ const cardProps = computed(() => {
 
 <template>
   <template v-if="componentType === 'group'">
-    <component :is="component" v-bind="cardProps">
+    <component
+      :is="component"
+      v-bind="cardProps"
+      class="foo"
+      bar="foo"
+      sdasd="asdasd"
+    >
       <ComponentLoader
         v-for="(componentConfig, index) in config.components"
         :key="index"
@@ -85,7 +91,11 @@ const cardProps = computed(() => {
   <template v-else>
     <Suspense v-if="!error">
       <template #default>
-        <component ref="card" :is="component" v-bind="cardProps" />
+        <component
+          :is="component"
+          ref="card"
+          v-bind="cardProps"
+        />
       </template>
 
       <template #fallback>
@@ -93,6 +103,10 @@ const cardProps = computed(() => {
       </template>
     </Suspense>
 
-    <ErrorState v-else :title="t('general.noData')" :error="error" />
+    <ErrorState
+      v-else
+      :title="t('general.noData')"
+      :error="error"
+    />
   </template>
 </template>

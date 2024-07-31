@@ -1,3 +1,6 @@
+/* eslint-disable vue/max-len */
+/* eslint-disable @stylistic/js/indent */
+
 // Based on
 //  https://github.com/home-assistant/frontend/blob/dev/src/data/weather.ts
 

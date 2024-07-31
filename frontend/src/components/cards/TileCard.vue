@@ -47,7 +47,13 @@ const tileTitle = computed(() => {
   <BaseCard v-bind="card">
     <div class="flex items-center gap-4">
       <div>
-        <div class="flex items-center justify-center bg-lightest rounded-full w-10 h-10">
+        <div
+          class="
+            flex items-center justify-center
+            bg-lightest rounded-full
+            w-10 h-10
+          "
+        >
           <span class="mdi text-dark text-2xl" :class="`mdi-${icon}`" />
         </div>
       </div>

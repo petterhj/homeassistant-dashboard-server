@@ -73,7 +73,8 @@ const sortedEvents = computed(() => {
       end: parseISO(e.end),
     }))
     .filter((e) => {
-      const calendarConfig = props.calendars.find((c) => c.entity === e.entity_id);
+      const calendarConfig = props.calendars
+        .find((c) => c.entity === e.entity_id);
       if (calendarConfig?.filterBegun === true) {
         return !isBefore(e.start, now);
       }
@@ -84,7 +85,8 @@ const sortedEvents = computed(() => {
 });
 
 function eventIcon(event) {
-  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+  const calendarConfig = props.calendars
+    .find((c) => c.entity === event.entity_id);
 
   if (calendarConfig?.icon) {
     return calendarConfig.icon;
@@ -94,7 +96,8 @@ function eventIcon(event) {
 }
 
 function showDescription(event) {
-  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+  const calendarConfig = props.calendars
+    .find((c) => c.entity === event.entity_id);
   if (!event.description || calendarConfig?.showDescription === false) {
     return false;
   }
@@ -102,7 +105,8 @@ function showDescription(event) {
 }
 
 function showCalendarName(event) {
-  const calendarConfig = props.calendars.find((c) => c.entity === event.entity_id);
+  const calendarConfig = props.calendars
+    .find((c) => c.entity === event.entity_id);
   if (!event.calendar_name || calendarConfig?.showCalendarName === false) {
     return false;
   }
@@ -113,7 +117,11 @@ function showCalendarName(event) {
 <template>
   <BaseCard v-bind="card">
     <ul>
-      <li v-for="(event, index) in sortedEvents" :key="index" class="flex gap-2 mb-1">
+      <li
+        v-for="(event, index) in sortedEvents"
+        :key="index"
+        class="flex gap-2 mb-1"
+      >
         <span
           v-if="eventIcon(event)"
           :class="['mdi', `mdi-${eventIcon(event)}`, 'text-light']"
@@ -131,7 +139,10 @@ function showCalendarName(event) {
           >
             {{ event.calendar_name }}
           </span>
-          <p v-if="showDescription(event)" class="mt-1 text-xs text-light line-clamp-2">
+          <p
+            v-if="showDescription(event)"
+            class="mt-1 text-xs text-light line-clamp-2"
+          >
             {{ event.description }}
           </p>
         </div>

@@ -162,7 +162,13 @@ const sunData = computed(() => {
               />
             </linearGradient>
 
-            <linearGradient :id="ids.day" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              :id="ids.day"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop
                 offset="0%"
                 style="stop-color: rgb(var(--color-lightest)); stop-opacity: 1"
@@ -195,7 +201,10 @@ const sunData = computed(() => {
           <path
             ref="sunLine"
             class="sun-card-sun-line"
-            d="M5,146 C29,153 73,128 101,108 C276,-29 342,23 449,108 C473,123 509,150 545,146"
+            d="
+              M5,146 C29,153 73,128 101,108 C276,-29
+              342,23 449,108 C473,123 509,150 545,146
+            "
             fill="none"
             stroke="#DFDFDF"
             shape-rendering="geometricPrecision"

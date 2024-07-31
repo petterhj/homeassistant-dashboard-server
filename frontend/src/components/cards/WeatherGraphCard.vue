@@ -61,8 +61,8 @@ const card = useCard(props, {
 const entity = await getEntity(props.entity, { history: props.includeHistory });
 const forecast = props.includeForecast
   ? await getServiceResponse('weather', 'get_forecasts', props.entity, {
-      type: props.forecastType,
-    })
+    type: props.forecastType,
+  })
   : null;
 
 const unit = props.unit || entity?.attributes[`${props.attribute}_unit`];

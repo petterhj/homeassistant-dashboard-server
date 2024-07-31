@@ -6,7 +6,20 @@ A simple, customizable Home Assistant dashboard that can be used as a "backend" 
   <img src="/screenshots/v023_screenshot.png?raw=true" alt="screenshot_1200_825">
 </div>
 
-#### Inkplate
+---
+
+* [Configuration](#configuration)
+  * [Inkplate](#inkplate)
+  * [Server](#server)
+* [Build and run](#build-and-run)
+* [Development](#development)
+
+---
+
+
+## Configuration
+
+### Inkplate
 
 > Inkplate 10 is a powerful, energy-efficient, Wi-Fi enabled ESP32 board with a recycled 9.7 inch e-paper display. It’s open hardware supported by an open-source software library, and it’s easy to program, regardless of whether you prefer MicroPython or the Arduino IDE.
 
@@ -16,7 +29,7 @@ The Inkplate MCU must be programmed to periodically download and display the cap
 * [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)
 
 
-## Configuration
+### Server
 
 The server itself is configured using the environment variables specified below (see `server/models/server.py::ServerConfig` for defaults and more options).
 
@@ -54,6 +67,12 @@ capture:
 ```
 
 ```yml
+# secrets.yaml
+homeassistant_url: http://ha.lan
+homeassistant_token:
+```
+
+```yml
 # components.yaml
 - type: vertical-stack
   style: gap-12
@@ -81,14 +100,6 @@ capture:
 #   components:
 #     ...
 ```
-
-```yml
-# secrets.yaml
-homeassistant_url: http://ha.lan
-homeassistant_token:
-```
-
-### Components
 
 #### Groups
 
@@ -312,6 +323,8 @@ $ npm run build
 ```
 
 ### Bump version
+
+After pushing changes, run the `bumpversion` command. Pushing new tags triggers the build workflow.
 
 ```sh
 $ bumpversion [major|minor|patch]

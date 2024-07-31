@@ -13,7 +13,13 @@ defineProps({
 </script>
 
 <template>
-  <div class="h-full p-4 flex flex-col gap-2 items-center justify-center bg-lightest">
+  <div
+    class="
+      h-full p-4
+      flex flex-col gap-2 items-center justify-center
+      bg-lightest
+    "
+  >
     <span class="mdi mdi-refresh text-4xl text-light" />
     <span class="font-semibold">
       {{ t('general.loading') }}

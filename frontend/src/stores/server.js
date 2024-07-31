@@ -30,7 +30,7 @@ export function useServer() {
     try {
       const data = await response.json();
       state.config = data;
-    } catch (error) {
+    } catch {
       throw new Error(`Received invalid JSON response from ${response.url}`);
     }
 

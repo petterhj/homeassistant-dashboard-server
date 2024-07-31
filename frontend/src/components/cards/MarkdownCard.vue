@@ -27,6 +27,7 @@ const props = defineProps({
     default: null,
   },
 });
+
 const card = useCard(props, {
   title: 'Markdown',
   icon: 'text',
@@ -59,6 +60,7 @@ const content = computed(() => {
 
 <template>
   <BaseCard v-bind="card">
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <div class="text-sm" v-html="content" />
   </BaseCard>
 </template>

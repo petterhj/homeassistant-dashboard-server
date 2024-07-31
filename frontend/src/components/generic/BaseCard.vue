@@ -28,6 +28,7 @@ useIntersectionObserver(
 
 <template>
   <section
+    ref="card"
     :class="[
       'card',
       cardStyle,
@@ -35,10 +36,9 @@ useIntersectionObserver(
       { 'card--debug': query?.debug },
     ]"
     :data-type="type"
-    ref="card"
   >
     <CardTitle v-if="title" :title="title" :icon="icon" />
-    <div class="card-content" ref="cardContent">
+    <div ref="cardContent" class="card-content">
       <slot />
     </div>
   </section>

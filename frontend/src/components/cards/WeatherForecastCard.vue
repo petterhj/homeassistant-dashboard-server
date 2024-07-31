@@ -43,8 +43,8 @@ const entity = await getEntity(props.entity);
 const forecastData = (
   props.forecast
     ? await getServiceResponse('weather', 'get_forecasts', props.entity, {
-        type: typeof props.forecast === 'string' ? props.forecast : 'hourly',
-      })
+      type: typeof props.forecast === 'string' ? props.forecast : 'hourly',
+    })
     : {}
 )?.forecast;
 
@@ -66,6 +66,7 @@ const windSpeedFormattedMs = computed(() => {
 //   return false;
 // });
 
+// eslint-disable-next-line no-unused-vars
 function isNightTime(datetime) {
   // if (sun_entity.state) {
   //   if (!datetime && sun_entity.state == 'below_horizon') {
@@ -106,6 +107,7 @@ function formattedDatetime(datetime) {
 </script>
 
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <BaseCard v-bind="card">
     <!-- State -->
     <div v-if="state" class="flex items-center gap-4">
@@ -124,14 +126,14 @@ function formattedDatetime(datetime) {
         </span>
         <div class="flex gap-4 justify-end text-light">
           <span v-if="entity.attributes.wind_speed" class="flex gap-2">
-            <span class="mdi mdi-weather-windy text-light"></span>
+            <span class="mdi mdi-weather-windy text-light" />
             <span class="font-medium">
               {{ windSpeedFormattedMs }}
               ({{ getWindBearing(entity.attributes.wind_bearing) }})
             </span>
           </span>
           <span v-if="entity.attributes.precipitation" class="flex gap-2">
-            <span class="mdi mdi-weather-rainy text-light"></span>
+            <span class="mdi mdi-weather-rainy text-light" />
             <span class="font-medium">
               {{ entity.attributes.precipitation }}
               {{ entity.attributes.precipitation_unit }}
