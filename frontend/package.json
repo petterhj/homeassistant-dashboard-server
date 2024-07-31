@@ -16,7 +16,7 @@
     "date-fns": "^3.6.0",
     "downsample": "^1.4.0",
     "echarts": "^5.5.1",
-    "markdown-it": "^14.0.0",
+    "markdown-it": "^14.1.0",
     "vue": "^3.4.34",
     "vue-echarts": "^6.7.3",
     "vue-i18n": "^9.13.1",
