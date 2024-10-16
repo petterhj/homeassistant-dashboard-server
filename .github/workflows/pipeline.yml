@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  # tests:
-  #   name: Run tests
-  #   uses: ./.github/workflows/tests.yml
+  tests:
+    name: Run tests
+    uses: ./.github/workflows/tests.yaml
 
   push:
     name: Build and push
-    # needs: [tests]
+    needs: [tests]
     uses: ./.github/workflows/push.yml
