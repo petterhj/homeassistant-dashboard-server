@@ -51,6 +51,9 @@ RUN uv sync --frozen
 RUN PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright uv run python -m playwright install --with-deps chromium && \
     chown -R app:app /app/ms-playwright
 
+# Fix ownership of the entire app directory including virtual environment
+RUN chown -R app:app /app
+
 # Switch to non-root user for runtime
 USER app
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright
