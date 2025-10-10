@@ -1,6 +1,7 @@
 ## ?.?.?
 
-- Fix Docker image permissions
+- Migrated from bump2version to bump-my-version with pyproject.toml configuration.
+- Fix Docker image permissions for virtual environment files.
 
 ## 0.5.0
 

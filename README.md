@@ -313,8 +313,15 @@ $ uv run playwright install-deps  # Install browser dependencies
 # Start development server (uvicorn)
 $ uv run python -m server [--data-path <path>]
 
-# Linting
+# Linting and formatting
 $ uv run black server/
+
+# Version management
+$ uv run bump-my-version show-bump  # Show current version and next versions
+$ uv run bump-my-version bump patch  # Bump patch version (0.5.0 -> 0.5.1)
+$ uv run bump-my-version bump minor  # Bump minor version (0.5.0 -> 0.6.0)
+
+$ git push --follow-tags # Push changes and tags (triggers CI/CD)
 ```
 
 ### Frontend
@@ -326,18 +333,6 @@ $ npm install
 $ npm run dev
 
 $ npm run build
-```
-
-### Bump version
-
-The project uses `bump2version` to manage versioning across files and Git tags automatically.
-
-```sh
-# Bump version and create Git tag automatically
-$ uv run bump2version [major|minor|patch]
-
-# Push changes and tags (triggers CI/CD)
-$ git push --follow-tags
 ```
 
 #### Home Assistant test instance

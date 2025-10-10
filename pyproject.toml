@@ -28,7 +28,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black>=24.3.0",
-    "bump2version~=1.0.1",
+    "bump-my-version>=0.26.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -37,3 +37,27 @@ packages = ["server"]
 [tool.black]
 target-version = ['py311']
 line-length = 80
+
+[tool.bumpversion]
+current_version = "0.5.0"
+commit = true
+tag = true
+pre_commit_hooks = ["uv sync", "git add uv.lock"]
+commit_args = ""
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+search = "?.?.?"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "--tag inkplate-dashboard:{current_version}"
+replace = "--tag inkplate-dashboard:{new_version}"
+
+[[tool.bumpversion.files]]
+glob = "frontend/package*.json"
+search = '"version": "{current_version}",'
+replace = '"version": "{new_version}",'
