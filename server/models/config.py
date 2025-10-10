@@ -1,13 +1,12 @@
 from enum import Enum
-from ipaddress import IPv4Address
 from os import environ
+from typing import Annotated
 
 from pydantic import (
     AnyHttpUrl,
     BaseModel,
     SecretStr,
-    conint,
-    confloat,
+    Field,
 )
 
 from .server import ServerConfig
@@ -41,14 +40,14 @@ class CaptureWaitUntil(str, Enum):
 
 class CaptureConfig(BaseModel):
     format: CaptureFormat = CaptureFormat.png
-    width: conint(ge=100, le=3000) = None
-    height: conint(ge=100, le=3000) = None
-    scale: confloat(ge=1.0, le=5.0) = 1.0
+    width: Annotated[int, Field(ge=100, le=3000)] | None = None
+    height: Annotated[int, Field(ge=100, le=3000)] | None = None
+    scale: Annotated[float, Field(ge=1.0, le=5.0)] = 1.0
     invert: bool = False
     grayscale: bool = False
-    bit_depth: conint(ge=1, le=256) = None
-    delay: conint(ge=1000, le=30000) = None
-    timeout: conint(ge=1000, le=30000) = 5000
+    bit_depth: Annotated[int, Field(ge=1, le=256)] | None = None
+    delay: Annotated[int, Field(ge=1000, le=30000)] | None = None
+    timeout: Annotated[int, Field(ge=1000, le=30000)] = 5000
     wait_until: CaptureWaitUntil = CaptureWaitUntil.networkidle
 
 

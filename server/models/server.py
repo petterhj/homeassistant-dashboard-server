@@ -1,8 +1,9 @@
 from enum import Enum
 from ipaddress import IPv4Address
 from pathlib import Path
+from typing import Annotated
 
-from pydantic import conint, DirectoryPath
+from pydantic import Field, DirectoryPath, ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -20,21 +21,19 @@ class ServerLogLevel(str, Enum):
 
 
 class ServerConfig(BaseSettings):
+    model_config = ConfigDict(env_file=".env", extra="ignore")
+
     data_path: DirectoryPath = "data"
     config_filename: str = "configuration.yaml"
     debug: bool = False
     host: IPv4Address = "127.0.0.1"
     port: int = 8089
-    capture_interval: conint(ge=60) = 60 * 3
-    capture_keep_count: conint(ge=1) = 15
+    capture_interval: Annotated[int, Field(ge=60)] = 60 * 3
+    capture_keep_count: Annotated[int, Field(ge=1)] = 15
     log_level: ServerLogLevel = ServerLogLevel.info
     log_filename: Path = "dashboard.log"
     log_json: bool = False
     static_path: Path = "dist"
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
     @property
     def config_file(self) -> Path:
