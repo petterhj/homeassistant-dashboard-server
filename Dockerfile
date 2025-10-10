@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build_frontend
+FROM node:22-alpine AS build_frontend
 
 COPY ./frontend /frontend
 WORKDIR /frontend
@@ -6,33 +6,53 @@ WORKDIR /frontend
 RUN npm ci
 RUN npm run build
 
-FROM python:3.11-bullseye as serve
+FROM python:3.12-slim AS server
 
 ARG DOCKER_TAG
+ARG UID=1000
+ARG GID=1000
 ENV APP_VERSION=$DOCKER_TAG
 ENV HOST=0.0.0.0
 ENV PORT=8000
 EXPOSE 8000
 
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Install system dependencies needed for Python packages and Playwright
 RUN apt-get update && \
-    apt-get install -y \
-        nodejs
+    apt-get install -y --no-install-recommends \
+        gcc \
+        libc6-dev \
+        wget \
+        ca-certificates \
+        && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /app/dist && mkdir /app/data
+# Create non-root user with configurable UID/GID
+RUN groupadd --gid ${GID} app && \
+    useradd --uid ${UID} --gid ${GID} --create-home --shell /bin/bash app
 
-COPY ./server /app/server
-COPY --from=build_frontend /frontend/dist /app/dist
+# Create app directories with proper ownership
+RUN mkdir -p /app/dist /app/data && \
+    chown -R app:app /app
+
+# Copy application files and set ownership
+COPY --chown=app:app ./server /app/server
+COPY --chown=app:app ./pyproject.toml /app/
+COPY --chown=app:app ./uv.lock /app/
+COPY --from=build_frontend --chown=app:app /frontend/dist /app/dist
+
 WORKDIR /app
 
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Install project dependencies as root (needed for uv sync)
+RUN uv sync --frozen
 
-RUN python3 -m pip install --upgrade pip
-RUN pip install -r ./server/requirements.txt
+# Install Playwright browsers with system dependencies as root
+RUN PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright uv run python -m playwright install --with-deps chromium && \
+    chown -R app:app /app/ms-playwright
 
-RUN PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright python -m playwright install --with-deps chromium
+# Switch to non-root user for runtime
+USER app
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright
 
-CMD ["python", "-m", "server"]
+CMD ["uv", "run", "python", "-m", "server"]

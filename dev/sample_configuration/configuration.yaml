@@ -1,0 +1,17 @@
+homeassistant:
+  url: !secret homeassistant_url
+  token: !secret homeassistant_token
+
+timezone: Europe/Oslo
+
+locale:
+  default: nb
+  fallback: en
+
+dashboard:
+  components: !include components.yaml
+
+capture:
+  timeout: 10000
+  width: 1200
+  height: 825

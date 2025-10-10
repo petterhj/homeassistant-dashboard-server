@@ -8,14 +8,39 @@ A simple, customizable Home Assistant dashboard that can be used as a "backend" 
 
 ---
 
+* [Build and run](#build-and-run)
 * [Configuration](#configuration)
   * [Inkplate](#inkplate)
   * [Server](#server)
-* [Build and run](#build-and-run)
 * [Development](#development)
 
 ---
 
+## Build and run
+
+```sh
+# Build with default user (1000:1000)
+$ docker build --tag inkplate-dashboard:latest .
+
+# Or build with your user ID to avoid permission issues
+$ docker build \
+  --build-arg UID=$(id -u) \
+  --build-arg GID=$(id -g) \
+  --tag inkplate-dashboard:latest \
+  .
+
+# Set up data directory
+$ cp -R dev/sample_data data/
+$ echo -e "homeassistant_url: \nhomeassistant_token:" > data/secrets.yaml
+
+# Run container
+$ docker run \
+  -p 9090:8000 \
+  -v $(pwd)/data:/app/data \
+  --name inkplate-dashboard \
+  --rm \
+  inkplate-dashboard
+```
 
 ## Configuration
 
@@ -27,7 +52,6 @@ The Inkplate MCU must be programmed to periodically download and display the cap
 
 * [Inkplate: Get Started Page](https://inkplate.readthedocs.io/en/latest/get-started.html)
 * [ESPHome: Inkplate 6, 10 and 6 Plus](https://esphome.io/components/display/inkplate6.html)
-
 
 ### Server
 
@@ -187,7 +211,7 @@ homeassistant_token:
 ```yaml
 - type: weather-forecast
   entity: weather.home
-  state: true (default) | false 
+  state: true (default) | false
   forecast: true | 'daily' | 'hourly' (default) | false
 ```
 
@@ -198,7 +222,7 @@ homeassistant_token:
   entity: weather.home
   attribute: temperature (default)
   unit: null (default, uses `{attribute}_unit`)
-  includeForecast: true (default) | false 
+  includeForecast: true (default) | false
   includeHistory: true (default) | false
   forecastType: daily | hourly (default) | twice_daily
   annotations: [now, startOfDay, endOfDay] (default)
@@ -266,49 +290,30 @@ homeassistant_token:
     Bar
 ```
 
-## Build and run
-
-```sh
-$ docker build \
-  --tag inkplate-dashboard:latest \
-  --tag inkplate-dashboard:<version> \
-  .
-
-$ docker run \
-  -p 9090:8000 \
-  -v $(pwd)/data:/app/data \
-  --name inkplate-dashboard \
-  --rm \
-  inkplate-dashboard
-```
-
-
 ## Development
 
 ### Server
 
 ```sh
-# .env
-# ...
+# Environment
+$ cat > .env << 'EOF'
 DEBUG=true
 STATIC_PATH=frontend/dist
 VITE_SERVER_URL=http://localhost:8089
+EOF
 ```
 
 ```sh
 # Setup
-$ python -m venv .venv
-$ source .venv/bin/activate
-$ pip install -r server/requirements.txt -r server/requirements.dev.txt
-
-$ playwright install [chromium]  # Download new browsers
-$ playwright install-deps
+$ uv sync --extra dev  # Install dependencies including dev tools
+$ uv run playwright install chromium  # Download browsers
+$ uv run playwright install-deps  # Install browser dependencies
 
 # Start development server (uvicorn)
-$ python -m server [--data-path <path>]
+$ uv run python -m server [--data-path <path>]
 
 # Linting
-$ black server/
+$ uv run black server/
 ```
 
 ### Frontend
@@ -324,11 +329,14 @@ $ npm run build
 
 ### Bump version
 
-After pushing changes, run the `bumpversion` command. Pushing new tags triggers the build workflow.
+The project uses `bump2version` to manage versioning across files and Git tags automatically.
 
 ```sh
-$ bumpversion [major|minor|patch]
-$ git push --tags
+# Bump version and create Git tag automatically
+$ uv run bump2version [major|minor|patch]
+
+# Push changes and tags (triggers CI/CD)
+$ git push --follow-tags
 ```
 
 #### Home Assistant test instance

@@ -1,5 +1,8 @@
 ## ?.?.?
 
+- Rootless container with configurable UID/GID build arguments.
+- Added minimal sample configuration data.
+- Moved to `uv`.
 - Component type is now shown on cards when in error state.
 - Bumped dependencies and reworked linting regime.
 - Improved error handling for calendar data.

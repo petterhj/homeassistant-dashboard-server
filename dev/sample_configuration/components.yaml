@@ -1,0 +1,8 @@
+- type: horizontal-stack
+  style: pr-8
+  components:
+    - type: vertical-stack
+      style: gap-4
+      components:
+        - type: sun
+          title: false
