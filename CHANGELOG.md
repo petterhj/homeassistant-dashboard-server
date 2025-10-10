@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.5.0
 
 - Rootless container with configurable UID/GID build arguments.
 - Added minimal sample configuration data.
