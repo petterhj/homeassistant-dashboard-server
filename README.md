@@ -26,6 +26,7 @@ $ docker build --tag inkplate-dashboard:latest .
 $ docker build \
   --build-arg UID=$(id -u) \
   --build-arg GID=$(id -g) \
+  --tag inkplate-dashboard:0.4.0 \
   --tag inkplate-dashboard:latest \
   .
 
