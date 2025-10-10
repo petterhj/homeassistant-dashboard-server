@@ -15,7 +15,7 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/tests.yaml
 
-  push:
+  build:
     name: Build and push
     needs: [tests]
-    uses: ./.github/workflows/push.yml
+    uses: ./.github/workflows/build.yml
