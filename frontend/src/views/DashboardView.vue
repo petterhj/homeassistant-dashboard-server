@@ -29,8 +29,8 @@ const { config } = useServer();
         {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
       </span>
     </div>
-    <div v-if="config?.version" class="text-xs text-lightest">
-      {{ config.version }}
+    <div class="text-xs text-lightest mr-4">
+      {{ config?.version || '?.?.?' }}
     </div>
   </footer>
 </template>

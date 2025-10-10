@@ -1,5 +1,6 @@
 ## ?.?.?
 
+- Use a safer margin for displaying version number on the dashboard.
 - Fix security issue in user provided URL parameter for captures.
 
 ## 0.5.1
