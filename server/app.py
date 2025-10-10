@@ -83,6 +83,7 @@ async def capture(
     capture_format: CaptureFormat,
     timestamp: int = None,
     capture_files: list = Depends(get_captures),
+    config: dict = Depends(get_config),
 ):
     capture_format = capture_format.value
     target_filename = (
@@ -102,11 +103,37 @@ async def capture(
         for cf in capture_files:
             if cf.name == target_filename:
                 capture_file = cf
+                break
     else:
         capture_file = capture_files[0]
 
+    # Validate that the file is within the expected capture directory
+    try:
+        capture_file_resolved = capture_file.resolve()
+        capture_dir_resolved = config.server.capture_path.resolve()
+        
+        # Ensure the file is within the capture directory
+        if not str(capture_file_resolved).startswith(str(capture_dir_resolved)):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied",
+            )
+            
+        # Additional check: file must exist and be a regular file
+        if not capture_file_resolved.exists() or not capture_file_resolved.is_file():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="File not found",
+            )
+            
+    except (OSError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied",
+        )
+
     return FileResponse(
-        capture_file,
+        capture_file_resolved,
         media_type=f"image/{capture_format}",
     )
 
@@ -150,8 +177,33 @@ async def remote_capture(
         name=remote_id,
     )
 
+    # Security: Validate that the captured file is within the expected capture directory
+    try:
+        captured_file_resolved = captured_file_path.resolve()
+        capture_dir_resolved = config.server.capture_path.resolve()
+        
+        # Ensure the file is within the capture directory
+        if not str(captured_file_resolved).startswith(str(capture_dir_resolved)):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied",
+            )
+            
+        # Additional check: file must exist and be a regular file
+        if not captured_file_resolved.exists() or not captured_file_resolved.is_file():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="File not found",
+            )
+            
+    except (OSError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied",
+        )
+
     return FileResponse(
-        captured_file_path,
+        captured_file_resolved,
         media_type=f"image/{capture_format.value}",
     )
 
