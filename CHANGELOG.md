@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.5.1
 
 - Migrated from bump2version to bump-my-version with pyproject.toml configuration.
 - Fix Docker image permissions for virtual environment files.
