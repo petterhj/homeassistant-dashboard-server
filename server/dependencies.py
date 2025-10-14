@@ -24,7 +24,9 @@ def get_config() -> Config:
             try:
                 yaml_config = yaml_load(
                     config_file,
-                    Loader=yaml_loader(base_path=server_config.config_file.parent),
+                    Loader=yaml_loader(
+                        base_path=server_config.config_file.parent
+                    ),
                 )
             except scanner.ScannerError as e:
                 raise ConfigurationError(f"Invalid configuration: {e}")
@@ -73,7 +75,7 @@ def get_view(
                 Capture(
                     timestamp=int(capture_file.name.split("_")[0]),
                     filename=capture_file.name,
-                    format=fmt
+                    format=fmt,
                 )
                 for capture_file in capture_path.glob(
                     f"*_{view_name}.{fmt.value}"
@@ -88,9 +90,9 @@ def get_view(
         )
 
     raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"View '{view_name}' not found",
-        )
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"View '{view_name}' not found",
+    )
 
 
 def get_views(

@@ -101,23 +101,23 @@ def get_bit_depth(image: Image.Image) -> int:
 
     # Common mode mappings
     mode_depths = {
-        '1': 1,          # 1-bit pixels, black and white
-        'L': 8,          # 8-bit pixels, grayscale
-        'P': 8,          # 8-bit pixels, mapped to other mode using palette
-        'RGB': 24,       # 3x8-bit pixels, true color
-        'RGBA': 32,      # 4x8-bit pixels, true color with transparency
-        'CMYK': 32,      # 4x8-bit pixels, color separation
-        'YCbCr': 24,     # 3x8-bit pixels, color video format
-        'LAB': 24,       # 3x8-bit pixels, L*a*b* color space
-        'HSV': 24,       # 3x8-bit pixels, Hue, Saturation, Value color space
-        'LA': 16,        # L with alpha
-        'PA': 16,        # P with alpha
+        "1": 1,  # 1-bit pixels, black and white
+        "L": 8,  # 8-bit pixels, grayscale
+        "P": 8,  # 8-bit pixels, mapped to other mode using palette
+        "RGB": 24,  # 3x8-bit pixels, true color
+        "RGBA": 32,  # 4x8-bit pixels, true color with transparency
+        "CMYK": 32,  # 4x8-bit pixels, color separation
+        "YCbCr": 24,  # 3x8-bit pixels, color video format
+        "LAB": 24,  # 3x8-bit pixels, L*a*b* color space
+        "HSV": 24,  # 3x8-bit pixels, Hue, Saturation, Value color space
+        "LA": 16,  # L with alpha
+        "PA": 16,  # P with alpha
     }
 
     # Check for 16-bit modes
-    if mode in ['I', 'F']:  # 32-bit signed integer or 32-bit floating point
+    if mode in ["I", "F"]:  # 32-bit signed integer or 32-bit floating point
         return 32
-    elif mode == 'I;16':    # 16-bit unsigned integer
+    elif mode == "I;16":  # 16-bit unsigned integer
         return 16
 
     return mode_depths.get(mode, 8)  # Default to 8-bit
@@ -132,8 +132,11 @@ def get_image_details(image_path: Path) -> dict[str, Any]:
             "resolution": image.size,
             "mode": image.mode,
             "bit_depth": get_bit_depth(image),
-            "has_transparency": 'transparency' in image.info or image.mode in ['RGBA', 'LA', 'PA'],
-            "palette_size": len(image.getpalette()) // 3 if image.mode == 'P' else None,
-            "compression": image.info.get('compression'),
+            "has_transparency": "transparency" in image.info
+            or image.mode in ["RGBA", "LA", "PA"],
+            "palette_size": (
+                len(image.getpalette()) // 3 if image.mode == "P" else None
+            ),
+            "compression": image.info.get("compression"),
         }
     return details

@@ -142,7 +142,9 @@ def save_image(
     # Resize (if needed)
     if capture_config.width and capture_config.height:
         if image.size != (capture_config.width, capture_config.height):
-            image = image.resize((capture_config.width, capture_config.height), Image.LANCZOS)
+            image = image.resize(
+                (capture_config.width, capture_config.height), Image.LANCZOS
+            )
 
     try:
         image.save(output_file, output_format.value.upper())

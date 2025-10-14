@@ -67,7 +67,10 @@ async def list_captures(
 
 
 @router.get("/captures/{filename:str}", summary="Get capture details")
-@router.get("/views/{view_name}/captures/last", summary="Get capture details for last view capture")
+@router.get(
+    "/views/{view_name}/captures/last",
+    summary="Get capture details for last view capture",
+)
 async def get_capture(
     filename: str = None,
     view_name: str = None,
@@ -85,18 +88,32 @@ async def get_capture(
         if view and view.last_capture:
             return CaptureDetails(
                 **view.last_capture.model_dump(),
-                **get_image_details(config.server.capture_path / view.last_capture.filename),
+                **get_image_details(
+                    config.server.capture_path / view.last_capture.filename
+                ),
             )
         else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No captures found for view")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No captures found for view",
+            )
 
     for view in views:
-        if capture := next((c for c in view.captures if c.filename == filename), None):
+        if capture := next(
+            (c for c in view.captures if c.filename == filename), None
+        ):
             return CaptureDetails(
                 **capture.model_dump(),
-                **get_image_details(config.server.capture_path / capture.filename),
+                **get_image_details(
+                    config.server.capture_path / capture.filename
+                ),
             )
         else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No captures found for view")
-    
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Capture not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No captures found for view",
+            )
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Capture not found"
+    )

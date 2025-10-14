@@ -127,7 +127,10 @@ async def capture_task() -> None:
 
 
 @app.get("/{view_name:str}.{capture_format:str}", summary="Show capture")
-@app.get("/{timestamp:int}_{view_name:str}.{capture_format:str}", summary="Show historic capture")
+@app.get(
+    "/{timestamp:int}_{view_name:str}.{capture_format:str}",
+    summary="Show historic capture",
+)
 async def show_capture(
     capture_format: CaptureFormat,
     timestamp: int = None,
@@ -137,9 +140,11 @@ async def show_capture(
     capture = None
 
     if view.captures:
-        if timestamp and (capture := next(
-            (c for c in view.captures if c.timestamp == timestamp), None
-        )):
+        if timestamp and (
+            capture := next(
+                (c for c in view.captures if c.timestamp == timestamp), None
+            )
+        ):
             capture = capture
         else:
             capture = view.last_capture
@@ -148,7 +153,7 @@ async def show_capture(
             return FileResponse(
                 config.server.capture_path / capture.filename,
                 media_type=f"image/{capture_format.value}",
-                headers={"Content-Disposition": "inline"}
+                headers={"Content-Disposition": "inline"},
             )
 
     raise HTTPException(
