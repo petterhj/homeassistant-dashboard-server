@@ -1,4 +1,5 @@
-import { reactive, toRefs } from 'vue';
+import { reactive, toRefs, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { ValidationError } from '@/util/errors';
 
 const state = reactive({
@@ -6,16 +7,18 @@ const state = reactive({
 });
 
 export function useServer() {
+  const route = useRoute();
+
   const getConfig = async () => {
     if (state.config) {
       return state.config;
     }
 
-    console.warn('Fetching dashboard config...');
+    console.info('Fetching dashboard config...');
 
     const response = await fetch('/api/config');
 
-    console.debug(
+    console.info(
       `Request: ${response.url}, status=${response.status}, ok=${response.ok}`
     );
 
@@ -37,5 +40,13 @@ export function useServer() {
     return state.config;
   };
 
-  return { ...toRefs(state), getConfig };
+  const currentView = computed(() => {
+    if (!state.config || !route.params.viewName) {
+      return null;
+    }
+    
+    return state.config.views?.find(view => view.name === route.params.viewName) || null;
+  });
+
+  return { ...toRefs(state), getConfig, currentView };
 }

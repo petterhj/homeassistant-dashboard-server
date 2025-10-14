@@ -8,10 +8,13 @@ locale:
   default: nb
   fallback: en
 
-dashboard:
-  components: !include components.yaml
+container:
+  show_footer: true
+  style: mr-6
+
+views:
+  - name: dashboard
+    components: !include dashboard.yaml
 
 capture:
   timeout: 10000
-  width: 1200
-  height: 825

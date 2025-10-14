@@ -43,7 +43,7 @@ defineProps({
 
     <span
       class="mdi text-lighter"
-      :class="[`mdi-${icon}`, size === 'large' ? 'text-8xl' : 'text-4xl']"
+      :class="[`mdi-${icon || 'alert-octagram'}`, size === 'large' ? 'text-8xl' : 'text-4xl']"
     />
     <span class="font-semibold">
       {{ title }}

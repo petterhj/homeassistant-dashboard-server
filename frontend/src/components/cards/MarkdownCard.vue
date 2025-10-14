@@ -53,7 +53,7 @@ const content = computed(() => {
       entityState.value.attributes[props.attribute] || entityState.value.state;
     return markdown.render(content);
   } else {
-    return t('general.noData');
+    return t('errors.noData');
   }
 });
 </script>

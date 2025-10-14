@@ -75,9 +75,6 @@ const cardProps = computed(() => {
     <component
       :is="component"
       v-bind="cardProps"
-      class="foo"
-      bar="foo"
-      sdasd="asdasd"
     >
       <ComponentLoader
         v-for="(componentConfig, index) in config.components"
@@ -105,7 +102,7 @@ const cardProps = computed(() => {
 
     <ErrorState
       v-else
-      :title="t('general.noData')"
+      :title="t('errors.noData')"
       :error="error"
       :component-type="config.type"
     />

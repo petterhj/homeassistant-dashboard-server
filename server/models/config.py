@@ -10,6 +10,7 @@ from pydantic import (
 )
 
 from .server import ServerConfig
+from .capture import CaptureFormat
 
 
 class HomeAssistantConfig(BaseModel):
@@ -22,13 +23,15 @@ class LocaleConfig(BaseModel):
     fallback: str = None
 
 
-class DashboardConfig(BaseModel):
+class ContainerConfig(BaseModel):
+    style: str | None = None
+    show_footer: bool = True
+
+
+class ViewConfig(BaseModel):
+    name: str = "dashboard"
+    style: str | None = None
     components: list[dict] = [dict(type="sun")]
-
-
-class CaptureFormat(str, Enum):
-    png = "png"
-    bmp = "bmp"
 
 
 class CaptureWaitUntil(str, Enum):
@@ -40,20 +43,16 @@ class CaptureWaitUntil(str, Enum):
 
 class CaptureConfig(BaseModel):
     format: CaptureFormat = CaptureFormat.png
-    width: Annotated[int, Field(ge=100, le=3000)] | None = None
-    height: Annotated[int, Field(ge=100, le=3000)] | None = None
-    scale: Annotated[float, Field(ge=1.0, le=5.0)] = 1.0
+    width: Annotated[int, Field(ge=100, le=3000)] = 1200  # Inkplate 10
+    height: Annotated[int, Field(ge=100, le=3000)] = 825
+    scale: Annotated[float, Field(ge=1.0, le=5.0)] = 1
+
     invert: bool = False
-    grayscale: bool = False
-    bit_depth: Annotated[int, Field(ge=1, le=256)] | None = None
+    grayscale: bool = True
+
     delay: Annotated[int, Field(ge=1000, le=30000)] | None = None
     timeout: Annotated[int, Field(ge=1000, le=30000)] = 5000
     wait_until: CaptureWaitUntil = CaptureWaitUntil.networkidle
-
-
-class RemoteConfig(BaseModel):
-    url: AnyHttpUrl
-    capture: CaptureConfig = None
 
 
 class Config(BaseModel):
@@ -61,7 +60,7 @@ class Config(BaseModel):
     homeassistant: HomeAssistantConfig = HomeAssistantConfig()
     timezone: str = None
     locale: LocaleConfig = LocaleConfig()
-    dashboard: DashboardConfig = DashboardConfig()
-    remote: dict[str, RemoteConfig] = None
+    container: ContainerConfig = ContainerConfig()
+    views: list[ViewConfig] = [ViewConfig()]
     capture: CaptureConfig = CaptureConfig()
     version: str = environ.get("APP_VERSION")

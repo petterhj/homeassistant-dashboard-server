@@ -5,10 +5,13 @@ import asyncio
 import logging
 from asyncio import ensure_future
 from functools import wraps
+from pathlib import Path
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Union
 
 from starlette.concurrency import run_in_threadpool
+from PIL import Image
+
 
 NoArgsNoReturnFuncT = Callable[[], None]
 NoArgsNoReturnAsyncFuncT = Callable[[], Coroutine[Any, Any, None]]
@@ -90,3 +93,47 @@ def repeat_every(
         return wrapped
 
     return decorator
+
+
+def get_bit_depth(image: Image.Image) -> int:
+    """Calculate bit depth from PIL image mode and format."""
+    mode = image.mode
+
+    # Common mode mappings
+    mode_depths = {
+        '1': 1,          # 1-bit pixels, black and white
+        'L': 8,          # 8-bit pixels, grayscale
+        'P': 8,          # 8-bit pixels, mapped to other mode using palette
+        'RGB': 24,       # 3x8-bit pixels, true color
+        'RGBA': 32,      # 4x8-bit pixels, true color with transparency
+        'CMYK': 32,      # 4x8-bit pixels, color separation
+        'YCbCr': 24,     # 3x8-bit pixels, color video format
+        'LAB': 24,       # 3x8-bit pixels, L*a*b* color space
+        'HSV': 24,       # 3x8-bit pixels, Hue, Saturation, Value color space
+        'LA': 16,        # L with alpha
+        'PA': 16,        # P with alpha
+    }
+
+    # Check for 16-bit modes
+    if mode in ['I', 'F']:  # 32-bit signed integer or 32-bit floating point
+        return 32
+    elif mode == 'I;16':    # 16-bit unsigned integer
+        return 16
+
+    return mode_depths.get(mode, 8)  # Default to 8-bit
+
+
+def get_image_details(image_path: Path) -> dict[str, Any]:
+    """Get detailed information about an image file."""
+    with Image.open(image_path) as image:
+        details = {
+            "file_size": image_path.stat().st_size,
+            "mime_type": Image.MIME.get(image.format),
+            "resolution": image.size,
+            "mode": image.mode,
+            "bit_depth": get_bit_depth(image),
+            "has_transparency": 'transparency' in image.info or image.mode in ['RGBA', 'LA', 'PA'],
+            "palette_size": len(image.getpalette()) // 3 if image.mode == 'P' else None,
+            "compression": image.info.get('compression'),
+        }
+    return details

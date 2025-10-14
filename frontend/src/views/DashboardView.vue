@@ -1,36 +1,22 @@
 <script setup>
-import { format } from 'date-fns';
+import { useI18n } from 'vue-i18n';
 import { useServer } from '@/stores/server';
-
+import EmptyState from '../components/ErrorState.vue';
 import ComponentLoader from '../components/ComponentLoader.vue';
 
-const { config } = useServer();
+const { t } = useI18n();
+const { currentView } = useServer();
 </script>
 
 <template>
-  <main class="h-[calc(100%-2rem)]">
-    <div
-      v-if="config?.dashboard?.components?.length"
-      class="h-full flex flex-col gap-4 p-4 pb-0"
-    >
-      <ComponentLoader
-        v-for="(component, index) in config.dashboard.components"
-        :key="index"
-        :type="component.type"
-        :config="component"
-      />
-    </div>
-  </main>
-
-  <footer class="flex flex-row justify-between items-center h-8 px-4 leading-8">
-    <div class="text-sm">
-      <span class="mdi mdi-refresh text-lighter mr-2" />
-      <span class="text-dark font-medium">
-        {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
-      </span>
-    </div>
-    <div class="text-xs text-lightest mr-4">
-      {{ config?.version || '?.?.?' }}
-    </div>
-  </footer>
+  <template v-if="currentView && currentView.components?.length">
+    <ComponentLoader
+      v-for="(component, index) in currentView.components"
+      :key="index"
+      :type="component.type"
+      :config="component"
+    />
+  </template>
+  <EmptyState v-else-if="currentView" :title="t('errors.viewNotConfigured')" />
+  <EmptyState v-else :title="t('errors.viewNotFound')" />
 </template>

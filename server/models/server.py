@@ -28,8 +28,10 @@ class ServerConfig(BaseSettings):
     debug: bool = False
     host: IPv4Address = "127.0.0.1"
     port: int = 8089
+    capture_views: list[str] = []
     capture_interval: Annotated[int, Field(ge=60)] = 60 * 3
     capture_keep_count: Annotated[int, Field(ge=1)] = 15
+    capture_wait_first: bool = False
     log_level: ServerLogLevel = ServerLogLevel.info
     log_filename: Path = "dashboard.log"
     log_json: bool = False

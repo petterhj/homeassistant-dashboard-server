@@ -1,48 +1,34 @@
 <script setup>
-import nb from 'date-fns/locale/nb';
-import setDefaultOptions from 'date-fns/setDefaultOptions';
-import { ref, onBeforeMount } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { format } from 'date-fns';
 import { RouterView } from 'vue-router';
 import { useServer } from '@/stores/server';
-import i18n from './i18n';
 
-import ErrorState from '@/components/ErrorState.vue';
-
-const { t } = useI18n();
-const { getConfig } = useServer();
-
-const error = ref(null);
-
-onBeforeMount(async () => {
-  try {
-    const config = await getConfig();
-    if (config) {
-      if (config?.locale?.default) {
-        i18n.global.locale.value = config.locale.default;
-        setDefaultOptions({
-          locale: config.locale.default === 'nb' ? nb : null,
-        });
-      }
-      if (config?.locale?.fallback) {
-        i18n.global.fallbackLocale.value = config.locale.fallback;
-      }
-    }
-  } catch (err) {
-    console.error('Error while reading config:', err.message);
-    console.debug(err);
-    error.value = err;
-  }
-});
+const { config, currentView } = useServer();
 </script>
 
 <template>
-  <RouterView v-if="!error" />
-  <ErrorState
-    v-else
-    :title="t('general.dashboardError')"
-    :error="error"
-    icon="view-dashboard-outline"
-    size="large"
-  />
+  <div :class="['h-screen flex flex-col', config.container?.style]">
+    <main :class="config.container.show_footer ? 'h-[calc(100%-2rem)]' : 'h-full'">
+      <div :class="['h-full flex flex-col gap-4 p-4 pb-0', currentView?.style]">
+        <RouterView />
+      </div>
+    </main>
+
+    <footer
+      v-if="config.container.show_footer"
+      class="flex flex-row justify-between items-center h-8 px-4 leading-8"
+    >
+      <div class="text-sm">
+        <span class="mdi mdi-refresh text-lighter mr-2" />
+        <span class="text-dark font-medium">
+          {{ format(new Date(), 'dd.MM.yy - HH:mm') }}
+        </span>
+      </div>
+
+      <div class="text-xs text-lightest mr-2">
+        <span v-if="currentView?.name">{{ currentView?.name }} @ </span>
+        <span>{{ config?.version || 'dev' }}</span>
+      </div>
+    </footer>
+  </div>
 </template>

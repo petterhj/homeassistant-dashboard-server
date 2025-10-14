@@ -11,7 +11,7 @@ from playwright.async_api import (
     TimeoutError,
 )
 
-from .models.config import CaptureConfig, CaptureFormat
+from .models.config import Config, CaptureConfig, CaptureFormat
 from .models.server import ServerConfig
 
 
@@ -20,37 +20,30 @@ router = APIRouter()
 
 
 async def capture_screenshot(
+    config: Config,
     url: str,
-    server_config: ServerConfig,
-    capture_config: CaptureConfig,
-    locale: str,
-    timezone: str,
-    name: str,
+    view_name: str,
 ) -> Path:
-    capture_path = server_config.capture_path
+    capture_path = config.server.capture_path
     tmp_capture_file = capture_path / "capture_tmp.png"
     error_message = "Unknown error occured"
 
-    args = {"device_scale_factor": capture_config.scale}
+    args = {"device_scale_factor": config.capture.scale}
 
-    if capture_config.width and capture_config.height:
+    if config.capture.width and config.capture.height:
         args["viewport"] = {
-            "width": capture_config.width,
-            "height": capture_config.height,
+            "width": config.capture.width,
+            "height": config.capture.height,
         }
 
-    if timezone:
-        args["timezone_id"] = timezone
+    if config.timezone:
+        args["timezone_id"] = config.timezone
 
-    if locale.default == "nb":
-        args["locale"] = "no-NO"
-    else:
-        args["locale"] = "en-GB"
+    args["locale"] = "no-NO" if config.locale == "nb" else "en-GB"
 
     async with async_playwright() as p:
         try:
             logger.info(f'Launching browser, url="{url}", args={args}')
-
             browser = await p.chromium.launch()
             context = await browser.new_context(**args)
 
@@ -65,31 +58,30 @@ async def capture_screenshot(
 
                 await page.goto(
                     url=str(url),
-                    wait_until=capture_config.wait_until,
-                    timeout=capture_config.timeout,
+                    wait_until=config.capture.wait_until,
+                    timeout=config.capture.timeout,
                 )
 
-                if capture_config.delay:
+                if config.capture.delay:
                     logger.info(
-                        f"Delaying screenshot by {capture_config.delay} ms."
+                        f"Delaying screenshot by {config.capture.delay} ms."
                     )
-                    await page.wait_for_timeout(capture_config.delay)
+                    await page.wait_for_timeout(config.capture.delay)
 
                 logger.info(
-                    "Capturing screenshot (name={}, timeout={} ms.)".format(
-                        name,
-                        capture_config.timeout,
+                    "Capturing screenshot (view={}, timeout={} ms.)".format(
+                        view_name,
+                        config.capture.timeout,
                     )
                 )
 
                 await page.screenshot(
-                    path=tmp_capture_file,
-                    timeout=capture_config.timeout,
+                    path=tmp_capture_file, timeout=config.capture.timeout
                 )
 
             except TimeoutError as e:
                 logger.error(f"Timeout while generating screenshot: {e}")
-                error_message = f"Timeout ({capture_config.timeout} ms.)"
+                error_message = f"Timeout ({config.capture.timeout} ms.)"
 
             except Exception as e:
                 logger.exception("Could not generate screenshot")
@@ -105,20 +97,20 @@ async def capture_screenshot(
     if tmp_capture_file.exists():
         captured_file_path = save_image(
             image=Image.open(tmp_capture_file),
-            server_config=server_config,
-            capture_config=capture_config,
-            name=name,
+            server_config=config.server,
+            capture_config=config.capture,
+            name=view_name,
         )
 
     else:
         captured_file_path = save_image(
-            image=generate_fallback_image(capture_config, error_message),
-            server_config=server_config,
-            capture_config=capture_config,
-            name=name,
+            image=generate_fallback_image(config.capture, error_message),
+            server_config=config.server,
+            capture_config=config.capture,
+            name=view_name,
         )
 
-    capture_cleanup(server_config)
+    capture_cleanup(config.server)
     return captured_file_path
 
 
@@ -129,37 +121,40 @@ def save_image(
     name: str,
 ) -> Path:
     output_format = capture_config.format
-    bit_depth = capture_config.bit_depth
-
     output_file = server_config.capture_path / "{}_{}.{}".format(
-        # datetime.now().isoformat(timespec="seconds").replace(":", "."),
         int(mktime(datetime.now().timetuple())),
         name,
         output_format.value.lower(),
     )
 
-    logger.info(f"Saving image as {output_format.upper()} to {output_file}")
-
+    # Invert
     if capture_config.invert:
-        logger.debug("> Inverting image")
-        image = image.convert("RGB")
-        image = ImageOps.invert(image)
+        if image.mode in ("L", "P"):
+            image = ImageOps.invert(image)
+        else:
+            image = image.convert("RGB")
+            image = ImageOps.invert(image)
 
-    if capture_config.grayscale:
-        logger.debug("> Converting image to grayscale")
+    # Grayscale
+    if capture_config.grayscale and image.mode != "L":
         image = image.convert("L")
 
-    if output_format == CaptureFormat.png and bit_depth:
-        logger.debug(f"> Setting bit depth {bit_depth}")
-        image = image.convert("P", palette=Image.ADAPTIVE, colors=bit_depth)
+    # Resize (if needed)
+    if capture_config.width and capture_config.height:
+        if image.size != (capture_config.width, capture_config.height):
+            image = image.resize((capture_config.width, capture_config.height), Image.LANCZOS)
 
-    image.save(output_file, output_format.value.upper())
-    logger.info(f"Saved image to {output_file}")
+    try:
+        image.save(output_file, output_format.value.upper())
+    except Exception as e:
+        logger.error(f"Failed to save image: {e}")
+        image.save(output_file)
+
     return output_file
 
 
 def generate_fallback_image(
-    capture_config: CaptureConfig,
+    capture_config: CaptureConfig = CaptureConfig(),
     message: str = None,
 ) -> Image:
     logger.info(

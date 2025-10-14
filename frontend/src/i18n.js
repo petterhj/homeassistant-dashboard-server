@@ -5,10 +5,14 @@ const messages = {
     general: {
       loading: 'Loading',
       type: 'Type',
+    },
+    errors: {
       dashboardError: 'Could not load dashboard',
       noConfiguration: 'No configuration',
       noData: 'No data',
       pageNotFound: 'Page not found',
+      viewNotFound: 'View not found',
+      viewNotConfigured: 'No components configured for this view',
     },
     datetime: {
       now: 'Now',
@@ -56,10 +60,14 @@ const messages = {
     general: {
       loading: 'Laster inn',
       type: 'Type',
+    },
+    errors: {
       dashboardError: 'Kunne ikke laste inn dashbord',
       noConfiguration: 'Mangler konfiguration',
       noData: 'Mangler data',
       pageNotFound: 'Siden finnes ikke',
+      viewNotFound: 'Visningen finnes ikke',
+      viewNotConfigured: 'Ingen komponenter konfigurert for denne visningen',
     },
     datetime: {
       now: 'Nå',

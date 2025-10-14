@@ -1,7 +1,9 @@
 ## ?.?.?
 
-- Use a safer margin for displaying version number on the dashboard.
-- Fix security issue in user provided URL parameter for captures.
+- Added support for multiple dashboard views.
+- Added optional styling configuration for individual views and main container.
+- Added option to enable/disable the footer display.
+- Fixed security vulnerability in user-provided URL parameter for captures.
 
 ## 0.5.1
 
