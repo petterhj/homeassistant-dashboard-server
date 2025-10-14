@@ -1,4 +1,4 @@
-## ?.?.?
+## 0.6.0
 
 - Added support for multiple dashboard views.
 - Added optional styling configuration for individual views and main container.
